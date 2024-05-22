@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="20dp"
+            android:text="Elige una cuenta:"
+            android:textSize="34sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Identificador:" />
+
+        <Spinner
+            android:id="@+id/idSpinnerIdCuentas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="50dp"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/idBEntrar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entrar" />
+
+    </LinearLayout>
+
+</LinearLayout>
