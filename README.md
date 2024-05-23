@@ -6,7 +6,7 @@ Para descargar los archivos de este repositorio haz click en el botón verde que
 Si tienes alguna duda pregunta a tu compañero de clase Antonio Hristov.<br><br><br>
 Posdata:<br>
 Si quieren hacer cambios en este repositorio deben aprender git, os recomiendo este curso: https://www.youtube.com/watch?v=mCVQgSyjCkI&list=PLQxX2eiEaqby-qh4raiKfYyb4T7WyHsfW&index=1
-<br>(Tengo una copia de seguridad en otro repositorio, no tengan miedo de experimentar cambios)<br><br>
+<br>(Tengo una copia de seguridad en otro repositorio, no tengas miedo de experimentar cambios)<br><br>
 Ideas Proyecto Android Studio (Si quieres añadir alguna dilo a Antonio):<br><br>
 Batalla Alianza vs Hordas. Lo más personalizado posible<br>
 Batalla Pokémon simple<br>
