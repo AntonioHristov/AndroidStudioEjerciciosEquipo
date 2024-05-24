@@ -20,11 +20,12 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+
         if(CuentasBancarias.getCuentasBancarias().isEmpty()){
             CuentasBancarias.NuevaCuenta(5);
         }
 
-        Asignar.SpinnerConLista(findViewById(R.id.idSpinnerIdCuentas),CuentasBancarias.getIdsCuentasBancarias(), this.getApplicationContext());
+        Asignar.SpinnerConListaEstilosItemDefinidos(findViewById(R.id.idSpinnerIdCuentas),CuentasBancarias.getIdsCuentasBancarias(), this.getApplicationContext());
         //Asignar.SpinnerConListaStringsXml(findViewById(R.id.my_spinner),R.array.spinner_items, this.getApplicationContext());
         findViewById(R.id.idBEntrar).setOnClickListener(new View.OnClickListener() {
             @Override

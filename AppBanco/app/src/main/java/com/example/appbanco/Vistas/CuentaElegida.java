@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,29 +33,42 @@ public class CuentaElegida extends AppCompatActivity {
         if(cuentaElegida!=null){
             ((TextView)findViewById(R.id.idtvIdCuenta)).setText("ID: "+cuentaElegida.getIdentificador());
             ((TextView)findViewById(R.id.idtvSaldo)).setText("SALDO: "+cuentaElegida.getSaldo());
-            Asignar.SpinnerConLista(spinner,CuentasBancarias.getIdsCuentasBancarias(), this.getApplicationContext());
+            Asignar.SpinnerConListaEstilosItemDefinidos(spinner,CuentasBancarias.getIdsCuentasBancarias(), this.getApplicationContext());
 
             findViewById(R.id.idBIngresar).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cuentaElegida.ingreso(Double.parseDouble(((EditText)findViewById(R.id.idtndDineroOperacion)).getText().toString()));
-                    EscribirDatosCuentaElegida();
+                    try{
+                        cuentaElegida.ingreso(Double.parseDouble(((EditText)findViewById(R.id.idtndDineroOperacion)).getText().toString()));
+                        EscribirDatosCuentaElegida();
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(),"No se pudo hacer la operación", Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
 
             findViewById(R.id.idBPagar).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cuentaElegida.pagar(Double.parseDouble(((EditText)findViewById(R.id.idtndDineroOperacion)).getText().toString()));
-                    EscribirDatosCuentaElegida();
+                    try{
+                        cuentaElegida.pagar(Double.parseDouble(((EditText)findViewById(R.id.idtndDineroOperacion)).getText().toString()));
+                        EscribirDatosCuentaElegida();
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(),"No se pudo hacer la operación", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
             findViewById(R.id.idBTransferir).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    cuentaElegida.transferencia(CuentasBancarias.getCuentaById(Integer.parseInt(spinner.getSelectedItem().toString())),Double.parseDouble(((EditText)findViewById(R.id.idtndDineroOperacion)).getText().toString()));
-                    EscribirDatosCuentaElegida();
+                    try{
+                        cuentaElegida.transferencia(CuentasBancarias.getCuentaById(Integer.parseInt(spinner.getSelectedItem().toString())),Double.parseDouble(((EditText)findViewById(R.id.idtndDineroOperacion)).getText().toString()));
+                        EscribirDatosCuentaElegida();
+                    }catch (Exception e){
+                        Toast.makeText(getApplicationContext(),"No se pudo hacer la operación", Toast.LENGTH_LONG).show();
+                    }
                 }
             });
 
