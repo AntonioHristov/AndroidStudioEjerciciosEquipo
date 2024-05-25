@@ -7,7 +7,7 @@ Si tienes alguna duda pregunta a tu compañero de clase Antonio Hristov.<br><br>
 Posdata:<br>
 Si quieren hacer cambios en este repositorio deben aprender git o enviar los cambios a Antonio, os recomiendo este curso para aprender git: https://www.youtube.com/watch?v=mCVQgSyjCkI&list=PLQxX2eiEaqby-qh4raiKfYyb4T7WyHsfW&index=1
 <br>(Tengo una copia de seguridad en otro repositorio, no tengan miedo de experimentar cambios)<br><br>
-Ideas Proyecto Android Studio (Si quieres añadir alguna dilo a Antonio o aprende git):<br><br>
+Ideas Proyecto Android Studio (Si quieren añadir alguna díganlo a Antonio o aprendan git):<br><br>
 Batalla Alianza vs Hordas. Lo más personalizado posible<br>
 Batalla Pokémon simple<br>
 Batalla Final Fantasy simple<br>
