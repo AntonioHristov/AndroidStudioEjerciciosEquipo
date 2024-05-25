@@ -12,6 +12,7 @@ Batalla Alianza vs Hordas. Lo más personalizado posible<br>
 Batalla Pokémon simple<br>
 Batalla Final Fantasy simple<br>
 Torneo Piedra, papel, tijera. Jugadores y/o ias indefinidos.<br>
+Advinar número al azar entre 2 números elegidos, con ranking de menos fallos en un intento para cada rango de números elegidos.<br>
 Clase Persona. Lo más personalizado posible<br>
 Juego Ball Sorted<br>
 Juego Serpiente<br>
