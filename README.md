@@ -5,7 +5,7 @@ Las carpetas son las tareas que (normalmente) llevan dentro los proyectos de And
 Para descargar los archivos de este repositorio haz click en el botón verde que está arriba que dice "<> Code" y haz click en "Download ZIP".<br><br>
 Si tienes alguna duda pregunta a tu compañero de clase Antonio Hristov.<br><br><br>
 Posdata:<br>
-Si quieren hacer cambios en este repositorio deben aprender git, os recomiendo este curso: https://www.youtube.com/watch?v=mCVQgSyjCkI&list=PLQxX2eiEaqby-qh4raiKfYyb4T7WyHsfW&index=1
+Si quieren hacer cambios en este repositorio deben aprender git o enviar los cambios a Antonio, os recomiendo este curso: https://www.youtube.com/watch?v=mCVQgSyjCkI&list=PLQxX2eiEaqby-qh4raiKfYyb4T7WyHsfW&index=1
 <br>(Tengo una copia de seguridad en otro repositorio, no tengan miedo de experimentar cambios)<br><br>
 Ideas Proyecto Android Studio (Si quieres añadir alguna dilo a Antonio o aprende git):<br><br>
 Batalla Alianza vs Hordas. Lo más personalizado posible<br>
