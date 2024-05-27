@@ -8,13 +8,13 @@ public class Calculadora {
     String numeroGuardado = "";
     char operacionGuardada = ' ';
     TextView edSecundario, edPrincipal;
-    Button bCambioSigno, bCE, bC, bRetroceso, bDiv, bMul, bRes, bSum, bIgual, bPunto, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9;
+    Button bCambioSigno, bPorcent, bC, bRetroceso, bDiv, bMul, bRes, bSum, bIgual, bPunto, b0, b1, b2, b3, b4, b5, b6, b7, b8, b9;
 
     public Calculadora(TextView edSecundario, TextView edPrincipal, Button bCambioSigno, Button bCE, Button bC, Button bRetroceso, Button bDiv, Button bMul, Button bRes, Button bSum, Button bIgual, Button bPunto, Button b0, Button b1, Button b2, Button b3, Button b4, Button b5, Button b6, Button b7, Button b8, Button b9) {
         this.edSecundario = edSecundario;
         this.edPrincipal = edPrincipal;
         this.bCambioSigno = bCambioSigno;
-        this.bCE = bCE;
+        this.bPorcent = bCE;
         this.bC = bC;
         this.bRetroceso = bRetroceso;
         this.bDiv = bDiv;
@@ -46,7 +46,7 @@ public class Calculadora {
             });
         }
 
-        for (Button boton: new Button[]{bSum,bRes,bMul,bDiv,bIgual}) {
+        for (Button boton: new Button[]{bSum,bRes,bMul,bDiv,bPorcent,bIgual}) {
             boton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -64,6 +64,9 @@ public class Calculadora {
                                 break;
                             case '/':
                                 edPrincipal.setText((Double.parseDouble((numeroGuardado.isEmpty()?"0":numeroGuardado))/Double.parseDouble((textoPrincipal.isEmpty()?"0":textoPrincipal)))+"");
+                                break;
+                            case '%':
+                                edPrincipal.setText((Double.parseDouble((numeroGuardado.isEmpty()?"0":numeroGuardado))%Double.parseDouble((textoPrincipal.isEmpty()?"0":textoPrincipal)))+"");
                                 break;
                         }
                         operacionGuardada=' ';
@@ -85,6 +88,9 @@ public class Calculadora {
                                     break;
                                 case '/':
                                     numeroGuardado=(Double.parseDouble((numeroGuardado.isEmpty()?"0":numeroGuardado))/Double.parseDouble((textoPrincipal.isEmpty()?"0":textoPrincipal)))+"";
+                                    break;
+                                case '%':
+                                    numeroGuardado=(Double.parseDouble((numeroGuardado.isEmpty()?"0":numeroGuardado))%Double.parseDouble((textoPrincipal.isEmpty()?"0":textoPrincipal)))+"";
                                     break;
                             }
                         }
@@ -118,13 +124,6 @@ public class Calculadora {
                 edPrincipal.setText("");
                 edSecundario.setText("");
                 edSecundario.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        bCE.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                edPrincipal.setText("");
             }
         });
 
