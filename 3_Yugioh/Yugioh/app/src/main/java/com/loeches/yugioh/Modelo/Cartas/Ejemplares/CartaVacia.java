@@ -1,0 +1,15 @@
+package com.loeches.yugioh.Modelo.Cartas.Ejemplares;
+
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.R;
+
+public class CartaVacia extends ACarta {
+    public CartaVacia() {
+        super("", "", R.drawable.carta_vacia);
+    }
+
+    @Override
+    public void RealizarAccion(ACarta posibleObjetivo) {
+
+    }
+}
