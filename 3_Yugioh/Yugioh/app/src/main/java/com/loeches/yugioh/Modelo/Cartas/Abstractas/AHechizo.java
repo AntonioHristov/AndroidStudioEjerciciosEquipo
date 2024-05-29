@@ -10,6 +10,11 @@ public abstract class AHechizo extends ACarta{
         _accionHechizo = accionHechizo;
     }
 
+    public AHechizo(AHechizo copia) {
+        super(copia.get_nombre(), copia.get_descripcion(), copia.get_imagen());
+        _accionHechizo = copia._accionHechizo;
+    }
+
     public EAccionHechizo get_accionHechizo() {
         return _accionHechizo;
     }

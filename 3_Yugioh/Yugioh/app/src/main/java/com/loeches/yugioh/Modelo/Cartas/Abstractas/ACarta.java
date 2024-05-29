@@ -1,18 +1,21 @@
 package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
-import com.loeches.yugioh.Modelo.Cartas.Global.Lista;
+import com.loeches.yugioh.Modelo.Global.Lista;
+import com.loeches.yugioh.Modelo.Cartas.Vista.CartaVista;
 
 import java.util.Objects;
 
 public abstract class ACarta {
     private String _nombre, _descripcion;
     private int _imagen;
+    private CartaVista _cartaVista;
 
     public ACarta(String nombre, String descripcion, int imagen) {
         _nombre = nombre;
         _descripcion = descripcion;
         _imagen = imagen;
+        _cartaVista=null;
 
         boolean seRepite=false;
         for (ACarta carta:Lista.get_cartasUnicas()) {
@@ -26,7 +29,13 @@ public abstract class ACarta {
         }
     }
 
-    public abstract void RealizarAccion(ACarta posibleObjetivo);
+    public ACarta(ACarta copia){
+        _nombre=copia._nombre;
+        _descripcion=copia._descripcion;
+        _imagen=copia._imagen;
+    }
+
+    public abstract void RealizarAccion(AMonstruo posibleObjetivo);
 
     public String get_nombre() {
         return _nombre;
@@ -38,6 +47,14 @@ public abstract class ACarta {
 
     public int get_imagen() {
         return _imagen;
+    }
+
+    public CartaVista get_cartaVista() {
+        return _cartaVista;
+    }
+
+    public void set_cartaVista(CartaVista cartaVista) {
+        _cartaVista = cartaVista;
     }
 
     @Override
