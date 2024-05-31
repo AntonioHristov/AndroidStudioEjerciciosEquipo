@@ -1,6 +1,6 @@
 package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
-import com.loeches.yugioh.Modelo.Enums.EAccionHechizo;
+import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
 
 public abstract class AHechizo extends ACarta{
     private EAccionHechizo _accionHechizo;

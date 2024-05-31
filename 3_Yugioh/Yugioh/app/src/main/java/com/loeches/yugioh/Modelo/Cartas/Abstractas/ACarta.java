@@ -2,7 +2,7 @@ package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Lista;
-import com.loeches.yugioh.Modelo.Cartas.Vista.CartaVista;
+import com.loeches.yugioh.Modelo.Vista.CartaVista;
 
 import java.util.Objects;
 
@@ -16,7 +16,7 @@ public abstract class ACarta {
         _descripcion = descripcion;
         _imagen = imagen;
         _cartaVista=null;
-
+/*
         boolean seRepite=false;
         for (ACarta carta:Lista.get_cartasUnicas()) {
             if(this.equals(carta)){
@@ -26,7 +26,7 @@ public abstract class ACarta {
         }
         if(!seRepite && !(this instanceof CartaVacia)){
             Lista.get_cartasUnicas().add(this);
-        }
+        }*/
     }
 
     public ACarta(ACarta copia){

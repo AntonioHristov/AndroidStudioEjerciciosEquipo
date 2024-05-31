@@ -1,6 +1,7 @@
 package com.loeches.yugioh.Controlador;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -35,6 +36,10 @@ public class Utilidades {
 
     public static int getAnchoTelefonoDp(Context context) {
         return pxToDp(context,getAnchoTelefonoPx(context));
+    }
+
+    public static int getAltoTelefonoPx() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
 }
