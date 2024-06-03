@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
 
+import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
@@ -138,6 +139,10 @@ public class CartaVista {
 
     public boolean igualImagenVacia(){
         return this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState());
+    }
+
+    public void verInformacion(){
+        Controlador.VaciarVista();
     }
 
     public ACarta get_carta() {

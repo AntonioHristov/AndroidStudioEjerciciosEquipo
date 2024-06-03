@@ -1,13 +1,18 @@
 package com.loeches.yugioh.Modelo.Vista;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
@@ -97,6 +102,36 @@ public class HorizontalVista {
                 posPrimerVacio = i;
                 break;
             }
+
+            cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    ClipData data = ClipData.newPlainText("", "");
+                    View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                    v.startDrag(data, shadowBuilder, v, 0);
+                    v.setVisibility(View.VISIBLE);
+                    return true;
+                }
+            });
+
+            cv.get_frameLayout().setOnDragListener(new View.OnDragListener() {
+                @Override
+                public boolean onDrag(View v, DragEvent event) {
+                    switch (event.getAction()) {
+                        case DragEvent.ACTION_DRAG_STARTED:
+                            // Acción al iniciar el arrastre
+                            return true;
+                        case DragEvent.ACTION_DRAG_EXITED:
+                            // Acción al salir de la vista destino
+                            cv.verInformacion();
+                            return true;
+                        default:
+                            return false;
+                    }
+                }
+            });
+
+
             if (turno) {
                 cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -136,12 +171,15 @@ public class HorizontalVista {
                     cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
                         public boolean onLongClick(View v) {
-                            if(cvMonstruo.is_modoDefensa()){
-                                cvMonstruo.set_modoDefensa(false);
-                            }else{
-                                cvMonstruo.set_modoDefensa(true);
-                            }
-                            Controlador.nuevoTurno();
+                            AlertMonstruoInfoCambiarModo(cv);
+                            return true;
+                        }
+                    });
+                }else if(esMano() && cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo()==EAccionHechizo.USAR){
+                    cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            AlertHechizoInfoUsar(cv);
                             return true;
                         }
                     });
@@ -211,6 +249,68 @@ public class HorizontalVista {
 
     public boolean esMonstruo() {
         return _id == EIdHorizontalVista.J1_MONSTRUO || _id == EIdHorizontalVista.J2_MONSTRUO;
+    }
+
+    public void AlertMonstruoInfoCambiarModo(CartaVista cv) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Variables.get_gameActivityContext());
+        builder.setTitle("Elección");
+        builder.setMessage("¿Qué opción eliges?");
+
+        // Botón positivo (Opción 1)
+        builder.setPositiveButton("Ver información", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Acción para la opción 1
+                cv.verInformacion();
+            }
+        });
+
+        // Botón negativo (Opción 2)
+        builder.setNegativeButton("Cambiar modo", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AMonstruo cvMonstruo=(AMonstruo) cv.get_carta();
+                // Acción para la opción 2
+                if(cvMonstruo.is_modoDefensa()){
+                    cvMonstruo.set_modoDefensa(false);
+                }else{
+                    cvMonstruo.set_modoDefensa(true);
+                }
+                Controlador.nuevoTurno();
+            }
+        });
+
+        // Crear y mostrar el diálogo
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public void AlertHechizoInfoUsar(CartaVista cv) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(Variables.get_gameActivityContext());
+        builder.setTitle("Elección");
+        builder.setMessage("¿Qué opción eliges?");
+
+        // Botón positivo (Opción 1)
+        builder.setPositiveButton("Ver información", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Acción para la opción 1
+                cv.verInformacion();
+            }
+        });
+
+        // Botón negativo (Opción 2)
+        builder.setNegativeButton("Usar Hechizo", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                cv.get_carta().RealizarAccion(null);
+                Controlador.nuevoTurno();
+            }
+        });
+
+        // Crear y mostrar el diálogo
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public EIdHorizontalVista get_id() {
