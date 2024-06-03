@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Global.Variables;
 import com.loeches.yugioh.R;
@@ -32,7 +33,6 @@ public class CartaVista {
         _carta=copia._carta;
         _horizontalVista=copia._horizontalVista;
     }
-
 
     public void EscribirCodigoXML() {
         set_frameLayoutAndImageView();
@@ -84,8 +84,15 @@ public class CartaVista {
             imageView.setImageResource(R.color.black);
         }else{
             imageView.setImageResource(get_carta().get_imagen());
+            if(get_carta() instanceof AMonstruo){
+                AMonstruo cvMonstruo = (AMonstruo) get_carta();
+                if(cvMonstruo.is_modoDefensa()){
+                    imageView.setRotation(90);
+                }else{
+                    imageView.setRotation(0);
+                }
+            }
         }
-
         return imageView;
     }
 
@@ -111,13 +118,13 @@ public class CartaVista {
                     this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_selected);
                     this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
                     Variables.set_cartaVistaSeleccionada(this);
-                    _horizontalVista.crearOnClickCartaVistas();
+                    _horizontalVista.crearListenerCartaVistas();
                 } else {
                     // Los drawables son diferentes
                     this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_default);
                     this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
                     Variables.set_cartaVistaSeleccionada(null);
-                    _horizontalVista.crearOnClickCartaVistas();
+                    _horizontalVista.crearListenerCartaVistas();
                 }
             }
         }

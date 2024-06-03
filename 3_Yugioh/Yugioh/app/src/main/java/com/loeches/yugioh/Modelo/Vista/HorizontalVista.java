@@ -6,8 +6,7 @@ import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
-import androidx.core.content.ContextCompat;
-
+import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
@@ -36,13 +35,20 @@ public class HorizontalVista {
         }
     }
 
-    public void EscribirCodigoXML() {
+    public void EscribirCodigoXML(boolean ordenInverso) {
         LinearLayout main = ((Activity) Variables.get_gameActivityContext()).findViewById(R.id.main);
 
-        for (CartaVista cv : _cartasVista) {
-            cv.EscribirCodigoXML();
+        if(ordenInverso){
+            for (int i = _cartasVista.size()-1; i >-1 ; i--) {
+                _cartasVista.get(i).EscribirCodigoXML();
+            }
+        }else{
+            for (CartaVista cv : _cartasVista) {
+                cv.EscribirCodigoXML();
+            }
         }
-        crearOnClickCartaVistas();
+
+        crearListenerCartaVistas();
 
         if (_cartasVista.size() > 5) {
             XMLScroll();
@@ -80,49 +86,75 @@ public class HorizontalVista {
     }
 
 
-    public void crearOnClickCartaVistas() {
-        boolean turno=esSuTurno(); // turno es para evitar ifs cada vez
+    public void crearListenerCartaVistas() {
+        boolean turno = esSuTurno(); // turno es para evitar ifs cada vez
 
         int posPrimerVacio = Variables.POS_ERROR;
         for (int i = 0; i < _cartasVista.size(); i++) {
             CartaVista cv = _cartasVista.get(i);
             if (cv.igualImagenVacia()) {
-            //if(cv.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState())){
+                //if(cv.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState())){
                 posPrimerVacio = i;
                 break;
             }
-            if(turno){
+            if (turno) {
                 cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         // SI ES UN MONSTRUO Y EL RIVAL NO TIENE MONSTRUO, ATACA AL JUGADOR RIVAL
-                        if(esMano()){
+                        if (esMano()) {
                             cv.seleccionarOQuitarSeleccionNoVacias();
-                        }else if(cv.get_carta() instanceof AMonstruo){
-                            if(Variables.get_cartaVistaSeleccionada()==null&& (Lista.getBy(getHorizontalRival()).get_cartasVista().get(0).igualImagenVacia())  ){
-                                // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
-                                cv.get_carta().RealizarAccion(null);
-                                Variables.nuevoTurno();
-                            }else if(Variables.get_cartaVistaSeleccionada()!=null&&Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo){
+                        } else if (cv.get_carta() instanceof AMonstruo) {
+                            if (Variables.get_cartaVistaSeleccionada() == null) {
+                                if (Lista.getBy(getHorizontalRival()).get_cartasVista().get(0).igualImagenVacia()) {
+                                    // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
+                                    cv.get_carta().RealizarAccion(null);
+                                    Controlador.nuevoTurno();
+                                } else if (Lista.getBy(getHorizontalRival()).get_cartasVista().get(1).igualImagenVacia()) {
+                                    // SI EL RIVAL SOLO TIENE 1 MONSTRUO, LO ATACA SIN NECESIDAD DE SELECCIONARLO
+                                    cv.get_carta().RealizarAccion((AMonstruo) Lista.getBy(getHorizontalRival()).get_cartasVista().get(0).get_carta());
+                                    Controlador.nuevoTurno();
+                                }else{
+                                    cv.seleccionarOQuitarSeleccionNoVacias();
+                                }
+
+                            } else if (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo) {
                                 Variables.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
                                 Variables.get_cartaVistaSeleccionada().get_horizontalVista().get_cartasVista().get(Lista.getPosHorizontalVista(Variables.get_cartaVistaSeleccionada())).set_carta(new CartaVacia());
                                 Variables.set_cartaVistaSeleccionada(null);
-                                Variables.nuevoTurno();
-                            }else{
+                                Controlador.nuevoTurno();
+                            } else {
                                 cv.seleccionarOQuitarSeleccionNoVacias();
                             }
-                        }else/* if(cv.get_carta() instanceof AHechizo)*/{
+                        } else/* if(cv.get_carta() instanceof AHechizo)*/ {
                             cv.seleccionarOQuitarSeleccionNoVacias();
                         }
                     }
                 });
-            }else{
+                if(!esMano() && esSuTurno() && cv.get_carta() instanceof AMonstruo){
+                    AMonstruo cvMonstruo=(AMonstruo) cv.get_carta();
+                    cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            if(cvMonstruo.is_modoDefensa()){
+                                cvMonstruo.set_modoDefensa(false);
+                            }else{
+                                cvMonstruo.set_modoDefensa(true);
+                            }
+                            Controlador.nuevoTurno();
+                            return true;
+                        }
+                    });
+                }
+            } else {
                 cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(Variables.get_cartaVistaSeleccionada()!=null && cv.get_carta()instanceof AMonstruo){
-                            Variables.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
-                            Variables.nuevoTurno();
+                        if (Variables.get_cartaVistaSeleccionada() != null && cv.get_carta() instanceof AMonstruo) {
+                            if (!Variables.get_cartaVistaSeleccionada().get_horizontalVista().esMano()|| (Variables.get_cartaVistaSeleccionada().get_horizontalVista().esMano() && Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Variables.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.USAR)) {
+                                Variables.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
+                                Controlador.nuevoTurno();
+                            }
                         }
                     }
                 });
@@ -132,13 +164,13 @@ public class HorizontalVista {
         if (posPrimerVacio != Variables.POS_ERROR && posPrimerVacio < _cartasVista.size()) {
             CartaVista primerVacio = _cartasVista.get(posPrimerVacio);
             if (primerVacio != null) {
-                if(turno){
+                if (turno) {
                     primerVacio.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (Variables.get_cartaVistaSeleccionada() != null && (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && (_id==EIdHorizontalVista.J1_MONSTRUO||_id==EIdHorizontalVista.J2_MONSTRUO)) || (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Variables.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && (_id==EIdHorizontalVista.J1_HECHIZO||_id==EIdHorizontalVista.J2_HECHIZO))) {
+                            if (Variables.get_cartaVistaSeleccionada() != null && (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Variables.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo())) {
                                 Variables.get_cartaVistaSeleccionada().cambiarCartaVista(primerVacio, true);
-                                Variables.nuevoTurno();
+                                Controlador.nuevoTurno();
                             }
                         }
                     });
@@ -148,37 +180,37 @@ public class HorizontalVista {
     }
 
     public EIdHorizontalVista getHorizontalRival() {
-        if(this._id==EIdHorizontalVista.J1_MANO){
+        if (this._id == EIdHorizontalVista.J1_MANO) {
             return EIdHorizontalVista.J2_MANO;
-        }else if(this._id==EIdHorizontalVista.J2_MANO){
+        } else if (this._id == EIdHorizontalVista.J2_MANO) {
             return EIdHorizontalVista.J1_MANO;
-        }else if(this._id==EIdHorizontalVista.J1_HECHIZO){
+        } else if (this._id == EIdHorizontalVista.J1_HECHIZO) {
             return EIdHorizontalVista.J2_HECHIZO;
-        }else if(this._id==EIdHorizontalVista.J2_HECHIZO){
+        } else if (this._id == EIdHorizontalVista.J2_HECHIZO) {
             return EIdHorizontalVista.J1_HECHIZO;
-        }else if(this._id==EIdHorizontalVista.J1_MONSTRUO){
+        } else if (this._id == EIdHorizontalVista.J1_MONSTRUO) {
             return EIdHorizontalVista.J2_MONSTRUO;
-        }else if(this._id==EIdHorizontalVista.J2_MONSTRUO){
+        } else if (this._id == EIdHorizontalVista.J2_MONSTRUO) {
             return EIdHorizontalVista.J1_MONSTRUO;
-        }else{
+        } else {
             return null;
         }
     }
 
-    public boolean esSuTurno(){
+    public boolean esSuTurno() {
         return (Variables.is_turnoJugador1() && (_id == EIdHorizontalVista.J1_MANO || _id == EIdHorizontalVista.J1_HECHIZO || _id == EIdHorizontalVista.J1_MONSTRUO)) || (!Variables.is_turnoJugador1() && (_id == EIdHorizontalVista.J2_MANO || _id == EIdHorizontalVista.J2_HECHIZO || _id == EIdHorizontalVista.J2_MONSTRUO));
     }
 
-    public boolean esMano(){
-        return _id==EIdHorizontalVista.J1_MANO||_id==EIdHorizontalVista.J2_MANO;
+    public boolean esMano() {
+        return _id == EIdHorizontalVista.J1_MANO || _id == EIdHorizontalVista.J2_MANO;
     }
 
-    public boolean esHechizo(){
-        return _id==EIdHorizontalVista.J1_HECHIZO||_id==EIdHorizontalVista.J2_HECHIZO;
+    public boolean esHechizo() {
+        return _id == EIdHorizontalVista.J1_HECHIZO || _id == EIdHorizontalVista.J2_HECHIZO;
     }
 
-    public boolean esMonstruo(){
-        return _id==EIdHorizontalVista.J1_MONSTRUO||_id==EIdHorizontalVista.J2_MONSTRUO;
+    public boolean esMonstruo() {
+        return _id == EIdHorizontalVista.J1_MONSTRUO || _id == EIdHorizontalVista.J2_MONSTRUO;
     }
 
     public EIdHorizontalVista get_id() {

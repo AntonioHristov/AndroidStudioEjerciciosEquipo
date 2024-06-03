@@ -16,12 +16,6 @@ public class Variables {
     private static Context _gameActivityContext;
     private static CartaVista _cartaVistaSeleccionada;
 
-    public static void nuevoTurno(){
-        Variables.set_cartaVistaSeleccionada(null);
-        set_turnoJugador1(!_turnoJugador1);
-        Controlador.ActualizarVistaCartas();
-    }
-
     public static boolean is_turnoJugador1() {
         return _turnoJugador1;
     }

@@ -2,9 +2,11 @@ package com.loeches.yugioh.Controlador;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -42,7 +44,7 @@ public class Controlador {
         HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
 
         hVManoJ2= new HorizontalVista(EIdHorizontalVista.J2_MANO);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
             new CartaVista(hVManoJ2,Lista.getCartaJugableRandom());
         }
 
@@ -67,7 +69,7 @@ public class Controlador {
         }
 
         hVManoJ1= new HorizontalVista(EIdHorizontalVista.J1_MANO);
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 5; i++) {
             new CartaVista(hVManoJ1,Lista.getCartaJugableRandom());
         }
     }
@@ -93,7 +95,11 @@ public class Controlador {
                     EscribirXmlDivider();
                     Lista.get_jugadores().get(0).EscribirCodigoXML();
                 }
-                Lista.get_horizontalesVista().get(i).EscribirCodigoXML();
+                if(Lista.get_horizontalesVista().get(i).esSuTurno()){
+                    Lista.get_horizontalesVista().get(i).EscribirCodigoXML(false);
+                }else{
+                    Lista.get_horizontalesVista().get(i).EscribirCodigoXML(true);
+                }
             }
         }else{
             for (int i = Lista.get_horizontalesVista().size()-2; i >= 0; i--) {
@@ -102,7 +108,11 @@ public class Controlador {
                     EscribirXmlDivider();
                     Lista.get_jugadores().get(1).EscribirCodigoXML();
                 }
-                Lista.get_horizontalesVista().get(i).EscribirCodigoXML();
+                if(Lista.get_horizontalesVista().get(i).esSuTurno()){
+                    Lista.get_horizontalesVista().get(i).EscribirCodigoXML(false);
+                }else{
+                    Lista.get_horizontalesVista().get(i).EscribirCodigoXML(true);
+                }
             }
         }
 
@@ -129,5 +139,54 @@ public class Controlador {
 
         // Agregar el View al LinearLayout
         main.addView(dividerView);
+    }
+
+    public static void nuevoTurno(){
+        if(partidaTerminada()){
+            mostrarGanador();
+        }else{
+            Variables.set_cartaVistaSeleccionada(null);
+            Variables.set_turnoJugador1(!Variables.is_turnoJugador1());
+            if(Variables.is_turnoJugador1()){
+                new CartaVista(Lista.getBy(EIdHorizontalVista.J1_MANO),Lista.getCartaJugableRandom());
+            }else{
+                new CartaVista(Lista.getBy(EIdHorizontalVista.J2_MANO),Lista.getCartaJugableRandom());
+            }
+            ActualizarVistaCartas();
+        }
+    }
+
+    public static boolean partidaTerminada(){
+        for (Jugador j:Lista.get_jugadores()) {
+            if(j.get_vida()<=0){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void mostrarGanador(){
+        VaciarVista();
+        Context context = Variables.get_gameActivityContext();
+        LinearLayout main = ((Activity) context).findViewById(R.id.main);
+
+        TextView textView = new TextView(context);
+        if(Lista.get_jugadores().get(0).get_vida()==0 && Lista.get_jugadores().get(1).get_vida()==0){
+            textView.setText("EMPATE, NADIE GANÓ");
+        }else if(Lista.get_jugadores().get(1).get_vida()==0){
+            textView.setText("GANÓ EL JUGADOR 1");
+        }else if(Lista.get_jugadores().get(0).get_vida()==0){
+            textView.setText("GANÓ EL JUGADOR 2");
+        }else{
+            textView.setText("NADIE PERDIÓ, WTF ESTO NO DEBERÍA OCURRIR...");
+        }
+        textView.setTextSize(50); // Tamaño del texto en "sp" (Scale-independent Pixels)
+        textView.setTypeface(textView.getTypeface(), Typeface.BOLD); // Establece el texto en negrita
+        textView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+
+        main.addView(textView);
     }
 }

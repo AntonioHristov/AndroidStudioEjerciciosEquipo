@@ -1,5 +1,6 @@
 package com.loeches.yugioh.Modelo.Cartas.Ejemplares.Monstruos;
 
+import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Lista;
@@ -25,19 +26,23 @@ public class MonstruoGenerico extends AMonstruo {
         if (posibleObjetivo == null) {
             int posJugadorRival = Variables.is_turnoJugador1() ? 1 : 0;
             int nuevaVida = Lista.get_jugadores().get(posJugadorRival).get_vida() - this.get_ataque();
-            if (nuevaVida < 0) {
+            if (nuevaVida <= 0) {
                 nuevaVida = 0;
-                // JUEGO TERMINADO
+                Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
+                Controlador.nuevoTurno();
             }
             Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
         } else {
-            int nuevaDefensa = posibleObjetivo.get_defensa() - this.get_ataque();
-            if (nuevaDefensa < 0) {
-                nuevaDefensa = 0;
-                posibleObjetivo.get_cartaVista().set_carta(new CartaVacia());
+            if(posibleObjetivo.is_modoDefensa()){
+                posibleObjetivo.set_modoDefensa(false);
+            }else{
+                int nuevaDefensa = posibleObjetivo.get_defensa() - this.get_ataque();
+                if (nuevaDefensa < 0) {
+                    nuevaDefensa = 0;
+                    posibleObjetivo.get_cartaVista().set_carta(new CartaVacia());
+                }
+                posibleObjetivo.set_defensa(nuevaDefensa);
             }
-            posibleObjetivo.set_defensa(nuevaDefensa);
         }
-
     }
 }
