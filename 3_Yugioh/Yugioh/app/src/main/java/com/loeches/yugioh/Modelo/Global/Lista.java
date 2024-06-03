@@ -29,6 +29,16 @@ public class Lista {
         return null;
     }
 
+    public static int getPosHorizontalVista(CartaVista cv){
+        List<CartaVista> cvs= cv.get_horizontalVista().get_cartasVista();
+        for (int i = 0; i < cvs.size(); i++) {
+            if(cv.equals(cvs.get(i))){
+                return i;
+            }
+        }
+        return Variables.POS_ERROR;
+    }
+
     public static ACarta getCartaJugable(int pos) {
         // EL MÚMERO DE getCartaJugableRandom DEBE SER EL ÚLTIMO NÚMERO DE ESTE SWITCH +1
         // EJEMPLO: SI EL ÚLTIMO NÚMERO DE ESTE SWITCH FUESE 2, EL NÚMERO EN getCartaJugableRandom DEBE SER 3

@@ -11,11 +11,13 @@ import com.loeches.yugioh.Modelo.Vista.CartaVista;
 import com.loeches.yugioh.R;
 
 public class Variables {
+    public final static int POS_ERROR=-1;
     private static boolean _turnoJugador1;
     private static Context _gameActivityContext;
     private static CartaVista _cartaVistaSeleccionada;
 
     public static void nuevoTurno(){
+        Variables.set_cartaVistaSeleccionada(null);
         set_turnoJugador1(!_turnoJugador1);
         Controlador.ActualizarVistaCartas();
     }

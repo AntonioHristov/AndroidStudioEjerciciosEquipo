@@ -42,7 +42,7 @@ public class Controlador {
         HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
 
         hVManoJ2= new HorizontalVista(EIdHorizontalVista.J2_MANO);
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 6; i++) {
             new CartaVista(hVManoJ2,Lista.getCartaJugableRandom());
         }
 
@@ -67,7 +67,7 @@ public class Controlador {
         }
 
         hVManoJ1= new HorizontalVista(EIdHorizontalVista.J1_MANO);
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 6; i++) {
             new CartaVista(hVManoJ1,Lista.getCartaJugableRandom());
         }
     }

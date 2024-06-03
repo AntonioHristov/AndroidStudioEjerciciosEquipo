@@ -1,7 +1,7 @@
 package com.loeches.yugioh.Modelo.Vista;
 
 import android.content.Context;
-import android.view.View;
+import android.graphics.drawable.Drawable;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Global.Variables;
 import com.loeches.yugioh.R;
 
@@ -23,13 +24,18 @@ public class CartaVista {
         set_frameLayoutAndImageView();
         set_horizontalVista(horizontalVista);
         set_carta(carta);
-        crearOnclickListener();
+    }
+
+    public CartaVista(CartaVista copia) {
+        _frameLayout=copia._frameLayout;
+        _imageView=copia._imageView;
+        _carta=copia._carta;
+        _horizontalVista=copia._horizontalVista;
     }
 
 
     public void EscribirCodigoXML() {
         set_frameLayoutAndImageView();
-        crearOnclickListener();
         _frameLayout.addView(_imageView);
         _horizontalVista.get_llHorizontal().addView(_frameLayout);
     }
@@ -83,29 +89,48 @@ public class CartaVista {
         return imageView;
     }
 
-    public void crearOnclickListener(){
+    public void cambiarCartaVista(CartaVista destino, boolean eliminarEsta){
+        int posHvThis = Lista.getPosHorizontalVista(this), posHvDestino=Lista.getPosHorizontalVista(destino);
+        HorizontalVista aux;
+        this._horizontalVista.get_cartasVista().set(posHvThis,destino);
+        destino._horizontalVista.get_cartasVista().set(posHvDestino,this);
+        aux=this._horizontalVista;
+        this._horizontalVista=destino._horizontalVista;
+        destino._horizontalVista=aux;
+        if(eliminarEsta){
+            destino._horizontalVista.get_cartasVista().remove(destino);
+        }
+    }
+
+    public void seleccionarOQuitarSeleccionNoVacias(){
         Context context = Variables.get_gameActivityContext();
-        _frameLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!_imageView.getDrawable().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.carta_vacia).getConstantState())) {
-                    if( Variables.get_cartaVistaSeleccionada()==null||Variables.get_cartaVistaSeleccionada()==_carta.get_cartaVista() ){
-                        if (_frameLayout.getBackground().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.imageview_border_default).getConstantState())) {
-                            // Los drawables son iguales
-                            _frameLayout.setBackgroundResource(R.drawable.imageview_border_selected);
-                            _frameLayout.setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
-                            //Variables.set_cartaVistaSeleccionada(_carta.get_cartaVista());
-                            Variables.nuevoTurno();
-                        } else {
-                            // Los drawables son diferentes
-                            _frameLayout.setBackgroundResource(R.drawable.imageview_border_default);
-                            _frameLayout.setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
-                            Variables.set_cartaVistaSeleccionada(null);
-                        }
-                    }
+        if (!this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.carta_vacia).getConstantState())) {
+            if( Variables.get_cartaVistaSeleccionada()==null||Variables.get_cartaVistaSeleccionada()==this ){
+                if (this.get_frameLayout().getBackground().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.imageview_border_default).getConstantState())) {
+                    // Los drawables son iguales
+                    this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_selected);
+                    this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
+                    Variables.set_cartaVistaSeleccionada(this);
+                    _horizontalVista.crearOnClickCartaVistas();
+                } else {
+                    // Los drawables son diferentes
+                    this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_default);
+                    this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
+                    Variables.set_cartaVistaSeleccionada(null);
+                    _horizontalVista.crearOnClickCartaVistas();
                 }
             }
-        });
+        }
+    }
+
+    public boolean igualImagen(Drawable.ConstantState imagen){
+        // RECIENTEMENTE CREADO POR PATRON MUY COMUN Y CODIGO MEDIANAMENTE LARGO. FIXME: USARLO DONDE NO LO USÉ
+        // NO CONFUNDIR CON this.get_frameLayout() ETC
+        return this.get_imageView().getDrawable().getConstantState().equals(imagen);
+    }
+
+    public boolean igualImagenVacia(){
+        return this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState());
     }
 
     public ACarta get_carta() {
