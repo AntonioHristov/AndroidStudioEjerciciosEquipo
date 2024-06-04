@@ -42,7 +42,7 @@ public class HorizontalVista {
 
     public void EscribirCodigoXML(boolean ordenInverso) {
         LinearLayout main = ((Activity) Variables.get_gameActivityContext()).findViewById(R.id.main);
-
+        set_llHorizontal();
         if(ordenInverso){
             for (int i = _cartasVista.size()-1; i >-1 ; i--) {
                 _cartasVista.get(i).EscribirCodigoXML();

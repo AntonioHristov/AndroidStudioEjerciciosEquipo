@@ -1,9 +1,17 @@
 package com.loeches.yugioh.Modelo.Vista;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -143,6 +151,66 @@ public class CartaVista {
 
     public void verInformacion(){
         Controlador.VaciarVista();
+        Context context = Variables.get_gameActivityContext();
+        LinearLayout main = ((Activity) context).findViewById(R.id.main);
+
+        // Crear el ImageView
+        ImageView imageView = new ImageView(context);
+        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
+                //Utilidades.getAnchoTelefonoPx(Variables.get_gameActivityContext()),
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                (Utilidades.getAltoTelefonoPx()/3)
+        );
+        imageView.setLayoutParams(imageViewParams);
+        imageView.setRotation(0);
+        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        //imageView.setImageResource(R.color.black);
+        if(get_carta()==null){
+            imageView.setImageResource(R.color.black);
+        }else{
+            imageView.setImageResource(get_carta().get_imagen());
+            if(get_carta() instanceof AMonstruo){
+                AMonstruo cvMonstruo = (AMonstruo) get_carta();
+            }
+        }
+        main.addView(imageView);
+
+        TextView tv = new TextView(context);
+        //tv.setText("HOOLA");
+        tv.setText(_carta.toString());
+
+        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+
+        // Crear nuevos LayoutParams para el TextView
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        tv.setLayoutParams(tvParams);
+        main.addView(tv);
+
+        Button bt = new Button(context);
+        bt.setText("Seguir Jugando");
+        bt.setTextSize(30);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controlador.ActualizarVistaCartas();
+            }
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+
+        params.setMargins(16, 16, 16, 16);
+
+        bt.setLayoutParams(params);
+
+        main.addView(bt);
     }
 
     public ACarta get_carta() {

@@ -57,11 +57,20 @@ public class Lista {
         return getCartaJugable(new Random().nextInt(3));
     }
 
+
     public static List<HorizontalVista> get_horizontalesVista() {
         return _horizontalesVista;
     }
 
+    public static void set_horizontalesVista(List<HorizontalVista> horizontalesVista) {
+        _horizontalesVista = horizontalesVista;
+    }
+
     public static List<Jugador> get_jugadores() {
         return _jugadores;
+    }
+
+    public static void set_jugadores(List<Jugador> jugadores) {
+        _jugadores = jugadores;
     }
 }

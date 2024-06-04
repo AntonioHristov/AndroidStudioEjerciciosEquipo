@@ -56,4 +56,12 @@ public abstract class AMonstruo extends ACarta{
             get_cartaVista().get_imageView().setRotation(0);
         }
     }
+
+    @Override
+    public String toString() {
+        return super.toString()+
+                "Ataque: " + _ataque + " | " +
+                "Defensa: " + _defensa + " | " +
+                "ModoDefensa: " + _modoDefensa + " | ";
+    }
 }

@@ -45,4 +45,9 @@ public class MonstruoGenerico extends AMonstruo {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Tipo: MonstruoGenerico | "+super.toString();
+    }
 }

@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,15 +24,20 @@ import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Controlador {
     public static void NuevaPartida(){
-
+        VaciarDatos();
         CrearJugadoresYTurno();
         CrearHorizontalesVistaConContenido();
         ActualizarVistaCartas();
-        //ActualizarVistaCartas();
+    }
+
+    public static void VaciarDatos(){
+        Lista.set_jugadores(new ArrayList<>());
+        Lista.set_horizontalesVista(new ArrayList<>());
     }
 
     public static void CrearJugadoresYTurno(){
@@ -85,7 +92,6 @@ public class Controlador {
     }
 
     public static void ActualizarVistaCartas(){
-        //CrearHorizontalesVistaConContenido();
         VaciarVista();
         if(Variables.is_turnoJugador1()){
             // 1 PORQUE NO MOSTRAMOS LAS CARTAS DE LA MANO DEL RIVAL
@@ -188,5 +194,28 @@ public class Controlador {
         ));
 
         main.addView(textView);
+
+
+        Button bt = new Button(context);
+        bt.setText("Nueva partida");
+        bt.setTextSize(30);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controlador.NuevaPartida();
+            }
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+
+        params.setMargins(16, 16, 16, 16);
+
+        bt.setLayoutParams(params);
+
+        main.addView(bt);
     }
 }

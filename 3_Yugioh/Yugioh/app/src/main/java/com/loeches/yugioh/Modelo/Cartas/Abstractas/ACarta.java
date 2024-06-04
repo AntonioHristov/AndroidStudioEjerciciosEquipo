@@ -16,17 +16,6 @@ public abstract class ACarta {
         _descripcion = descripcion;
         _imagen = imagen;
         _cartaVista=null;
-/*
-        boolean seRepite=false;
-        for (ACarta carta:Lista.get_cartasUnicas()) {
-            if(this.equals(carta)){
-                seRepite=true;
-                break;
-            }
-        }
-        if(!seRepite && !(this instanceof CartaVacia)){
-            Lista.get_cartasUnicas().add(this);
-        }*/
     }
 
     public ACarta(ACarta copia){
@@ -63,5 +52,11 @@ public abstract class ACarta {
         if (o == null || getClass() != o.getClass()) return false;
         ACarta aCarta = (ACarta) o;
         return _imagen == aCarta._imagen && Objects.equals(_nombre, aCarta._nombre) && Objects.equals(_descripcion, aCarta._descripcion);
+    }
+
+    @Override
+    public String toString() {
+        return "Nombre: " + _nombre + " | " +
+                "Descripción: " + _descripcion + " | ";
     }
 }

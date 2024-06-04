@@ -49,12 +49,12 @@ public class Jugador {
         LinearLayout main=((Activity)Variables.get_gameActivityContext()).findViewById(R.id.main);
 
         // SI SE HIZO main.removeAllViews(); GENERA DE NUEVO LAS VISTAS PERDIDAS. MISMA LOGICA EN HorizontalVista Y CartaVista
-        if(_tvVista.getParent()==null||_llHContenedor.getParent()==null){
-            set_tvVistaYllHContenedor();
-        }
+        //if(_tvVista==null||_llHContenedor==null|| _tvVista.getParent()==null||_llHContenedor.getParent()==null){
+        set_tvVistaYllHContenedor();
+
 
         main.addView(_llHContenedor);
-        _llHContenedor.addView(_tvVista);// ESTO DA ERROR A LA 2º VEZ QUE SE EJECUTA Controlador.ActualizarVistaCartas(); PERO NO A LA 1º
+        _llHContenedor.addView(_tvVista);
     }
 
 
@@ -76,6 +76,7 @@ public class Jugador {
 
         TextView tv = new TextView(context);
         tv.setText(_textoPrefijoMostrarVida+_vida);
+        //tv.setText("hola");
         tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
 

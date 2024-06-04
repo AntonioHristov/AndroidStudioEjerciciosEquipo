@@ -19,4 +19,5 @@ public class HEscudo extends AHechizo {
     public void RealizarAccion(AMonstruo posibleObjetivo) {
         posibleObjetivo.set_defensa(posibleObjetivo.get_defensa()+2000);
     }
+
 }

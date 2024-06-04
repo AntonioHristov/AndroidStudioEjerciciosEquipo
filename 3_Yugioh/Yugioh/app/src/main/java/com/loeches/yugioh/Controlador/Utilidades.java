@@ -8,11 +8,6 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 public class Utilidades {
-    public static int dpToPxAntiguo(Context context, int dp) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-    }
-
 
     public static int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
@@ -23,8 +18,6 @@ public class Utilidades {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round(px / density);
     }
-
-
 
     public static int getAnchoTelefonoPx(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);

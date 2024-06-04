@@ -1,6 +1,7 @@
 package com.loeches.yugioh.Vista;
 
 import android.os.Bundle;
+import android.service.controls.Control;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.loeches.yugioh.Controlador.Controlador;
+import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Global.Variables;
 import com.loeches.yugioh.R;
 
@@ -25,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         Variables.set_gameActivityContext(this);
-        Controlador.NuevaPartida();
+
+        if(Lista.get_horizontalesVista().isEmpty()){
+            Controlador.NuevaPartida();
+        }else{
+            Controlador.ActualizarVistaCartas();
+        }
     }
 }
