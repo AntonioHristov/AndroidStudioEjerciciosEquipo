@@ -6,6 +6,7 @@ import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Global.Variables;
 import com.loeches.yugioh.Modelo.Jugador;
+import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 
 public class MonstruoGenerico extends AMonstruo {
 
@@ -30,8 +31,9 @@ public class MonstruoGenerico extends AMonstruo {
                 nuevaVida = 0;
                 Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
                 Controlador.nuevoTurno();
+            }else{
+                Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
             }
-            Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
         } else {
             if(posibleObjetivo.is_modoDefensa()){
                 posibleObjetivo.set_modoDefensa(false);
@@ -39,7 +41,7 @@ public class MonstruoGenerico extends AMonstruo {
                 int nuevaDefensa = posibleObjetivo.get_defensa() - this.get_ataque();
                 if (nuevaDefensa < 0) {
                     nuevaDefensa = 0;
-                    posibleObjetivo.get_cartaVista().set_carta(new CartaVacia());
+                    posibleObjetivo.get_cartaVista().convertirseVacio();
                 }
                 posibleObjetivo.set_defensa(nuevaDefensa);
             }

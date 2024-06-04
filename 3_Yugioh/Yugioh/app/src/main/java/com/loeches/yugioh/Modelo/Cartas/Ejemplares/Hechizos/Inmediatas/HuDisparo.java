@@ -1,5 +1,6 @@
 package com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas;
 
+import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
@@ -24,6 +25,7 @@ public class HuDisparo extends AHechizo {
                 nuevaVida=0;
             }
             j.set_vida(nuevaVida);
+            this.get_cartaVista().convertirseVacio();
         }
     }
 }

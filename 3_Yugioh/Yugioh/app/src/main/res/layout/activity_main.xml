@@ -304,8 +304,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:rotation="0"
-                android:scaleType="center"
-                android:src="@drawable/carta_vacia" />
+                android:scaleType="fitXY"
+                android:src="@drawable/m_jinzo" />
 
         </FrameLayout>
 

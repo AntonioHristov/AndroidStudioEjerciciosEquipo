@@ -41,22 +41,44 @@ public class Lista {
 
     public static ACarta getCartaJugable(int pos) {
         // EL MÚMERO DE getCartaJugableRandom DEBE SER EL ÚLTIMO NÚMERO DE ESTE SWITCH +1
-        // EJEMPLO: SI EL ÚLTIMO NÚMERO DE ESTE SWITCH FUESE 2, EL NÚMERO EN getCartaJugableRandom DEBE SER 3
+        // EJEMPLO: SI EL ÚLTIMO NÚMERO DE ESTE SWITCH FUESE 2, EL NÚMERO bound EN getCartaJugableRandom DEBE SER 3
         switch(pos) {
             case 0:
                 return new MonstruoGenerico("Jinzo","Un monstruo verde y rojo", R.drawable.m_jinzo,2400,1500);
             case 1:
-                return new HuDisparo();
+                return new MonstruoGenerico("Pantera Guerrera","Una pantera muy guerrera, lleva una espada", R.drawable.m_panteraguerrera,2000,1600);
             case 2:
+                return new HuDisparo();
+            case 3:
                 return new HEscudo();
         }
         return null;
     }
 
     public static ACarta getCartaJugableRandom() {
-        return getCartaJugable(new Random().nextInt(3));
+        return getCartaJugable(new Random().nextInt(4));
     }
 
+    public static List<HorizontalVista> getMismoTurno(HorizontalVista hv){
+        List<HorizontalVista> resultado=new ArrayList<>();
+        switch (hv.get_id()){
+            case J1_MANO:
+            case J1_HECHIZO:
+            case J1_MONSTRUO:
+                resultado.add(getBy(EIdHorizontalVista.J1_MANO));
+                resultado.add(getBy(EIdHorizontalVista.J1_HECHIZO));
+                resultado.add(getBy(EIdHorizontalVista.J1_MONSTRUO));
+                return resultado;
+            case J2_MANO:
+            case J2_HECHIZO:
+            case J2_MONSTRUO:
+                resultado.add(getBy(EIdHorizontalVista.J2_MANO));
+                resultado.add(getBy(EIdHorizontalVista.J2_HECHIZO));
+                resultado.add(getBy(EIdHorizontalVista.J2_MONSTRUO));
+                return resultado;
+        }
+        return resultado;
+    }
 
     public static List<HorizontalVista> get_horizontalesVista() {
         return _horizontalesVista;

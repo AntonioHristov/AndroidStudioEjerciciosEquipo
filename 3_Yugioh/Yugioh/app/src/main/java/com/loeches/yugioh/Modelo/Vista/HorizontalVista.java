@@ -5,14 +5,16 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import androidx.core.content.ContextCompat;
+
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
-import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
@@ -138,16 +140,34 @@ public class HorizontalVista {
                     public void onClick(View v) {
                         // SI ES UN MONSTRUO Y EL RIVAL NO TIENE MONSTRUO, ATACA AL JUGADOR RIVAL
                         if (esMano()) {
-                            cv.seleccionarOQuitarSeleccionNoVacias();
+                            if(cv.get_carta() instanceof AMonstruo){
+                                CartaVista posibleDestino=getHVMonstruoMismoTurno().getPrimerVacio();
+                                if(posibleDestino!=null){
+                                    cv.cambiarCartaVista(posibleDestino, true);
+                                    Controlador.nuevoTurno();
+                                }else{
+                                    Controlador.nuevoTurno();
+                                }
+                            }else if(cv.get_carta() instanceof AHechizo && ((AHechizo)cv.get_carta()).get_accionHechizo()==EAccionHechizo.EQUIPAR){
+                                CartaVista posibleDestino=getHVHechizoMismoTurno().getPrimerVacio();
+                                if(posibleDestino!=null){
+                                    cv.cambiarCartaVista(posibleDestino, true);
+                                    Controlador.nuevoTurno();
+                                }else{
+                                    Controlador.nuevoTurno();
+                                }
+                            }else{
+                                cv.seleccionarOQuitarSeleccionNoVacias();
+                            }
                         } else if (cv.get_carta() instanceof AMonstruo) {
                             if (Variables.get_cartaVistaSeleccionada() == null) {
-                                if (Lista.getBy(getHorizontalRival()).get_cartasVista().get(0).igualImagenVacia()) {
+                                if (getHVRival().get_cartasVista().get(0).igualImagenVacia()) {
                                     // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
                                     cv.get_carta().RealizarAccion(null);
                                     Controlador.nuevoTurno();
-                                } else if (Lista.getBy(getHorizontalRival()).get_cartasVista().get(1).igualImagenVacia()) {
+                                } else if (getHVRival().get_cartasVista().get(1).igualImagenVacia()) {
                                     // SI EL RIVAL SOLO TIENE 1 MONSTRUO, LO ATACA SIN NECESIDAD DE SELECCIONARLO
-                                    cv.get_carta().RealizarAccion((AMonstruo) Lista.getBy(getHorizontalRival()).get_cartasVista().get(0).get_carta());
+                                    cv.get_carta().RealizarAccion((AMonstruo) getHVRival().get_cartasVista().get(0).get_carta());
                                     Controlador.nuevoTurno();
                                 }else{
                                     cv.seleccionarOQuitarSeleccionNoVacias();
@@ -203,10 +223,11 @@ public class HorizontalVista {
             CartaVista primerVacio = _cartasVista.get(posPrimerVacio);
             if (primerVacio != null) {
                 if (turno) {
+
                     primerVacio.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (Variables.get_cartaVistaSeleccionada() != null && (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Variables.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo())) {
+                            if (Variables.get_cartaVistaSeleccionada() != null &&((Variables.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Variables.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Variables.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo()))) {
                                 Variables.get_cartaVistaSeleccionada().cambiarCartaVista(primerVacio, true);
                                 Controlador.nuevoTurno();
                             }
@@ -217,22 +238,77 @@ public class HorizontalVista {
         }
     }
 
-    public EIdHorizontalVista getHorizontalRival() {
+    public HorizontalVista getHVRival() {
         if (this._id == EIdHorizontalVista.J1_MANO) {
-            return EIdHorizontalVista.J2_MANO;
+            return Lista.getBy(EIdHorizontalVista.J2_MANO);
         } else if (this._id == EIdHorizontalVista.J2_MANO) {
-            return EIdHorizontalVista.J1_MANO;
+            return Lista.getBy(EIdHorizontalVista.J1_MANO);
         } else if (this._id == EIdHorizontalVista.J1_HECHIZO) {
-            return EIdHorizontalVista.J2_HECHIZO;
+            return Lista.getBy(EIdHorizontalVista.J2_HECHIZO);
         } else if (this._id == EIdHorizontalVista.J2_HECHIZO) {
-            return EIdHorizontalVista.J1_HECHIZO;
+            return Lista.getBy(EIdHorizontalVista.J1_HECHIZO);
         } else if (this._id == EIdHorizontalVista.J1_MONSTRUO) {
-            return EIdHorizontalVista.J2_MONSTRUO;
+            return Lista.getBy(EIdHorizontalVista.J2_MONSTRUO);
         } else if (this._id == EIdHorizontalVista.J2_MONSTRUO) {
-            return EIdHorizontalVista.J1_MONSTRUO;
+            return Lista.getBy(EIdHorizontalVista.J1_MONSTRUO);
         } else {
             return null;
         }
+    }
+
+    public HorizontalVista getHVManoMismoTurno(){
+        switch (_id){
+            case J1_MANO:
+            case J1_HECHIZO:
+            case J1_MONSTRUO:
+                return Lista.getBy(EIdHorizontalVista.J1_MANO);
+            case J2_MANO:
+            case J2_HECHIZO:
+            case J2_MONSTRUO:
+                return Lista.getBy(EIdHorizontalVista.J2_MANO);
+        }
+        return null;
+    }
+
+    public HorizontalVista getHVHechizoMismoTurno(){
+        switch (_id){
+            case J1_MANO:
+            case J1_HECHIZO:
+            case J1_MONSTRUO:
+                return Lista.getBy(EIdHorizontalVista.J1_HECHIZO);
+            case J2_MANO:
+            case J2_HECHIZO:
+            case J2_MONSTRUO:
+                return Lista.getBy(EIdHorizontalVista.J2_HECHIZO);
+        }
+        return null;
+    }
+
+    public HorizontalVista getHVMonstruoMismoTurno(){
+        switch (_id){
+            case J1_MANO:
+            case J1_HECHIZO:
+            case J1_MONSTRUO:
+                return Lista.getBy(EIdHorizontalVista.J1_MONSTRUO);
+            case J2_MANO:
+            case J2_HECHIZO:
+            case J2_MONSTRUO:
+                return Lista.getBy(EIdHorizontalVista.J2_MONSTRUO);
+        }
+        return null;
+    }
+
+    public CartaVista getPrimerBy(Drawable.ConstantState imagen){
+        for (CartaVista cv:_cartasVista) {
+            if(cv.igualImagen(imagen)){
+                return cv;
+            }
+        }
+        return null;
+    }
+
+    public CartaVista getPrimerVacio(){
+        return getPrimerBy(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState());
     }
 
     public boolean esSuTurno() {
@@ -311,6 +387,18 @@ public class HorizontalVista {
         // Crear y mostrar el diálogo
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void ordenar(){
+        for(int i=0; i < get_cartasVista().size()-1; i++){
+            for(int j=0; j < (get_cartasVista().size()-1-i); j++){
+                if(!get_cartasVista().get(j+1).igualImagenVacia()){
+                    CartaVista aux=get_cartasVista().get(j);
+                    get_cartasVista().set(j,get_cartasVista().get(j+1));
+                    get_cartasVista().set(j+1,aux);
+                }
+            }
+        }
     }
 
     public EIdHorizontalVista get_id() {

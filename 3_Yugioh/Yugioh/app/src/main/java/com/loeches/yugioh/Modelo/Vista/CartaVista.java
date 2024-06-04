@@ -19,6 +19,7 @@ import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
+import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Global.Variables;
 import com.loeches.yugioh.R;
@@ -87,7 +88,8 @@ public class CartaVista {
         );
         imageView.setLayoutParams(imageViewParams);
         imageView.setRotation(0);
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        //imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         //imageView.setImageResource(R.color.black);
         if(get_carta()==null){
             imageView.setImageResource(R.color.black);
@@ -163,7 +165,8 @@ public class CartaVista {
         );
         imageView.setLayoutParams(imageViewParams);
         imageView.setRotation(0);
-        imageView.setScaleType(ImageView.ScaleType.CENTER);
+        //imageView.setScaleType(ImageView.ScaleType.CENTER);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         //imageView.setImageResource(R.color.black);
         if(get_carta()==null){
             imageView.setImageResource(R.color.black);
@@ -180,7 +183,7 @@ public class CartaVista {
         tv.setText(_carta.toString());
 
         tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
 
         // Crear nuevos LayoutParams para el TextView
         LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
@@ -211,6 +214,14 @@ public class CartaVista {
         bt.setLayoutParams(params);
 
         main.addView(bt);
+    }
+
+    public void convertirseVacio(){
+        set_carta(new CartaVacia());
+        this.get_frameLayout().setOnClickListener(null);
+        this.get_frameLayout().setOnLongClickListener(null);
+        this.get_frameLayout().setOnDragListener(null);
+        get_horizontalVista().ordenar();
     }
 
     public ACarta get_carta() {

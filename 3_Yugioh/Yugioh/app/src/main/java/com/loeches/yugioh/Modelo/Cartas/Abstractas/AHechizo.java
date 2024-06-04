@@ -21,6 +21,6 @@ public abstract class AHechizo extends ACarta{
 
     @Override
     public String toString() {
-        return "Tipo: "+this.getClass().getSimpleName()+" | "+"AccionHechizo: " + _accionHechizo + " | ";
+        return "Tipo: "+this.getClass().getSimpleName()+" | "+super.toString()+"AccionHechizo: " + _accionHechizo + " | ";
     }
 }

@@ -4,8 +4,18 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
+
+import androidx.core.content.ContextCompat;
+
+import com.loeches.yugioh.Modelo.Global.Variables;
+import com.loeches.yugioh.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utilidades {
 
@@ -37,6 +47,10 @@ public class Utilidades {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
+    public static Drawable.ConstantState toConst(Context context, int img){
+        return ContextCompat.getDrawable(context, img).getConstantState();
+    }
+
     /*
     public static void showAlertDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -62,6 +76,22 @@ public class Utilidades {
         // Crear y mostrar el diálogo
         AlertDialog dialog = builder.create();
         dialog.show();
+    }*/
+
+    /*
+    public class MultiClickListener implements View.OnClickListener {
+        private final List<View.OnClickListener> listeners = new ArrayList<>();
+
+        public void addListener(View.OnClickListener listener) {
+            listeners.add(listener);
+        }
+
+        @Override
+        public void onClick(View v) {
+            for (View.OnClickListener listener : listeners) {
+                listener.onClick(v);
+            }
+        }
     }*/
 
 }
