@@ -29,22 +29,20 @@ public class MonstruoGenerico extends AMonstruo {
             int nuevaVida = Lista.get_jugadores().get(posJugadorRival).get_vida() - this.get_ataque();
             if (nuevaVida <= 0) {
                 nuevaVida = 0;
-                Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
-                Controlador.nuevoTurno();
-            }else{
-                Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
             }
+            Lista.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
         } else {
             if(posibleObjetivo.is_modoDefensa()){
                 posibleObjetivo.set_modoDefensa(false);
             }else{
-                int nuevaDefensa = posibleObjetivo.get_defensa() - this.get_ataque();
-                if (nuevaDefensa < 0) {
-                    nuevaDefensa = 0;
-                    posibleObjetivo.get_cartaVista().convertirseVacio();
+                posibleObjetivo.set_defensa(posibleObjetivo.get_defensa() - this.get_ataque());
+                if (posibleObjetivo.get_defensa() <= 0) {
+                    posibleObjetivo.get_cartaVista().convertirseVacio(true);
                 }
-                posibleObjetivo.set_defensa(nuevaDefensa);
             }
+        }
+        if(is_llevaEspejoDragon()){
+            Lista.get_jugadores().get(Variables.is_turnoJugador1() ? 0 : 1).set_vida(this.get_ataque());
         }
     }
 

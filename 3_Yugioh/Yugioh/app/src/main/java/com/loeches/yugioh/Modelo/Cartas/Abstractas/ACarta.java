@@ -9,12 +9,14 @@ import java.util.Objects;
 public abstract class ACarta {
     private String _nombre, _descripcion;
     private int _imagen;
+    private boolean _nuevoTurnoTrasRealizarAccion;
     private CartaVista _cartaVista;
 
     public ACarta(String nombre, String descripcion, int imagen) {
         _nombre = nombre;
         _descripcion = descripcion;
         _imagen = imagen;
+        _nuevoTurnoTrasRealizarAccion=true;
         _cartaVista=null;
     }
 
@@ -22,6 +24,7 @@ public abstract class ACarta {
         _nombre=copia._nombre;
         _descripcion=copia._descripcion;
         _imagen=copia._imagen;
+        _nuevoTurnoTrasRealizarAccion=true;
     }
 
     public abstract void RealizarAccion(AMonstruo posibleObjetivo);
@@ -36,6 +39,14 @@ public abstract class ACarta {
 
     public int get_imagen() {
         return _imagen;
+    }
+
+    public boolean is_nuevoTurnoTrasRealizarAccion() {
+        return _nuevoTurnoTrasRealizarAccion;
+    }
+
+    public void set_nuevoTurnoTrasRealizarAccion(boolean _nuevoTurnoTrasRealizarAccion) {
+        this._nuevoTurnoTrasRealizarAccion = _nuevoTurnoTrasRealizarAccion;
     }
 
     public CartaVista get_cartaVista() {

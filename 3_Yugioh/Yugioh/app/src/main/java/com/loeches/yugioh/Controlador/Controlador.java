@@ -12,10 +12,9 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
-import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Equipadas.HEscudo;
-import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas.HuDisparo;
-import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Monstruos.MonstruoGenerico;
 import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Global.Variables;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
@@ -25,9 +24,11 @@ import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class Controlador {
+public class Controlador{
+
     public static void NuevaPartida(){
         VaciarDatos();
         CrearJugadoresYTurno();
@@ -157,6 +158,14 @@ public class Controlador {
                 new CartaVista(Lista.getBy(EIdHorizontalVista.J1_MANO),Lista.getCartaJugableRandom());
             }else{
                 new CartaVista(Lista.getBy(EIdHorizontalVista.J2_MANO),Lista.getCartaJugableRandom());
+            }
+            for (HorizontalVista hv:Lista.get_horizontalesVista()) {
+                for (CartaVista cv:hv.get_cartasVista()) {
+                    if(cv.get_carta() instanceof AMonstruo){
+                        // PARA LOS AUMENTOS DE ESTADISTICAS POR CIERTOS TURNOS
+                        ((AMonstruo) cv.get_carta()).NuevoTurno();
+                    }
+                }
             }
             ActualizarVistaCartas();
         }

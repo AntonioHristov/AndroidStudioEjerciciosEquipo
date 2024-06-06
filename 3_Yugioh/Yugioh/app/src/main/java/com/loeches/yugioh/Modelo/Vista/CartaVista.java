@@ -74,8 +74,14 @@ public class CartaVista {
         );
         frameLayoutParams.setMargins(Utilidades.dpToPx(context, 2), Utilidades.dpToPx(context, 2), Utilidades.dpToPx(context, 2), Utilidades.dpToPx(context, 2));
         frameLayout.setLayoutParams(frameLayoutParams);
-        frameLayout.setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
-        frameLayout.setBackgroundResource(R.drawable.imageview_border_default);
+
+        if(Variables.get_cartaVistaSeleccionada()==this){
+            frameLayout.setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
+            frameLayout.setBackgroundResource(R.drawable.imageview_border_selected);
+        }else{
+            frameLayout.setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
+            frameLayout.setBackgroundResource(R.drawable.imageview_border_default);
+        }
         frameLayout.setRotation(0);
         return frameLayout;
     }
@@ -109,13 +115,16 @@ public class CartaVista {
 
     public void cambiarCartaVista(CartaVista destino, boolean eliminarEsta){
         int posHvThis = Lista.getPosHorizontalVista(this), posHvDestino=Lista.getPosHorizontalVista(destino);
-        HorizontalVista aux;
+        HorizontalVista hvThis=this._horizontalVista,hvDestino=destino._horizontalVista;
+
         this._horizontalVista.get_cartasVista().set(posHvThis,destino);
         destino._horizontalVista.get_cartasVista().set(posHvDestino,this);
-        aux=this._horizontalVista;
-        this._horizontalVista=destino._horizontalVista;
-        destino._horizontalVista=aux;
+
+        this._horizontalVista=Lista.getBy(hvDestino.get_id());
+        destino._horizontalVista=Lista.getBy(hvThis.get_id());
+
         if(eliminarEsta){
+            // PORQUE "Esta" SE CAMBIÓ POR EL DESTINO
             destino._horizontalVista.get_cartasVista().remove(destino);
         }
     }
@@ -161,7 +170,7 @@ public class CartaVista {
         LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
                 //Utilidades.getAnchoTelefonoPx(Variables.get_gameActivityContext()),
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                (Utilidades.getAltoTelefonoPx()/3)
+                (Utilidades.getAltoTelefonoPx(context)/3)
         );
         imageView.setLayoutParams(imageViewParams);
         imageView.setRotation(0);
@@ -216,12 +225,20 @@ public class CartaVista {
         main.addView(bt);
     }
 
-    public void convertirseVacio(){
+    public void convertirseVacio(boolean ordenar){
+        // ordenar DEBERIA SER TRUE CUANDO TERMINAS DE VACIAR TODAS LAS CARTAS DE UN HORIZONTAL VISTA
+        // SI SOLO VACIAS UNA CARTA (CONSUMIDA, MONSTRUO VENCIDO) ordenar SERIA TRUE
+        // SI VACIAS TODAS LAS CARTAS (O MAS DE 1) EN UN HORIZONTAL, ordenar SERIA FALSE Y (SI NO SON TODAS) ORDENAS EL HORIZONTAL AL TERMINAR
+        if(Variables.get_cartaVistaSeleccionada()==this){
+            Variables.set_cartaVistaSeleccionada(null);
+        }
         set_carta(new CartaVacia());
         this.get_frameLayout().setOnClickListener(null);
         this.get_frameLayout().setOnLongClickListener(null);
         this.get_frameLayout().setOnDragListener(null);
-        get_horizontalVista().ordenar();
+        if(ordenar){
+            get_horizontalVista().ordenar();
+        }
     }
 
     public ACarta get_carta() {

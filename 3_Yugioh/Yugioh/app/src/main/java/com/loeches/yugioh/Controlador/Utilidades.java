@@ -1,21 +1,17 @@
 package com.loeches.yugioh.Controlador;
 
-import android.app.AlertDialog;
+import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
 
-import com.loeches.yugioh.Modelo.Global.Variables;
-import com.loeches.yugioh.R;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class Utilidades {
 
@@ -39,16 +35,77 @@ public class Utilidades {
         return 0;
     }
 
+    public static int getAnchoTelefonoPxV2() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+
     public static int getAnchoTelefonoDp(Context context) {
         return pxToDp(context,getAnchoTelefonoPx(context));
     }
 
-    public static int getAltoTelefonoPx() {
+    public static int getAltoTelefonoPx(Context context) {
+        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        if (windowManager != null) {
+            windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+            return displayMetrics.heightPixels;
+        }
+        return 0;
+    }
+
+    public static int getAltoTelefonoPxV2() {
         return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     public static Drawable.ConstantState toConst(Context context, int img){
         return ContextCompat.getDrawable(context, img).getConstantState();
+    }
+
+    public static String getDrawableName(Context context, int drawableId) {
+        // Obtiene el nombre del recurso a partir del ID
+        String resourceName = context.getResources().getResourceEntryName(drawableId);
+        // Construye el nombre completo con la extensión
+        String fullResourceName = resourceName + ".png"; // O ".jpg", dependiendo de la extensión que utilices
+        return fullResourceName;
+    }
+
+    // Método para obtener el identificador del recurso
+    public static int getDrawableIdByName(Context context, String resourceName) {
+        // Elimina la extensión del nombre del archivo, si existe
+        int dotIndex = resourceName.lastIndexOf('.');
+        if (dotIndex != -1) {
+            resourceName = resourceName.substring(0, dotIndex);
+        }
+
+        // Obtiene el identificador del recurso drawable por su nombre
+        return context.getResources().getIdentifier(resourceName, "drawable", context.getPackageName());
+    }
+
+    // Método para cambiar la imagen en el ImageView
+    public static void setImageViewByName(Context context, ImageView imageView, String imageName) {
+        // Obtiene el identificador del recurso drawable
+        int drawableId = getDrawableIdByName(context, imageName);
+
+        // Verifica si el identificador es válido y establece la imagen en el ImageView
+        if (drawableId != 0) {
+            imageView.setImageResource(drawableId);
+        }else{
+            imageView.setImageResource(getDrawableIdByName(context, "not_found.png"));
+        }
+    }
+
+    public static double limitarDecimalesConRedondeo(Double numero, int numeroDecimales){
+        String pattern="#.";
+        for (int i = 0; i < numeroDecimales; i++) {
+            pattern+="#";
+        }
+        // Definir el formato con redondeo al más próximo y dos decimales
+        DecimalFormat formato = new DecimalFormat(pattern);
+        formato.setRoundingMode(RoundingMode.HALF_UP);
+
+        // Aplicar el formato al número
+        return Double.parseDouble(formato.format(numero));
     }
 
     /*
@@ -93,5 +150,7 @@ public class Utilidades {
             }
         }
     }*/
+
+    // SP = TypedValue.COMPLEX_UNIT_SP
 
 }

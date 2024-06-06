@@ -1,6 +1,5 @@
 package com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas;
 
-import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
@@ -8,23 +7,19 @@ import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.R;
 
-public class HuDisparo extends AHechizo {
-    public HuDisparo() {
-        super("Disparo", "Hechizo uso. Hace 1000 de daño a cada jugador", R.drawable.hu_disparo, EAccionHechizo.USAR);
+public class HuAgujero extends AHechizo {
+    public HuAgujero() {
+        super("Agujero", "Agujero uso. Destruye un monstruo", R.drawable.hu_agujero, EAccionHechizo.USAR);
     }
 
-    public HuDisparo(HuDisparo copia) {
+    public HuAgujero(HuDisparo copia) {
         super(copia);
     }
 
     @Override
     public void RealizarAccion(AMonstruo posibleObjetivo) {
-        for (Jugador j:Lista.get_jugadores()) {
-            int nuevaVida=j.get_vida()-1000;
-            if(nuevaVida<0){
-                nuevaVida=0;
-            }
-            j.set_vida(nuevaVida);
+        if(posibleObjetivo!=null){
+            posibleObjetivo.get_cartaVista().convertirseVacio(true);
         }
     }
 }
