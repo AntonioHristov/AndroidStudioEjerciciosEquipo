@@ -54,7 +54,27 @@ public class HorizontalVista {
                 cv.EscribirCodigoXML();
             }
         }
+        crearListenerCartaVistas();
 
+        if (_cartasVista.size() > 5) {
+            XMLScroll();
+        } else {
+            main.addView(_llHorizontal);
+        }
+    }
+
+    public void EscribirCodigoXMLcopia(boolean ordenInverso) {
+        LinearLayout main = ((Activity) Variables.get_gameActivityContext()).findViewById(R.id.main);
+        set_llHorizontal();
+        if (ordenInverso) {
+            for (int i = _cartasVista.size() - 1; i > -1; i--) {
+                _cartasVista.get(i).EscribirCodigoXML();
+            }
+        } else {
+            for (CartaVista cv : _cartasVista) {
+                cv.EscribirCodigoXML();
+            }
+        }
         crearListenerCartaVistas();
 
         if (_cartasVista.size() > 5) {
@@ -71,7 +91,25 @@ public class HorizontalVista {
         HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context);
         horizontalScrollView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                Utilidades.getAltoTelefonoPx(context) / 5 - 50,
+                //0,
+                Utilidades.getAltoTelefonoPx() / 5 - 50,
+                1 // Peso igual a 1 para llenar el espacio restante
+        ));
+
+        horizontalScrollView.addView(_llHorizontal);
+        main.addView(horizontalScrollView);
+        _llHorizontal = crear_llHorizontal();
+    }
+
+    public void XMLScrollcopia() {
+        Context context = Variables.get_gameActivityContext();
+        LinearLayout main = ((Activity) context).findViewById(R.id.main);
+
+        HorizontalScrollView horizontalScrollView = new HorizontalScrollView(context);
+        horizontalScrollView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                //0,
+                Utilidades.getAltoTelefonoPx() / 5 - 50,
                 1 // Peso igual a 1 para llenar el espacio restante
         ));
 
@@ -84,7 +122,9 @@ public class HorizontalVista {
         LinearLayout llHorizontal = new LinearLayout(Variables.get_gameActivityContext());
         LinearLayout.LayoutParams llHParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                Utilidades.getAltoTelefonoPx(Variables.get_gameActivityContext()) / 5 - 50
+                //0,
+                Utilidades.getAltoTelefonoPx() / 5 - 50,
+                1
         );
         llHorizontal.setOrientation(LinearLayout.HORIZONTAL);
         //llHParams.weight=1;
@@ -138,7 +178,6 @@ public class HorizontalVista {
                 cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // SI ES UN MONSTRUO Y EL RIVAL NO TIENE MONSTRUO, ATACA AL JUGADOR RIVAL
                         if (esMano()) {
                             if (Variables.get_cartaVistaSeleccionada() == null) {
                                 if (cv.get_carta() instanceof AMonstruo) {

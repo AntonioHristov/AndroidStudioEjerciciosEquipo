@@ -42,7 +42,8 @@ public class MonstruoGenerico extends AMonstruo {
             }
         }
         if(is_llevaEspejoDragon()){
-            Lista.get_jugadores().get(Variables.is_turnoJugador1() ? 0 : 1).set_vida(this.get_ataque());
+            Jugador j = Lista.get_jugadores().get(Variables.is_turnoJugador1() ? 0 : 1);
+            j.set_vida(j.get_vida()+this.get_ataque());
         }
     }
 

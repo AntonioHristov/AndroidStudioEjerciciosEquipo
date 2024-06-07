@@ -98,6 +98,7 @@ public class Controlador{
             // 1 PORQUE NO MOSTRAMOS LAS CARTAS DE LA MANO DEL RIVAL
             for (int i = 1; i < Lista.get_horizontalesVista().size(); i++) {
                 if(i==3){
+
                     Lista.get_jugadores().get(1).EscribirCodigoXML();
                     EscribirXmlDivider();
                     Lista.get_jugadores().get(0).EscribirCodigoXML();

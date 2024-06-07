@@ -129,6 +129,9 @@ public abstract class AMonstruo extends ACarta{
         return super.toString()+
                 "Ataque: " + _ataque + " | " +
                 "Defensa: " + _defensa + " | " +
-                "ModoDefensa: " + _modoDefensa + " | ";
-    }
+                (_modoDefensa?"ModoDefensa | ":"ModoAtaque | ")
+                +(_turnosAumentoAtaque>0?"AumentoAtaque: "+_turnosAumentoAtaque+ " | ":"")
+                +(_turnosAumentoDefensa>0?"AumentoDefensa: "+_turnosAumentoDefensa+ " | ":"")
+                +(_llevaEspejoDragon?"Lleva Espejo Dragón (Ganas en vida el daño dado) | ":"")
+                ;}
 }

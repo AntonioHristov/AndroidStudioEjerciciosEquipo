@@ -26,8 +26,8 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Variables.set_gameActivityContext(this);
 
+        Variables.set_gameActivityContext(this);
         if(Lista.get_horizontalesVista().isEmpty()){
             Controlador.NuevaPartida();
         }else{

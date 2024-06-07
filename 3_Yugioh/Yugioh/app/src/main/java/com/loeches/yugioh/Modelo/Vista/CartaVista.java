@@ -68,7 +68,7 @@ public class CartaVista {
         // Crear el FrameLayout
         FrameLayout frameLayout = new FrameLayout(context);
         FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
-                Utilidades.getAnchoTelefonoPx(context) / 5 - Utilidades.dpToPx(context, 5),
+                Utilidades.getAnchoTelefonoPx() / 5 - Utilidades.dpToPx(context, 5),
                 //Utilidades.getAnchoTelefonoDp(context)/5-Utilidades.dpToPx(context,5),
                 FrameLayout.LayoutParams.MATCH_PARENT
         );
@@ -170,7 +170,7 @@ public class CartaVista {
         LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
                 //Utilidades.getAnchoTelefonoPx(Variables.get_gameActivityContext()),
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                (Utilidades.getAltoTelefonoPx(context)/3)
+                (Utilidades.getAltoTelefonoPx()/3)
         );
         imageView.setLayoutParams(imageViewParams);
         imageView.setRotation(0);

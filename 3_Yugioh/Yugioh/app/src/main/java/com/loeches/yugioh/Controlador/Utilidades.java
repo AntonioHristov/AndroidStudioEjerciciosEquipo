@@ -25,7 +25,11 @@ public class Utilidades {
         return Math.round(px / density);
     }
 
-    public static int getAnchoTelefonoPx(Context context) {
+    public static int getAnchoTelefonoPx() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getAnchoTelefonoPxV2(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         if (windowManager != null) {
@@ -35,16 +39,11 @@ public class Utilidades {
         return 0;
     }
 
-    public static int getAnchoTelefonoPxV2() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    public static int getAltoTelefonoPx() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
-
-    public static int getAnchoTelefonoDp(Context context) {
-        return pxToDp(context,getAnchoTelefonoPx(context));
-    }
-
-    public static int getAltoTelefonoPx(Context context) {
+    public static int getAltoTelefonoPxV2(Context context) {
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         if (windowManager != null) {
@@ -52,10 +51,6 @@ public class Utilidades {
             return displayMetrics.heightPixels;
         }
         return 0;
-    }
-
-    public static int getAltoTelefonoPxV2() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
 
     public static Drawable.ConstantState toConst(Context context, int img){
