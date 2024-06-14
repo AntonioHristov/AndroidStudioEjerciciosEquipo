@@ -1,7 +1,5 @@
 package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
-import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
-import com.loeches.yugioh.Modelo.Global.Lista;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
 
 import java.util.Objects;

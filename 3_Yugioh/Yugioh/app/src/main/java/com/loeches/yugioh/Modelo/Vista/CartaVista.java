@@ -1,10 +1,8 @@
 package com.loeches.yugioh.Modelo.Vista;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -20,8 +18,8 @@ import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
-import com.loeches.yugioh.Modelo.Global.Lista;
-import com.loeches.yugioh.Modelo.Global.Variables;
+import com.loeches.yugioh.Modelo.Global.Global;
+import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.R;
 
 public class CartaVista {
@@ -31,7 +29,7 @@ public class CartaVista {
     private HorizontalVista _horizontalVista;
 
     public CartaVista(HorizontalVista horizontalVista, ACarta carta) {
-        Context ca = Variables.get_gameActivityContext();
+        Context ca = Global.get_context();
         set_frameLayoutAndImageView();
         set_horizontalVista(horizontalVista);
         set_carta(carta);
@@ -50,6 +48,149 @@ public class CartaVista {
         _horizontalVista.get_llHorizontal().addView(_frameLayout);
     }
 
+    public void cambiarCartaVista(CartaVista destino, boolean eliminarEsta){
+        int posHvThis = Global.getIndexHorizontalVista(this), posHvDestino= Global.getIndexHorizontalVista(destino);
+        HorizontalVista hvThis=this._horizontalVista,hvDestino=destino._horizontalVista;
+
+        this._horizontalVista.get_cartasVista().set(posHvThis,destino);
+        destino._horizontalVista.get_cartasVista().set(posHvDestino,this);
+
+        this._horizontalVista= Global.getBy(hvDestino.get_id());
+        destino._horizontalVista= Global.getBy(hvThis.get_id());
+
+        if(eliminarEsta){
+            // PORQUE "Esta" SE CAMBIÓ POR EL DESTINO
+            destino._horizontalVista.get_cartasVista().remove(destino);
+        }
+    }
+
+    public void seleccionarOQuitarSeleccionNoVacias(){
+        Context context = Global.get_context();
+        if (get_horizontalVista().esSuTurno()&& !this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.carta_vacia).getConstantState())) {
+            if( Global.get_cartaVistaSeleccionada()==null||Global.get_cartaVistaSeleccionada()==this ){
+                if (this.get_frameLayout().getBackground().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.imageview_border_default).getConstantState())) {
+                    // Los drawables son iguales
+                    this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_selected);
+                    this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
+                    Global.set_cartaVistaSeleccionada(this);
+                    _horizontalVista.crearListenerCartaVistas();
+                } else {
+                    // Los drawables son diferentes
+                    this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_default);
+                    this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
+                    Global.set_cartaVistaSeleccionada(null);
+                    _horizontalVista.crearListenerCartaVistas();
+                }
+            }
+        }
+    }
+
+    public boolean igualImagen(Drawable.ConstantState imagen){
+        // RECIENTEMENTE CREADO POR PATRON MUY COMUN Y CODIGO MEDIANAMENTE LARGO. FIXME: USARLO DONDE NO LO USÉ DESPUÉS DE CREAR UNA COPIA DE SEGURIDAD Y TESTEAR
+        // NO CONFUNDIR CON this.get_frameLayout() ETC
+        return this.get_imageView().getDrawable().getConstantState().equals(imagen);
+    }
+
+    public boolean igualImagenVacia(){
+        return this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Global.get_context(), R.drawable.carta_vacia).getConstantState());
+    }
+
+    public void convertirseVacio(boolean ordenar){
+        // ordenar DEBERIA SER TRUE CUANDO TERMINAS DE VACIAR TODAS LAS CARTAS DE UN HORIZONTAL VISTA
+        // SI SOLO VACIAS UNA CARTA (CONSUMIDA, MONSTRUO VENCIDO) ordenar SERIA TRUE
+        // SI VACIAS TODAS LAS CARTAS (O MAS DE 1) EN UN HORIZONTAL, ordenar SERIA FALSE Y (SI NO SON TODAS) ORDENAS EL HORIZONTAL AL TERMINAR
+            if(Global.get_cartaVistaSeleccionada()==this){
+                Global.set_cartaVistaSeleccionada(null);
+            }
+        set_carta(new CartaVacia());
+        this.get_frameLayout().setOnClickListener(null);
+        this.get_frameLayout().setOnLongClickListener(null);
+        this.get_frameLayout().setOnDragListener(null);
+        if(ordenar){
+            get_horizontalVista().ordenar();
+        }
+    }
+
+    public void verInformacion(){
+        Controlador.VaciarVista();
+        Context context = Global.get_context();
+        LinearLayout main = Global.get_linearMain();
+        // Crear el ImageView
+        ImageView imageView = new ImageView(context);
+        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                2
+        );
+        imageViewParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
+        imageView.setLayoutParams(imageViewParams);
+        imageView.setRotation(0);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        if(get_carta()==null){
+            imageView.setImageResource(R.color.black);
+        }else{
+            imageView.setImageResource(get_carta().get_imagen());
+            if(get_carta() instanceof AMonstruo){
+                AMonstruo cvMonstruo = (AMonstruo) get_carta();
+            }
+        }
+        main.addView(imageView);
+
+        TextView tv = new TextView(context);
+        //tv.setText("HOOLA");
+        tv.setText(_carta.toString());
+
+        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
+        //tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+        tv.setGravity(Gravity.CENTER);
+        //tv.setBackgroundColor(Color.RED);
+        tv.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                //LinearLayout.LayoutParams.MATCH_PARENT
+                0,
+                3
+        );
+        tvParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
+        tv.setLayoutParams(tvParams);
+
+
+
+        main.addView(tv);
+
+        Button bt = new Button(context);
+        bt.setText("Seguir Jugando");
+        //bt.setTextSize(30);
+        bt.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Controlador.ActualizarVistaCartas();
+            }
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                1
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+
+        params.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
+
+        bt.setLayoutParams(params);
+
+        main.addView(bt);
+    }
+
+
+
+
+
+
+
+
+
     public FrameLayout get_frameLayout() {
         return _frameLayout;
     }
@@ -64,18 +205,17 @@ public class CartaVista {
     }
 
     public FrameLayout crear_frameLayout() {
-        Context context = Variables.get_gameActivityContext();
-        // Crear el FrameLayout
+        Context context = Global.get_context();
         FrameLayout frameLayout = new FrameLayout(context);
         FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
-                Utilidades.getAnchoTelefonoPx() / 5 - Utilidades.dpToPx(context, 5),
-                //Utilidades.getAnchoTelefonoDp(context)/5-Utilidades.dpToPx(context,5),
+                Utilidades.getAnchoTelefonoPx() / Global.get_cantidadCartaVistasPorHorizontalSinScroll() - Utilidades.dpToPx(context, 5),
+                //Variables.get_anchoCartaVista(),
                 FrameLayout.LayoutParams.MATCH_PARENT
         );
         frameLayoutParams.setMargins(Utilidades.dpToPx(context, 2), Utilidades.dpToPx(context, 2), Utilidades.dpToPx(context, 2), Utilidades.dpToPx(context, 2));
         frameLayout.setLayoutParams(frameLayoutParams);
 
-        if(Variables.get_cartaVistaSeleccionada()==this){
+        if(Global.get_cartaVistaSeleccionada()==this){
             frameLayout.setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
             frameLayout.setBackgroundResource(R.drawable.imageview_border_selected);
         }else{
@@ -87,7 +227,7 @@ public class CartaVista {
     }
     public ImageView crear_imageView() {
         // Crear el ImageView
-        ImageView imageView = new ImageView(Variables.get_gameActivityContext());
+        ImageView imageView = new ImageView(Global.get_context());
         FrameLayout.LayoutParams imageViewParams = new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT
@@ -111,134 +251,6 @@ public class CartaVista {
             }
         }
         return imageView;
-    }
-
-    public void cambiarCartaVista(CartaVista destino, boolean eliminarEsta){
-        int posHvThis = Lista.getPosHorizontalVista(this), posHvDestino=Lista.getPosHorizontalVista(destino);
-        HorizontalVista hvThis=this._horizontalVista,hvDestino=destino._horizontalVista;
-
-        this._horizontalVista.get_cartasVista().set(posHvThis,destino);
-        destino._horizontalVista.get_cartasVista().set(posHvDestino,this);
-
-        this._horizontalVista=Lista.getBy(hvDestino.get_id());
-        destino._horizontalVista=Lista.getBy(hvThis.get_id());
-
-        if(eliminarEsta){
-            // PORQUE "Esta" SE CAMBIÓ POR EL DESTINO
-            destino._horizontalVista.get_cartasVista().remove(destino);
-        }
-    }
-
-    public void seleccionarOQuitarSeleccionNoVacias(){
-        Context context = Variables.get_gameActivityContext();
-        if (!this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.carta_vacia).getConstantState())) {
-            if( Variables.get_cartaVistaSeleccionada()==null||Variables.get_cartaVistaSeleccionada()==this ){
-                if (this.get_frameLayout().getBackground().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.imageview_border_default).getConstantState())) {
-                    // Los drawables son iguales
-                    this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_selected);
-                    this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
-                    Variables.set_cartaVistaSeleccionada(this);
-                    _horizontalVista.crearListenerCartaVistas();
-                } else {
-                    // Los drawables son diferentes
-                    this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_default);
-                    this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
-                    Variables.set_cartaVistaSeleccionada(null);
-                    _horizontalVista.crearListenerCartaVistas();
-                }
-            }
-        }
-    }
-
-    public boolean igualImagen(Drawable.ConstantState imagen){
-        // RECIENTEMENTE CREADO POR PATRON MUY COMUN Y CODIGO MEDIANAMENTE LARGO. FIXME: USARLO DONDE NO LO USÉ
-        // NO CONFUNDIR CON this.get_frameLayout() ETC
-        return this.get_imageView().getDrawable().getConstantState().equals(imagen);
-    }
-
-    public boolean igualImagenVacia(){
-        return this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState());
-    }
-
-    public void verInformacion(){
-        Controlador.VaciarVista();
-        Context context = Variables.get_gameActivityContext();
-        LinearLayout main = ((Activity) context).findViewById(R.id.main);
-
-        // Crear el ImageView
-        ImageView imageView = new ImageView(context);
-        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
-                //Utilidades.getAnchoTelefonoPx(Variables.get_gameActivityContext()),
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                (Utilidades.getAltoTelefonoPx()/3)
-        );
-        imageView.setLayoutParams(imageViewParams);
-        imageView.setRotation(0);
-        //imageView.setScaleType(ImageView.ScaleType.CENTER);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        //imageView.setImageResource(R.color.black);
-        if(get_carta()==null){
-            imageView.setImageResource(R.color.black);
-        }else{
-            imageView.setImageResource(get_carta().get_imagen());
-            if(get_carta() instanceof AMonstruo){
-                AMonstruo cvMonstruo = (AMonstruo) get_carta();
-            }
-        }
-        main.addView(imageView);
-
-        TextView tv = new TextView(context);
-        //tv.setText("HOOLA");
-        tv.setText(_carta.toString());
-
-        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-
-        // Crear nuevos LayoutParams para el TextView
-        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        tv.setLayoutParams(tvParams);
-        main.addView(tv);
-
-        Button bt = new Button(context);
-        bt.setText("Seguir Jugando");
-        bt.setTextSize(30);
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Controlador.ActualizarVistaCartas();
-            }
-        });
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-
-        params.setMargins(16, 16, 16, 16);
-
-        bt.setLayoutParams(params);
-
-        main.addView(bt);
-    }
-
-    public void convertirseVacio(boolean ordenar){
-        // ordenar DEBERIA SER TRUE CUANDO TERMINAS DE VACIAR TODAS LAS CARTAS DE UN HORIZONTAL VISTA
-        // SI SOLO VACIAS UNA CARTA (CONSUMIDA, MONSTRUO VENCIDO) ordenar SERIA TRUE
-        // SI VACIAS TODAS LAS CARTAS (O MAS DE 1) EN UN HORIZONTAL, ordenar SERIA FALSE Y (SI NO SON TODAS) ORDENAS EL HORIZONTAL AL TERMINAR
-        if(Variables.get_cartaVistaSeleccionada()==this){
-            Variables.set_cartaVistaSeleccionada(null);
-        }
-        set_carta(new CartaVacia());
-        this.get_frameLayout().setOnClickListener(null);
-        this.get_frameLayout().setOnLongClickListener(null);
-        this.get_frameLayout().setOnDragListener(null);
-        if(ordenar){
-            get_horizontalVista().ordenar();
-        }
     }
 
     public ACarta get_carta() {

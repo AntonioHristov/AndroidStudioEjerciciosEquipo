@@ -1,9 +1,5 @@
 package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import com.loeches.yugioh.Modelo.Global.Variables;
-
 public abstract class AMonstruo extends ACarta{
     private int _ataqueBase, _defensaBase, _ataque,_defensa, _turnosAumentoAtaque, _turnosAumentoDefensa;
     private boolean _modoDefensa;

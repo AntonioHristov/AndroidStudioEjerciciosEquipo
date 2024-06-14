@@ -1,6 +1,5 @@
 package com.loeches.yugioh.Controlador;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -9,6 +8,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.core.content.ContextCompat;
+
+import com.loeches.yugioh.Modelo.Global.Global;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -22,6 +23,16 @@ public class Utilidades {
 
     public static int pxToDp(Context context, int px) {
         float density = context.getResources().getDisplayMetrics().density;
+        return Math.round(px / density);
+    }
+
+    public static int dpToPx(int dp) {
+        float density = Global.get_context().getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
+
+    public static int pxToDp(int px) {
+        float density = Global.get_context().getResources().getDisplayMetrics().density;
         return Math.round(px / density);
     }
 

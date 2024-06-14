@@ -3,8 +3,6 @@ package com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
-import com.loeches.yugioh.Modelo.Global.Lista;
-import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.R;
 
 public class HuAgujero extends AHechizo {
