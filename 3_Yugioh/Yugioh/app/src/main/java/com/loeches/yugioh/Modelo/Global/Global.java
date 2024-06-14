@@ -15,18 +15,16 @@ import java.util.List;
 
 public class Global {
     // ATRIBUTOS
-    public final static int POS_ERROR=-1;
-    public final static int CARTAVISTA_POR_HORIZONTAL_DEFECTO = 5;
-    private static Activity _activity;
-    private static boolean _turnoJugador1;
-    private static CartaVista _cartaVistaSeleccionada;
-    private static int _iniciandoPartidaCantidadMonstruosHorizontalJ1 = CARTAVISTA_POR_HORIZONTAL_DEFECTO, _iniciandoPartidaCantidadMonstruosHorizontalJ2 = CARTAVISTA_POR_HORIZONTAL_DEFECTO, _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1 = CARTAVISTA_POR_HORIZONTAL_DEFECTO, _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2 = CARTAVISTA_POR_HORIZONTAL_DEFECTO, _iniciandoPartidaCantidadManoHorizontalJ1 = CARTAVISTA_POR_HORIZONTAL_DEFECTO, _iniciandoPartidaCantidadManoHorizontalJ2 = CARTAVISTA_POR_HORIZONTAL_DEFECTO;
-    private static int _cantidadCartaVistasPorHorizontalSinScroll=CARTAVISTA_POR_HORIZONTAL_DEFECTO; // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO AQUÍ
-    private Jugador _esteJugador;
+    public final static int POS_ERROR=-1; // SI SE BUSCA RECIBIR UNA POSICIÓN DE UNA LISTA O ARREGLO Y NO SE ENCUENTRA O MANEJAR ALGÚN ERROR RELACIONADO
+    private static Activity _activity; // RECIBE LA VistaActivity (ÚNICA ACTIVITY), PARA QUE SEA ACCESIBLE EN EL PROGRAMA, JUNTO AL CONTEXTO Y EL CONTENEDOR PRINCIPAL QUE ES UN LINEAR LAYOUT VERTICAL
+    private static boolean _turnoJugador1, _modoOptimoJugando;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR ESE 1º ESPACIO DISPONIBLE HACIENDO CLICK. ME HIZO ILUSIÓN PERMITIR LA INNECESARIA OPCIÓN false PARA EL FUTURO MENÚ PERSONALIZAR (SOY ANTONIO HRISTOV)
+    private static CartaVista _cartaVistaSeleccionada;// ES LA CARTA AL QUE EL JUGADOR HIZO CLICK Y TIENE EL BORDE EN ROJO
+    // LOS _iniciandoPartida... SON PARA DAR UN TAMAÑO ¡¡¡ SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
+    private static int _iniciandoPartidaCantidadMonstruosHorizontalJ1, _iniciandoPartidaCantidadMonstruosHorizontalJ2, _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1, _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2, _iniciandoPartidaCantidadManoHorizontalJ1, _iniciandoPartidaCantidadManoHorizontalJ2, _cantidadCartaVistasPorHorizontalSinScroll; // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO EN _cantidadCartaVistasPorHorizontalSinScroll
 
 
-    private static List<HorizontalVista> _horizontalesVista = new ArrayList<>();
-    private static List<Jugador> _jugadores =new ArrayList<>();
+    private static List<HorizontalVista> _horizontalesVista = new ArrayList<>();// Los linear layout horizontales que contienen las cartas y sus datos
+    private static List<Jugador> _jugadores =new ArrayList<>();// pos 0=Jugador 1, pos 1=Jugador 2
 // FIN ATRIBUTOS
 
     // MÉTODOS
@@ -80,6 +78,14 @@ public class Global {
 
     public static void set_turnoJugador1(boolean esTurnoJugador1) {
         _turnoJugador1 = esTurnoJugador1;
+    }
+
+    public static boolean is_modoOptimoJugando() {
+        return _modoOptimoJugando;
+    }
+
+    public static void set_modoOptimoJugando(boolean modoOptimoJugando) {
+        _modoOptimoJugando = modoOptimoJugando;
     }
 
     public static CartaVista get_cartaVistaSeleccionada() {

@@ -21,6 +21,7 @@ import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.R;
+import com.loeches.yugioh.Vista.VistaActivity;
 
 public class CartaVista {
     private FrameLayout _frameLayout;
@@ -29,10 +30,9 @@ public class CartaVista {
     private HorizontalVista _horizontalVista;
 
     public CartaVista(HorizontalVista horizontalVista, ACarta carta) {
-        Context ca = Global.get_context();
-        set_frameLayoutAndImageView();
         set_horizontalVista(horizontalVista);
-        set_carta(carta);
+        set_carta(carta);// EN set_carta SE HACE set_imageView()
+        set_frameLayout();
     }
 
     public CartaVista(CartaVista copia) {
@@ -66,7 +66,7 @@ public class CartaVista {
 
     public void seleccionarOQuitarSeleccionNoVacias(){
         Context context = Global.get_context();
-        if (get_horizontalVista().esSuTurno()&& !this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.carta_vacia).getConstantState())) {
+        if (get_horizontalVista().esSuTurno()&& !igualImagenVacia()) {
             if( Global.get_cartaVistaSeleccionada()==null||Global.get_cartaVistaSeleccionada()==this ){
                 if (this.get_frameLayout().getBackground().getConstantState().equals(ContextCompat.getDrawable(context, R.drawable.imageview_border_default).getConstantState())) {
                     // Los drawables son iguales
@@ -85,14 +85,16 @@ public class CartaVista {
         }
     }
 
-    public boolean igualImagen(Drawable.ConstantState imagen){
+    public boolean igualImagen(int imagenResId){
         // RECIENTEMENTE CREADO POR PATRON MUY COMUN Y CODIGO MEDIANAMENTE LARGO. FIXME: USARLO DONDE NO LO USÉ DESPUÉS DE CREAR UNA COPIA DE SEGURIDAD Y TESTEAR
+        // REEMPLAZARLO POR DONDE USÉ this.get_imageView().getDrawable().getConstantState().equals(...);
         // NO CONFUNDIR CON this.get_frameLayout() ETC
-        return this.get_imageView().getDrawable().getConstantState().equals(imagen);
+        Drawable drawable = Global.get_context().getResources().getDrawable(imagenResId);
+        return drawable!=null&&this.get_imageView().getDrawable().getConstantState().equals(drawable.getConstantState());
     }
 
     public boolean igualImagenVacia(){
-        return this.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Global.get_context(), R.drawable.carta_vacia).getConstantState());
+        return igualImagen(R.drawable.carta_vacia);
     }
 
     public void convertirseVacio(boolean ordenar){
@@ -112,7 +114,7 @@ public class CartaVista {
     }
 
     public void verInformacion(){
-        Controlador.VaciarVista();
+        VistaActivity.vaciar();
         Context context = Global.get_context();
         LinearLayout main = Global.get_linearMain();
         // Crear el ImageView
@@ -165,7 +167,7 @@ public class CartaVista {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Controlador.ActualizarVistaCartas();
+                VistaActivity.actualizar();
             }
         });
 
@@ -195,13 +197,20 @@ public class CartaVista {
         return _frameLayout;
     }
 
+    public void set_frameLayout() {
+        _frameLayout= crear_frameLayout();
+    }
+
     public ImageView get_imageView() {
         return _imageView;
     }
 
-    public void set_frameLayoutAndImageView() {
-        _frameLayout= crear_frameLayout();
+    public void set_imageView() {
         _imageView= crear_imageView();
+    }
+    public void set_frameLayoutAndImageView() {
+            set_frameLayout();
+            set_imageView();
     }
 
     public FrameLayout crear_frameLayout() {
@@ -259,6 +268,9 @@ public class CartaVista {
 
     public void set_carta(ACarta carta) {
         _carta = carta;
+        if(_imageView==null){
+            set_imageView();
+        }
         _imageView.setImageResource(carta.get_imagen());
         carta.set_cartaVista(this);
     }

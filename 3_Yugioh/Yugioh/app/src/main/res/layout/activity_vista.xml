@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:padding="5dp"
     android:rotation="0"
-    tools:context=".Vista.MainActivity">
+    tools:context=".Vista.VistaActivity">
 
     <LinearLayout
         android:id="@+id/llHHechizosJ2"

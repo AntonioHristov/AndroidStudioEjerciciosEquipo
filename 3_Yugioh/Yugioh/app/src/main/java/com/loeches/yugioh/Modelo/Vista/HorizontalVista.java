@@ -18,6 +18,7 @@ import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.R;
+import com.loeches.yugioh.Vista.VistaActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +124,7 @@ public class HorizontalVista {
                     @Override
                     public void onClick(View v) {
                         if (esMano()) {
-                            if (Global.get_cartaVistaSeleccionada() == null) {
+                            if (Global.get_cartaVistaSeleccionada() == null && Global.is_modoOptimoJugando()) {
                                 if (cv.get_carta() instanceof AMonstruo) {
                                     CartaVista posibleDestino = getHVMonstruoMismoTurno().getPrimerVacio();
                                     if (posibleDestino != null) {
@@ -174,7 +175,7 @@ public class HorizontalVista {
                                     if (nuevoTurno) {
                                         Controlador.nuevoTurno();
                                     } else {
-                                        Controlador.ActualizarVistaCartas();
+                                        VistaActivity.actualizar();
                                     }
                                 } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
                                     Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
@@ -182,7 +183,7 @@ public class HorizontalVista {
                                         Controlador.nuevoTurno();
                                     } else {
                                         Global.set_cartaVistaSeleccionada(null);
-                                        Controlador.ActualizarVistaCartas();
+                                        VistaActivity.actualizar();
                                     }
                                 }
 
@@ -235,8 +236,8 @@ public class HorizontalVista {
 
         }
         // NO ELIMINAR posPrimerVacio. PLANEO DESCOMENTARLO CUANDO SE PUEDA PERSONALIZAR EL MODO DESTINO AUTOMÁTICO A FALSE (EN TRUE POR DEFECTO ELIJE EL 1º VACIO AUTOMÁTICAMENTE SI EXISTE)
-        /*
-        if (posPrimerVacio != Global.POS_ERROR && posPrimerVacio < _cartasVista.size()) {
+
+        if (!Global.is_modoOptimoJugando() && posPrimerVacio != Global.POS_ERROR && posPrimerVacio < _cartasVista.size()) {
             CartaVista primerVacio = _cartasVista.get(posPrimerVacio);
             if (primerVacio != null) {
                 if (turno) {
@@ -253,7 +254,7 @@ public class HorizontalVista {
                 }
             }
         }
-         */
+
     }
 
     public HorizontalVista getHVRival() {
@@ -316,9 +317,9 @@ public class HorizontalVista {
         return null;
     }
 
-    public CartaVista getPrimerBy(Drawable.ConstantState imagen) {
+    public CartaVista getPrimerBy(int imagenResId) {
         for (CartaVista cv : _cartasVista) {
-            if (cv.igualImagen(imagen)) {
+            if (cv.igualImagen(imagenResId)) {
                 return cv;
             }
         }
@@ -326,7 +327,7 @@ public class HorizontalVista {
     }
 
     public CartaVista getPrimerVacio() {
-        return getPrimerBy(ContextCompat.getDrawable(Global.get_context(), R.drawable.carta_vacia).getConstantState());
+        return getPrimerBy(R.drawable.carta_vacia);
     }
 
     public boolean esSuTurno() {

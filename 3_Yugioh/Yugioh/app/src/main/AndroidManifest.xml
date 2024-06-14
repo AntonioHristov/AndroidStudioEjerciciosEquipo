@@ -14,7 +14,7 @@
 
         tools:targetApi="31">
         <activity
-            android:name=".Vista.MainActivity"
+            android:name=".Vista.VistaActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
