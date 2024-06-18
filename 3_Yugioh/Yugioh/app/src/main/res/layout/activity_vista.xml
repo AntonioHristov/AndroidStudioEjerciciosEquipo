@@ -8,6 +8,7 @@
     android:orientation="vertical"
     android:padding="5dp"
     android:rotation="0"
+    android:background="@mipmap/opi"
     tools:context=".Vista.VistaActivity">
 
     <LinearLayout

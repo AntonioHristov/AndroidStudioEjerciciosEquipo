@@ -3,13 +3,10 @@ package com.loeches.yugioh.Modelo.Vista;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.DialogInterface;
-import android.graphics.drawable.Drawable;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-
-import androidx.core.content.ContextCompat;
 
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;

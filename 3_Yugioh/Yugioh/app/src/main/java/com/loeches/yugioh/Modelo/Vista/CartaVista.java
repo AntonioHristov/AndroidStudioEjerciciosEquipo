@@ -13,13 +13,11 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
-import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.VistaActivity;
 

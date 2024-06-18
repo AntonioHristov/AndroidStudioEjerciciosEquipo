@@ -3,6 +3,7 @@ package com.loeches.yugioh.Vista;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -27,6 +28,9 @@ import com.loeches.yugioh.R;
 
 public class VistaActivity extends AppCompatActivity {
 
+    private MediaPlayer backgroundPlayer;
+    public MediaPlayer attackPlayer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +52,39 @@ public class VistaActivity extends AppCompatActivity {
             }else{
                 actualizar();
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (backgroundPlayer != null) {
+            backgroundPlayer.release();
+            backgroundPlayer = null;
+        }
+        if (attackPlayer != null) {
+            attackPlayer.release();
+            attackPlayer = null;
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (backgroundPlayer == null) {
+            backgroundPlayer = MediaPlayer.create(this, R.raw.yugiho);
+            backgroundPlayer.setLooping(true);
+            backgroundPlayer.start();
+        } else if (!backgroundPlayer.isPlaying()) {
+            backgroundPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (backgroundPlayer != null && backgroundPlayer.isPlaying()) {
+            backgroundPlayer.pause();
         }
     }
 
@@ -81,7 +118,7 @@ public class VistaActivity extends AppCompatActivity {
     public static void mostrarGanador(){
         VistaActivity.vaciar();
         Context context = Global.get_context();
-        LinearLayout main = ((Activity) context).findViewById(R.id.main);
+        LinearLayout main = Global.get_linearMain();
 
         TextView textView = new TextView(context);
         if(Global.get_jugadores().get(0).get_vida()==0 && Global.get_jugadores().get(1).get_vida()==0){
