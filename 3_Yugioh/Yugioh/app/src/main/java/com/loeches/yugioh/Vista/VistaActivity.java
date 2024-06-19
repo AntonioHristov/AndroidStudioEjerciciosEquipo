@@ -23,13 +23,14 @@ import androidx.core.view.WindowInsetsCompat;
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Global.Global;
+import com.loeches.yugioh.Modelo.Vista.CartaVista;
 import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 public class VistaActivity extends AppCompatActivity {
-
+/*
     private MediaPlayer backgroundPlayer;
-    public MediaPlayer attackPlayer;
+    public MediaPlayer attackPlayer;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +45,9 @@ public class VistaActivity extends AppCompatActivity {
 
         Global.set_activity(this);
 
-        if(Global.get_horizontalesVista().isEmpty()){
+        if(Global.is_primerOnCreate()){
+            Global.set_primerOnCreate(false);
+            Global.restaurarValoresDefecto();
             Controlador.NuevaPartida();
         }else{
             if(Controlador.partidaTerminada()){
@@ -55,6 +58,41 @@ public class VistaActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Global.get_musicaFondo() != null) {
+            Global.get_musicaFondo().release();
+            Global.set_musicaFondo(null);
+        }
+        if (Global.get_sonidoAtaqueMonstruo() != null) {
+            Global.get_sonidoAtaqueMonstruo().release();
+            Global.set_sonidoAtaqueMonstruo(null);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Global.get_musicaFondo() == null) {
+            // ASIGNO ESE MP3 EN Global.restaurarValoresDefecto()
+            //Global.set_musicaFondo(MediaPlayer.create(this, R.raw.yugiho));
+            Global.get_musicaFondo().setLooping(true);
+            Global.get_musicaFondo().start();
+        } else if (!Global.get_musicaFondo().isPlaying()) {
+            Global.get_musicaFondo().start();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (Global.get_musicaFondo() != null && Global.get_musicaFondo().isPlaying()) {
+            Global.get_musicaFondo().pause();
+        }
+    }
+
+    /* COPIA SEGURIDAD
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -86,13 +124,14 @@ public class VistaActivity extends AppCompatActivity {
         if (backgroundPlayer != null && backgroundPlayer.isPlaying()) {
             backgroundPlayer.pause();
         }
-    }
+    }*/
 
     public static void vaciar(){
         Global.get_linearMain().removeAllViews();
+        /*
         for (HorizontalVista hv: Global.get_horizontalesVista()) {
             hv.get_llHorizontal().removeAllViews();
-        }
+        }*/
     }
 
     public static void actualizar(){

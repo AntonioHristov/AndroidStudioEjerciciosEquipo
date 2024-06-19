@@ -3,12 +3,15 @@ package com.loeches.yugioh.Modelo.Vista;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -136,6 +139,93 @@ public class CartaVista {
         }
         main.addView(imageView);
 
+
+        ScrollView scrollView = new ScrollView(Global.get_context());
+        scrollView.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                3
+        ));
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) scrollView.getLayoutParams();
+        layoutParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
+        scrollView.setLayoutParams(layoutParams);
+        main.addView(scrollView);
+
+
+        TextView tv = new TextView(context);
+        //tv.setText("HOOLA");
+        tv.setText(_carta.toString());
+
+        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
+        //tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+        tv.setGravity(Gravity.CENTER);
+        //tv.setBackgroundColor(Color.RED);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50);
+        //tv.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        ScrollView.LayoutParams tvParams = new ScrollView.LayoutParams(
+                ScrollView.LayoutParams.MATCH_PARENT,
+                ScrollView.LayoutParams.WRAP_CONTENT
+        );
+
+        tv.setLayoutParams(tvParams);
+
+        scrollView.addView(tv);
+
+
+
+
+        //main.addView(tv);
+
+        Button bt = new Button(context);
+        bt.setText("Seguir Jugando");
+        //bt.setTextSize(30);
+        bt.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VistaActivity.actualizar();
+            }
+        });
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                1
+        );
+        params.gravity = Gravity.CENTER_HORIZONTAL;
+
+        params.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
+
+        bt.setLayoutParams(params);
+
+        main.addView(bt);
+    }
+
+    public void verInformacionCopia(){
+        VistaActivity.vaciar();
+        Context context = Global.get_context();
+        LinearLayout main = Global.get_linearMain();
+        // Crear el ImageView
+        ImageView imageView = new ImageView(context);
+        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0,
+                2
+        );
+        imageViewParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
+        imageView.setLayoutParams(imageViewParams);
+        imageView.setRotation(0);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        if(get_carta()==null){
+            imageView.setImageResource(R.color.black);
+        }else{
+            imageView.setImageResource(get_carta().get_imagen());
+            if(get_carta() instanceof AMonstruo){
+                AMonstruo cvMonstruo = (AMonstruo) get_carta();
+            }
+        }
+        main.addView(imageView);
+
         TextView tv = new TextView(context);
         //tv.setText("HOOLA");
         tv.setText(_carta.toString());
@@ -189,8 +279,6 @@ public class CartaVista {
 
 
 
-
-
     public FrameLayout get_frameLayout() {
         return _frameLayout;
     }
@@ -215,7 +303,7 @@ public class CartaVista {
         Context context = Global.get_context();
         FrameLayout frameLayout = new FrameLayout(context);
         FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
-                Utilidades.getAnchoTelefonoPx() / Global.get_cantidadCartaVistasPorHorizontalSinScroll() - Utilidades.dpToPx(context, 5),
+                Utilidades.getAnchoTelefonoPx() / Global.get_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll() - Utilidades.dpToPx(context, 5),
                 //Variables.get_anchoCartaVista(),
                 FrameLayout.LayoutParams.MATCH_PARENT
         );

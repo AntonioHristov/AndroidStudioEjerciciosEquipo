@@ -2,8 +2,11 @@ package com.loeches.yugioh.Modelo.Global;
 
 import android.app.Activity;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.widget.LinearLayout;
 
+import com.loeches.yugioh.Controlador.Controlador;
+import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
 import com.loeches.yugioh.Modelo.Jugador;
@@ -12,22 +15,89 @@ import com.loeches.yugioh.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Global {
     // ATRIBUTOS
     public final static int POS_ERROR=-1; // SI SE BUSCA RECIBIR UNA POSICIÓN DE UNA LISTA O ARREGLO Y NO SE ENCUENTRA O MANEJAR ALGÚN ERROR RELACIONADO
     private static Activity _activity; // RECIBE LA VistaActivity (ÚNICA ACTIVITY), PARA QUE SEA ACCESIBLE EN EL PROGRAMA, JUNTO AL CONTEXTO Y EL CONTENEDOR PRINCIPAL QUE ES UN LINEAR LAYOUT VERTICAL
-    private static boolean _turnoJugador1, _modoOptimoJugando;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR ESE 1º ESPACIO DISPONIBLE HACIENDO CLICK. ME HIZO ILUSIÓN PERMITIR LA INNECESARIA OPCIÓN false PARA EL FUTURO MENÚ PERSONALIZAR (SOY ANTONIO HRISTOV)
+    private static boolean _primerOnCreate=true, _turnoJugador1, _modoOptimoJugando, _preguntarConfirmacionAccionesJugando;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR ESE 1º ESPACIO DISPONIBLE HACIENDO CLICK. ME HIZO ILUSIÓN PERMITIR LA INNECESARIA OPCIÓN false PARA EL FUTURO MENÚ PERSONALIZAR (SOY ANTONIO HRISTOV)
     private static CartaVista _cartaVistaSeleccionada;// ES LA CARTA AL QUE EL JUGADOR HIZO CLICK Y TIENE EL BORDE EN ROJO
-    // LOS _iniciandoPartida... SON PARA DAR UN TAMAÑO ¡¡¡ SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
-    private static int _iniciandoPartidaCantidadMonstruosHorizontalJ1, _iniciandoPartidaCantidadMonstruosHorizontalJ2, _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1, _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2, _iniciandoPartidaCantidadManoHorizontalJ1, _iniciandoPartidaCantidadManoHorizontalJ2, _cantidadCartaVistasPorHorizontalSinScroll; // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO EN _cantidadCartaVistasPorHorizontalSinScroll
+    // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
 
+    // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO EN _cantidadCartaVistasPorHorizontalSinScroll
+    private static int _iniciandoPartidaCantidadMonstruosHorizontalJ1,
+            _iniciandoPartidaCantidadMonstruosHorizontalJ2,
+            _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1,
+            _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2,
+            _iniciandoPartidaCantidadManoHorizontalJ1,
+            _iniciandoPartidaCantidadManoHorizontalJ2,
+            _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll;
+
+    private static MediaPlayer _musicaFondo;
+    public static MediaPlayer _sonidoAtaqueMonstruo;
 
     private static List<HorizontalVista> _horizontalesVista = new ArrayList<>();// Los linear layout horizontales que contienen las cartas y sus datos
     private static List<Jugador> _jugadores =new ArrayList<>();// pos 0=Jugador 1, pos 1=Jugador 2
 // FIN ATRIBUTOS
 
     // MÉTODOS
+    public static void restaurarValoresDefecto(){
+        _turnoJugador1=(new Random().nextInt(2)==0)?true:false;
+        _modoOptimoJugando=true;
+        _preguntarConfirmacionAccionesJugando=true;
+        _cartaVistaSeleccionada=null;
+        _iniciandoPartidaCantidadMonstruosHorizontalJ1=5;
+        _iniciandoPartidaCantidadMonstruosHorizontalJ2=5;
+        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1=5;
+        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2=5;
+        _iniciandoPartidaCantidadManoHorizontalJ1=5;
+        _iniciandoPartidaCantidadManoHorizontalJ2=5;
+        _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll=5;
+
+        if (_musicaFondo == null) {
+            _musicaFondo = MediaPlayer.create(_activity.getApplicationContext(), R.raw.yugiho);
+            _musicaFondo.setLooping(true);
+            _musicaFondo.start();
+        } else if (!_musicaFondo.isPlaying()) {
+            _musicaFondo.start();
+        }
+
+        _jugadores=new ArrayList<>();
+        new Jugador("Vida Jugador 1: ","",8000);
+        new Jugador("Vida Jugador 2: ","",8000);
+
+        _horizontalesVista=new ArrayList<>();
+        HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
+        hVManoJ2= new HorizontalVista(EIdHorizontalVista.J2_MANO);
+        for (int i = 0; i < _iniciandoPartidaCantidadManoHorizontalJ2-1; i++) {
+            new CartaVista(hVManoJ2, Controlador.getCartaJugableRandom());
+        }
+        hVHechizoJ2= new HorizontalVista(EIdHorizontalVista.J2_HECHIZO);
+        for (int i = 0; i < _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2; i++) {
+            new CartaVista(hVHechizoJ2,new CartaVacia());
+        }
+        hVMonstruoJ2= new HorizontalVista(EIdHorizontalVista.J2_MONSTRUO);
+        for (int i = 0; i < _iniciandoPartidaCantidadMonstruosHorizontalJ2; i++) {
+            new CartaVista(hVMonstruoJ2,new CartaVacia());
+        }
+        hVMonstruoJ1= new HorizontalVista(EIdHorizontalVista.J1_MONSTRUO);
+        for (int i = 0; i < _iniciandoPartidaCantidadMonstruosHorizontalJ1; i++) {
+            new CartaVista(hVMonstruoJ1,new CartaVacia());
+        }
+        hVHechizoJ1= new HorizontalVista(EIdHorizontalVista.J1_HECHIZO);
+        for (int i = 0; i < _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1; i++) {
+            new CartaVista(hVHechizoJ1,new CartaVacia());
+        }
+        hVManoJ1= new HorizontalVista(EIdHorizontalVista.J1_MANO);
+        for (int i = 0; i < _iniciandoPartidaCantidadManoHorizontalJ1-1; i++) {
+            new CartaVista(hVManoJ1,Controlador.getCartaJugableRandom());
+        }
+
+
+    }
+
+
     public static LinearLayout get_linearMain(){
         return _activity.findViewById(R.id.main);
     }
@@ -55,7 +125,7 @@ public class Global {
     }
 
     public static Jugador getByTurno(){
-        return get_jugadores().get(is_turnoJugador1()?0:1);
+        return _jugadores.get(_turnoJugador1?0:1);
     }
 // FIN MÉTODOS
 
@@ -72,6 +142,15 @@ public class Global {
     public static void set_activity(Activity activity) {
         _activity = activity;
     }
+
+    public static boolean is_primerOnCreate() {
+        return _primerOnCreate;
+    }
+
+    public static void set_primerOnCreate(boolean primerOnCreate) {
+        _primerOnCreate = primerOnCreate;
+    }
+
     public static boolean is_turnoJugador1() {
         return _turnoJugador1;
     }
@@ -86,6 +165,14 @@ public class Global {
 
     public static void set_modoOptimoJugando(boolean modoOptimoJugando) {
         _modoOptimoJugando = modoOptimoJugando;
+    }
+
+    public static boolean is_preguntarConfirmacionAccionesJugando() {
+        return _preguntarConfirmacionAccionesJugando;
+    }
+
+    public static void set_preguntarConfirmacionAccionesJugando(boolean preguntarConfirmacionAccionesJugando) {
+        _preguntarConfirmacionAccionesJugando = preguntarConfirmacionAccionesJugando;
     }
 
     public static CartaVista get_cartaVistaSeleccionada() {
@@ -144,14 +231,29 @@ public class Global {
         _iniciandoPartidaCantidadManoHorizontalJ2 = iniciandoPartidaCantidadManoHorizontalJ2;
     }
 
-    public static int get_cantidadCartaVistasPorHorizontalSinScroll() {
-        return _cantidadCartaVistasPorHorizontalSinScroll;
+    public static int get_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll() {
+        return _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll;
     }
 
-    public static void set_cantidadCartaVistasPorHorizontalSinScroll(int cantidadCartaVistasPorHorizontalSinScroll) {
-        _cantidadCartaVistasPorHorizontalSinScroll = cantidadCartaVistasPorHorizontalSinScroll;
+    public static void set_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll(int iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll) {
+        _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll = iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll;
     }
 
+    public static MediaPlayer get_musicaFondo() {
+        return _musicaFondo;
+    }
+
+    public static void set_musicaFondo(MediaPlayer musicaFondo) {
+        _musicaFondo = musicaFondo;
+    }
+
+    public static MediaPlayer get_sonidoAtaqueMonstruo() {
+        return _sonidoAtaqueMonstruo;
+    }
+
+    public static void set_sonidoAtaqueMonstruo(MediaPlayer sonidoAtaqueMonstruo) {
+        _sonidoAtaqueMonstruo = sonidoAtaqueMonstruo;
+    }
 
     public static List<HorizontalVista> get_horizontalesVista() {
         return _horizontalesVista;

@@ -1,19 +1,7 @@
 package com.loeches.yugioh.Controlador;
 
-import android.app.Activity;
-import android.content.Context;
-import android.graphics.Typeface;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.core.content.ContextCompat;
-
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Equipadas.HCirculoDeFe;
@@ -37,6 +25,7 @@ import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas.HuOjoDeLa
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas.HuTrueno;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas.HuVirus;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Monstruos.MonstruoGenerico;
+import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
@@ -55,60 +44,14 @@ public class Controlador{
     }
 
     public static void NuevaPartida(){
-        restaurarValoresDefecto();
+        //restaurarValoresPredeterminados();
         nuevoTurno();
     }
 
-    public static void restaurarValoresDefecto(){
-        // ¡¡¡ SI HAY UNA PARTIDA GUARDADA NO TERMINADA LA ELIMINA !!!
-        Global.set_cartaVistaSeleccionada(null);
-        Global.set_modoOptimoJugando(true);
-        Global.set_iniciandoPartidaCantidadMonstruosHorizontalJ1(5);
-        Global.set_iniciandoPartidaCantidadMonstruosHorizontalJ2(5);
-        Global.set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1(5);
-        Global.set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2(5);
-        Global.set_iniciandoPartidaCantidadManoHorizontalJ1(5);
-        Global.set_iniciandoPartidaCantidadManoHorizontalJ2(5);
-        Global.set_cantidadCartaVistasPorHorizontalSinScroll(5);
-        Global.set_horizontalesVista(new ArrayList<>());
-        Global.set_jugadores(new ArrayList<>());
-        CrearJugadoresYTurno();
-        CrearHorizontalesVistaConContenido();
+    public static void restaurarValoresPredeterminados(){
+        Global.restaurarValoresDefecto();
     }
 
-    public static void CrearJugadoresYTurno(){
-        new Jugador("Vida Jugador 1: ");
-        new Jugador("Vida Jugador 2: ");
-        Global.set_turnoJugador1((new Random().nextInt(2)==0)?true:false);
-    }
-
-    public static void CrearHorizontalesVistaConContenido(){
-        HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
-        hVManoJ2= new HorizontalVista(EIdHorizontalVista.J2_MANO);
-        for (int i = 0; i < Global.get_iniciandoPartidaCantidadManoHorizontalJ2()-1; i++) {
-            new CartaVista(hVManoJ2,getCartaJugableRandom());
-        }
-        hVHechizoJ2= new HorizontalVista(EIdHorizontalVista.J2_HECHIZO);
-        for (int i = 0; i < Global.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2(); i++) {
-            new CartaVista(hVHechizoJ2,new CartaVacia());
-        }
-        hVMonstruoJ2= new HorizontalVista(EIdHorizontalVista.J2_MONSTRUO);
-        for (int i = 0; i < Global.get_iniciandoPartidaCantidadMonstruosHorizontalJ2(); i++) {
-            new CartaVista(hVMonstruoJ2,new CartaVacia());
-        }
-        hVMonstruoJ1= new HorizontalVista(EIdHorizontalVista.J1_MONSTRUO);
-        for (int i = 0; i < Global.get_iniciandoPartidaCantidadMonstruosHorizontalJ1(); i++) {
-            new CartaVista(hVMonstruoJ1,new CartaVacia());
-        }
-        hVHechizoJ1= new HorizontalVista(EIdHorizontalVista.J1_HECHIZO);
-        for (int i = 0; i < Global.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1(); i++) {
-            new CartaVista(hVHechizoJ1,new CartaVacia());
-        }
-        hVManoJ1= new HorizontalVista(EIdHorizontalVista.J1_MANO);
-        for (int i = 0; i < Global.get_iniciandoPartidaCantidadManoHorizontalJ1()-1; i++) {
-            new CartaVista(hVManoJ1,getCartaJugableRandom());
-        }
-    }
     public static void nuevoTurno(){
         if(partidaTerminada()){
             VistaActivity.mostrarGanador();
@@ -257,7 +200,31 @@ public class Controlador{
     }
 
     public static ACarta getCartaJugableRandom() {
-        return getCartaJugable(new Random().nextInt(50));
+        int tipoCarta=new Random().nextInt(3);
+            switch (tipoCarta){
+                case 0:
+                    while(true){
+                        int pos=new Random().nextInt(50);
+                        if(getCartaJugable(pos)instanceof AMonstruo){
+                            return getCartaJugable(pos);
+                        }
+                    }
+                case 1:
+                    while(true){
+                        int pos=new Random().nextInt(50);
+                        if(getCartaJugable(pos)instanceof AHechizo && ((AHechizo) getCartaJugable(pos)).get_accionHechizo()== EAccionHechizo.EQUIPAR){
+                            return getCartaJugable(pos);
+                        }
+                    }
+                case 2:
+                    while(true){
+                        int pos=new Random().nextInt(50);
+                        if(getCartaJugable(pos)instanceof AHechizo && ((AHechizo) getCartaJugable(pos)).get_accionHechizo()== EAccionHechizo.USAR){
+                            return getCartaJugable(pos);
+                        }
+                    }
+            }
+        return null;
         //return getCartaJugable(new Random().nextInt(3));// TESTEAR
     }
 }
