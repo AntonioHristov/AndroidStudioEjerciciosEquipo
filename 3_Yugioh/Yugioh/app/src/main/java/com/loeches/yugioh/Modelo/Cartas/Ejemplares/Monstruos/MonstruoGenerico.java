@@ -20,26 +20,28 @@ public class MonstruoGenerico extends AMonstruo {
 
     @Override
     public void RealizarAccion(AMonstruo posibleObjetivo) {
-        if (posibleObjetivo == null) {
-            int posJugadorRival = Global.is_turnoJugador1() ? 1 : 0;
-            int nuevaVida = Global.get_jugadores().get(posJugadorRival).get_vida() - this.get_ataque();
-            if (nuevaVida <= 0) {
-                nuevaVida = 0;
-            }
-            Global.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
-        } else {
-            if(posibleObjetivo.is_modoDefensa()){
-                posibleObjetivo.set_modoDefensa(false);
-            }else{
-                posibleObjetivo.set_defensa(posibleObjetivo.get_defensa() - this.get_ataque());
-                if (posibleObjetivo.get_defensa() <= 0) {
-                    posibleObjetivo.get_cartaVista().convertirseVacio(true);
+        if(!is_modoDefensa()){
+            if (posibleObjetivo == null) {
+                int posJugadorRival = Global.is_turnoJugador1() ? 1 : 0;
+                int nuevaVida = Global.get_jugadores().get(posJugadorRival).get_vida() - this.get_ataque();
+                if (nuevaVida <= 0) {
+                    nuevaVida = 0;
+                }
+                Global.get_jugadores().get(posJugadorRival).set_vida(nuevaVida);
+            } else {
+                if(posibleObjetivo.is_modoDefensa()){
+                    posibleObjetivo.set_modoDefensa(false);
+                }else{
+                    posibleObjetivo.set_defensa(posibleObjetivo.get_defensa() - this.get_ataque());
+                    if (posibleObjetivo.get_defensa() <= 0) {
+                        posibleObjetivo.get_cartaVista().convertirseVacio(true);
+                    }
                 }
             }
-        }
-        if(is_llevaEspejoDragon()){
-            Jugador j = Global.get_jugadores().get(Global.is_turnoJugador1() ? 0 : 1);
-            j.set_vida(j.get_vida()+this.get_ataque());
+            if(is_llevaEspejoDragon()){
+                Jugador j = Global.get_jugadores().get(Global.is_turnoJugador1() ? 0 : 1);
+                j.set_vida(j.get_vida()+this.get_ataque());
+            }
         }
     }
 

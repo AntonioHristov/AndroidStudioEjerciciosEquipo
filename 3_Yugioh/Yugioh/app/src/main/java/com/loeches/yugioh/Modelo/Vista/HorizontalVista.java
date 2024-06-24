@@ -37,15 +37,15 @@ public class HorizontalVista {
 
     public void EscribirCodigoXML(boolean ordenInverso) {
         //set_llHorizontal();
-            if (ordenInverso) {
-                for (int i = _cartasVista.size() - 1; i > -1; i--) {
-                    _cartasVista.get(i).EscribirCodigoXML();
-                }
-            } else {
-                for (CartaVista cv : _cartasVista) {
-                    cv.EscribirCodigoXML();
-                }
+        if (ordenInverso) {
+            for (int i = _cartasVista.size() - 1; i > -1; i--) {
+                _cartasVista.get(i).EscribirCodigoXML();
             }
+        } else {
+            for (CartaVista cv : _cartasVista) {
+                cv.EscribirCodigoXML();
+            }
+        }
 
         crearListenerCartaVistas();
         XMLScroll();
@@ -75,8 +75,439 @@ public class HorizontalVista {
         return llHorizontal;
     }
 
-
     public void crearListenerCartaVistas() {
+        boolean turno = esSuTurno(); // turno es para evitar ifs cada vez
+
+        for (CartaVista cv : _cartasVista) {
+            if (cv.igualImagenVacia()) {
+                        if(Global.is_modoOptimoJugando()){
+                            continue;
+                        }
+                        cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (Global.get_cartaVistaSeleccionada() != null && Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() &&((Global.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo()))) {
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionMoverCarta(Global.get_cartaVistaSeleccionada(), cv);
+                                    } else {
+                                        Global.get_cartaVistaSeleccionada().cambiarCartaVista(cv, true);
+                                        Controlador.nuevoTurno();
+                                    }
+                                }
+                            }
+                        });
+            } else {
+                cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        ClipData data = ClipData.newPlainText("", "");
+                        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                        v.startDrag(data, shadowBuilder, v, 0);
+                        v.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+                });
+
+                cv.get_frameLayout().setOnDragListener(new View.OnDragListener() {
+                    @Override
+                    public boolean onDrag(View v, DragEvent event) {
+                        switch (event.getAction()) {
+                            case DragEvent.ACTION_DRAG_STARTED:
+                                // Acción al iniciar el arrastre
+                                return true;
+                            case DragEvent.ACTION_DRAG_EXITED:
+                                // Acción al salir de la vista destino
+                                cv.verInformacion();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
+
+                if (turno) {
+                    cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (esMano()) {
+                                if (Global.get_cartaVistaSeleccionada() == null && Global.is_modoOptimoJugando()) {
+                                    if (cv.get_carta() instanceof AMonstruo) {
+                                        CartaVista posibleDestino = getHVMonstruoMismoTurno().getPrimerVacio();
+                                        if (posibleDestino != null) {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionMoverCarta(cv, posibleDestino);
+                                            } else {
+                                                cv.cambiarCartaVista(posibleDestino, true);
+                                                Controlador.nuevoTurno();
+                                            }
+                                        } else {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionNuevoTurno(cv);
+                                            } else {
+                                                Controlador.nuevoTurno();
+                                            }
+                                        }
+                                    } else if (cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
+                                        CartaVista posibleDestino = getHVHechizoMismoTurno().getPrimerVacio();
+                                        if (posibleDestino != null) {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionMoverCarta(cv, posibleDestino);
+                                            } else {
+                                                cv.cambiarCartaVista(posibleDestino, true);
+                                                Controlador.nuevoTurno();
+                                            }
+                                        } else {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionNuevoTurno(cv);
+                                            } else {
+                                                Controlador.nuevoTurno();
+                                            }
+                                        }
+                                    } else {
+                                        cv.seleccionarOQuitarSeleccionNoVacias();
+                                    }
+                                } else {
+                                    cv.seleccionarOQuitarSeleccionNoVacias();
+                                }
+                            } else if (cv.get_carta() instanceof AMonstruo) {
+                                if (Global.get_cartaVistaSeleccionada() == null) {
+                                    if(!((AMonstruo) cv.get_carta()).is_modoDefensa()){
+                                        int contadorMonstruosRivalNoVacio = 0;
+                                        CartaVista cvUnicoMonstruoRival = null;
+                                        for (CartaVista cvRival : getHVRival().get_cartasVista()) {
+                                            if (!cvRival.igualImagenVacia()) {
+                                                contadorMonstruosRivalNoVacio++;
+                                                if (contadorMonstruosRivalNoVacio == 1) {
+                                                    cvUnicoMonstruoRival = cvRival;
+                                                } else {
+                                                    cvUnicoMonstruoRival = null;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (contadorMonstruosRivalNoVacio == 0) {
+                                            // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionMonstruoRealizarAccion(cv, null);
+                                            } else {
+                                                cv.get_carta().RealizarAccion(null);
+                                                if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                                    Controlador.nuevoTurno();
+                                                }
+                                            }
+                                        } else if (contadorMonstruosRivalNoVacio == 1) {
+                                            // SI EL RIVAL SOLO TIENE 1 MONSTRUO, LO ATACA SIN NECESIDAD DE SELECCIONARLO
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionMonstruoRealizarAccion(cv, (AMonstruo) cvUnicoMonstruoRival.get_carta());
+                                            } else {
+                                                cv.get_carta().RealizarAccion((AMonstruo) cvUnicoMonstruoRival.get_carta());
+                                                if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                                    Controlador.nuevoTurno();
+                                                }
+                                            }
+                                        } else {
+                                            cv.seleccionarOQuitarSeleccionNoVacias();
+                                        }
+                                    }
+                                } else if (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo) {
+
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionHechizoRealizarAccion(cv);
+                                    } else {
+                                        Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
+
+                                        if (((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
+                                            boolean nuevoTurno = Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion();
+                                            Global.get_cartaVistaSeleccionada().convertirseVacio(true);
+                                            if (nuevoTurno) {
+                                                Controlador.nuevoTurno();
+                                            } else {
+                                                VistaActivity.actualizar();
+                                            }
+                                        } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
+                                            Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
+                                            if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                                Controlador.nuevoTurno();
+                                            } else {
+                                                Global.set_cartaVistaSeleccionada(null);
+                                                VistaActivity.actualizar();
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    cv.seleccionarOQuitarSeleccionNoVacias();
+                                }
+                            } else/* if(cv.get_carta() instanceof AHechizo)*/ {
+                                cv.seleccionarOQuitarSeleccionNoVacias();
+                            }
+                        }
+                    });
+                    if (!esMano() && esSuTurno() && cv.get_carta() instanceof AMonstruo) {
+                        AMonstruo cvMonstruo = (AMonstruo) cv.get_carta();
+                        cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                //cv.verInformacion();
+                                AlertMonstruoInfoCambiarModo(cv);
+                                return true;
+                            }
+                        });
+                    } else if (esMano() && cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.USAR) {
+                        cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                //cv.verInformacion();
+                                AlertHechizoInfoUsar(cv);
+                                return true;
+                            }
+                        });
+                    }
+                } else {
+                    cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Global.get_cartaVistaSeleccionada() != null && cv.get_carta() instanceof AMonstruo) {
+                                if (!Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() || (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() && Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.USAR)) {
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionRealizarAccionAMonstruoRival(cv);
+                                    } else {
+                                        Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
+                                        if (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano()) {
+                                            Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
+                                        }
+                                        if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                            Controlador.nuevoTurno();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+            }
+        }
+    }
+
+    public void crearListenerCartaVistasCopia() {
+        boolean turno = esSuTurno(); // turno es para evitar ifs cada vez
+
+        for (CartaVista cv : _cartasVista) {
+            if (!Global.is_modoOptimoJugando() && cv.igualImagenVacia()) {
+                if (cv != null) {
+                    if (turno) {
+
+                        cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if (Global.get_cartaVistaSeleccionada() != null && ((Global.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo()))) {
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionMoverCarta(Global.get_cartaVistaSeleccionada(), cv);
+                                    } else {
+                                        Global.get_cartaVistaSeleccionada().cambiarCartaVista(cv, true);
+                                        Controlador.nuevoTurno();
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            } else {
+                cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        ClipData data = ClipData.newPlainText("", "");
+                        View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
+                        v.startDrag(data, shadowBuilder, v, 0);
+                        v.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+                });
+
+                cv.get_frameLayout().setOnDragListener(new View.OnDragListener() {
+                    @Override
+                    public boolean onDrag(View v, DragEvent event) {
+                        switch (event.getAction()) {
+                            case DragEvent.ACTION_DRAG_STARTED:
+                                // Acción al iniciar el arrastre
+                                return true;
+                            case DragEvent.ACTION_DRAG_EXITED:
+                                // Acción al salir de la vista destino
+                                cv.verInformacion();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+
+
+                if (turno) {
+                    cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (esMano()) {
+                                if (Global.get_cartaVistaSeleccionada() == null && Global.is_modoOptimoJugando()) {
+                                    if (cv.get_carta() instanceof AMonstruo) {
+                                        CartaVista posibleDestino = getHVMonstruoMismoTurno().getPrimerVacio();
+                                        if (posibleDestino != null) {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionMoverCarta(cv, posibleDestino);
+                                            } else {
+                                                cv.cambiarCartaVista(posibleDestino, true);
+                                                Controlador.nuevoTurno();
+                                            }
+                                        } else {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionNuevoTurno(cv);
+                                            } else {
+                                                Controlador.nuevoTurno();
+                                            }
+                                        }
+                                    } else if (cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
+                                        CartaVista posibleDestino = getHVHechizoMismoTurno().getPrimerVacio();
+                                        if (posibleDestino != null) {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionMoverCarta(cv, posibleDestino);
+                                            } else {
+                                                cv.cambiarCartaVista(posibleDestino, true);
+                                                Controlador.nuevoTurno();
+                                            }
+                                        } else {
+                                            if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                                AlertConfirmacionNuevoTurno(cv);
+                                            } else {
+                                                Controlador.nuevoTurno();
+                                            }
+                                        }
+                                    } else {
+                                        cv.seleccionarOQuitarSeleccionNoVacias();
+                                    }
+                                } else {
+                                    cv.seleccionarOQuitarSeleccionNoVacias();
+                                }
+                            } else if (cv.get_carta() instanceof AMonstruo) {
+                                if (Global.get_cartaVistaSeleccionada() == null) {
+                                    int contadorMonstruosRivalNoVacio = 0;
+                                    CartaVista cvUnicoMonstruoRival = null;
+                                    for (CartaVista cvRival : getHVRival().get_cartasVista()) {
+                                        if (!cvRival.igualImagenVacia()) {
+                                            contadorMonstruosRivalNoVacio++;
+                                            if (contadorMonstruosRivalNoVacio == 1) {
+                                                cvUnicoMonstruoRival = cvRival;
+                                            } else {
+                                                cvUnicoMonstruoRival = null;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    if (contadorMonstruosRivalNoVacio == 0) {
+                                        // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
+                                        if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                            AlertConfirmacionMonstruoRealizarAccion(cv, null);
+                                        } else {
+                                            cv.get_carta().RealizarAccion(null);
+                                            if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                                Controlador.nuevoTurno();
+                                            }
+                                        }
+                                    } else if (contadorMonstruosRivalNoVacio == 1) {
+                                        // SI EL RIVAL SOLO TIENE 1 MONSTRUO, LO ATACA SIN NECESIDAD DE SELECCIONARLO
+                                        if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                            AlertConfirmacionMonstruoRealizarAccion(cv, (AMonstruo) cvUnicoMonstruoRival.get_carta());
+                                        } else {
+                                            cv.get_carta().RealizarAccion((AMonstruo) cvUnicoMonstruoRival.get_carta());
+                                            if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                                Controlador.nuevoTurno();
+                                            }
+                                        }
+                                    } else {
+                                        cv.seleccionarOQuitarSeleccionNoVacias();
+                                    }
+
+                                } else if (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo) {
+
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionHechizoRealizarAccion(cv);
+                                    } else {
+                                        Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
+
+                                        if (((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
+                                            boolean nuevoTurno = Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion();
+                                            Global.get_cartaVistaSeleccionada().convertirseVacio(true);
+                                            if (nuevoTurno) {
+                                                Controlador.nuevoTurno();
+                                            } else {
+                                                VistaActivity.actualizar();
+                                            }
+                                        } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
+                                            Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
+                                            if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                                Controlador.nuevoTurno();
+                                            } else {
+                                                Global.set_cartaVistaSeleccionada(null);
+                                                VistaActivity.actualizar();
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    cv.seleccionarOQuitarSeleccionNoVacias();
+                                }
+                            } else/* if(cv.get_carta() instanceof AHechizo)*/ {
+                                cv.seleccionarOQuitarSeleccionNoVacias();
+                            }
+                        }
+                    });
+                    if (!esMano() && esSuTurno() && cv.get_carta() instanceof AMonstruo) {
+                        AMonstruo cvMonstruo = (AMonstruo) cv.get_carta();
+                        cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                //cv.verInformacion();
+                                AlertMonstruoInfoCambiarModo(cv);
+                                return true;
+                            }
+                        });
+                    } else if (esMano() && cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.USAR) {
+                        cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+                                //cv.verInformacion();
+                                AlertHechizoInfoUsar(cv);
+                                return true;
+                            }
+                        });
+                    }
+                } else {
+                    cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (Global.get_cartaVistaSeleccionada() != null && cv.get_carta() instanceof AMonstruo) {
+                                if (!Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() || (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() && Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.USAR)) {
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionRealizarAccionAMonstruoRival(cv);
+                                    } else {
+                                        Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
+                                        if (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano()) {
+                                            Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
+                                        }
+                                        if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                                            Controlador.nuevoTurno();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+            }
+        }
+    }
+
+
+    public void crearListenerCartaVistascopiaOriginal() {
         boolean turno = esSuTurno(); // turno es para evitar ifs cada vez
 
         int posPrimerVacio = Global.POS_ERROR;
@@ -126,32 +557,32 @@ public class HorizontalVista {
                                 if (cv.get_carta() instanceof AMonstruo) {
                                     CartaVista posibleDestino = getHVMonstruoMismoTurno().getPrimerVacio();
                                     if (posibleDestino != null) {
-                                        if(Global.is_preguntarConfirmacionAccionesJugando()){
-                                            AlertConfirmacionMoverCarta(cv,posibleDestino);
-                                        }else{
+                                        if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                            AlertConfirmacionMoverCarta(cv, posibleDestino);
+                                        } else {
                                             cv.cambiarCartaVista(posibleDestino, true);
                                             Controlador.nuevoTurno();
                                         }
                                     } else {
-                                        if(Global.is_preguntarConfirmacionAccionesJugando()){
+                                        if (Global.is_preguntarConfirmacionAccionesJugando()) {
                                             AlertConfirmacionNuevoTurno(cv);
-                                        }else{
+                                        } else {
                                             Controlador.nuevoTurno();
                                         }
                                     }
                                 } else if (cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
                                     CartaVista posibleDestino = getHVHechizoMismoTurno().getPrimerVacio();
                                     if (posibleDestino != null) {
-                                        if(Global.is_preguntarConfirmacionAccionesJugando()){
-                                            AlertConfirmacionMoverCarta(cv,posibleDestino);
-                                        }else{
+                                        if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                            AlertConfirmacionMoverCarta(cv, posibleDestino);
+                                        } else {
                                             cv.cambiarCartaVista(posibleDestino, true);
                                             Controlador.nuevoTurno();
                                         }
                                     } else {
-                                        if(Global.is_preguntarConfirmacionAccionesJugando()){
+                                        if (Global.is_preguntarConfirmacionAccionesJugando()) {
                                             AlertConfirmacionNuevoTurno(cv);
-                                        }else{
+                                        } else {
                                             Controlador.nuevoTurno();
                                         }
                                     }
@@ -165,9 +596,9 @@ public class HorizontalVista {
                             if (Global.get_cartaVistaSeleccionada() == null) {
                                 if (getHVRival().get_cartasVista().get(0).igualImagenVacia()) {
                                     // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
-                                    if(Global.is_preguntarConfirmacionAccionesJugando()){
-                                        AlertConfirmacionMonstruoRealizarAccion(cv,null);
-                                    }else{
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionMonstruoRealizarAccion(cv, null);
+                                    } else {
                                         cv.get_carta().RealizarAccion(null);
                                         if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
                                             Controlador.nuevoTurno();
@@ -175,9 +606,9 @@ public class HorizontalVista {
                                     }
                                 } else if (getHVRival().get_cartasVista().get(1).igualImagenVacia()) {
                                     // SI EL RIVAL SOLO TIENE 1 MONSTRUO, LO ATACA SIN NECESIDAD DE SELECCIONARLO
-                                    if(Global.is_preguntarConfirmacionAccionesJugando()){
-                                        AlertConfirmacionMonstruoRealizarAccion(cv,(AMonstruo) getHVRival().get_cartasVista().get(0).get_carta());
-                                    }else{
+                                    if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                        AlertConfirmacionMonstruoRealizarAccion(cv, (AMonstruo) getHVRival().get_cartasVista().get(0).get_carta());
+                                    } else {
                                         cv.get_carta().RealizarAccion((AMonstruo) getHVRival().get_cartasVista().get(0).get_carta());
                                         if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
                                             Controlador.nuevoTurno();
@@ -189,9 +620,9 @@ public class HorizontalVista {
 
                             } else if (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo) {
 
-                                if(Global.is_preguntarConfirmacionAccionesJugando()){
+                                if (Global.is_preguntarConfirmacionAccionesJugando()) {
                                     AlertConfirmacionHechizoRealizarAccion(cv);
-                                }else{
+                                } else {
                                     Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
 
                                     if (((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
@@ -246,9 +677,9 @@ public class HorizontalVista {
                     public void onClick(View v) {
                         if (Global.get_cartaVistaSeleccionada() != null && cv.get_carta() instanceof AMonstruo) {
                             if (!Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() || (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() && Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.USAR)) {
-                                if(Global.is_preguntarConfirmacionAccionesJugando()){
+                                if (Global.is_preguntarConfirmacionAccionesJugando()) {
                                     AlertConfirmacionRealizarAccionAMonstruoRival(cv);
-                                }else{
+                                } else {
                                     Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
                                     if (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano()) {
                                         Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
@@ -274,193 +705,13 @@ public class HorizontalVista {
                     primerVacio.get_frameLayout().setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (Global.get_cartaVistaSeleccionada() != null &&((Global.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo()))) {
-                                if(Global.is_preguntarConfirmacionAccionesJugando()){
-                                    AlertConfirmacionMoverCarta(Global.get_cartaVistaSeleccionada(),primerVacio);
-                                }else{
+                            if (Global.get_cartaVistaSeleccionada() != null && ((Global.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo()))) {
+                                if (Global.is_preguntarConfirmacionAccionesJugando()) {
+                                    AlertConfirmacionMoverCarta(Global.get_cartaVistaSeleccionada(), primerVacio);
+                                } else {
                                     Global.get_cartaVistaSeleccionada().cambiarCartaVista(primerVacio, true);
                                     Controlador.nuevoTurno();
                                 }
-                            }
-                        }
-                    });
-                }
-            }
-        }
-
-    }
-
-
-    public void crearListenerCartaVistas2() {
-        boolean turno = esSuTurno(); // turno es para evitar ifs cada vez
-
-        int posPrimerVacio = Global.POS_ERROR;
-        for (int i = 0; i < _cartasVista.size(); i++) {
-            CartaVista cv = _cartasVista.get(i);
-            if (cv.igualImagenVacia()) {
-                //if(cv.get_imageView().getDrawable().getConstantState().equals(ContextCompat.getDrawable(Variables.get_gameActivityContext(), R.drawable.carta_vacia).getConstantState())){
-                posPrimerVacio = i;
-                break;
-            }
-
-            cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    ClipData data = ClipData.newPlainText("", "");
-                    View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(v);
-                    v.startDrag(data, shadowBuilder, v, 0);
-                    v.setVisibility(View.VISIBLE);
-                    return true;
-                }
-            });
-
-            cv.get_frameLayout().setOnDragListener(new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View v, DragEvent event) {
-                    switch (event.getAction()) {
-                        case DragEvent.ACTION_DRAG_STARTED:
-                            // Acción al iniciar el arrastre
-                            return true;
-                        case DragEvent.ACTION_DRAG_EXITED:
-                            // Acción al salir de la vista destino
-                            cv.verInformacion();
-                            return true;
-                        default:
-                            return false;
-                    }
-                }
-            });
-
-
-            if (turno) {
-                cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (esMano()) {
-                            if (Global.get_cartaVistaSeleccionada() == null && Global.is_modoOptimoJugando()) {
-                                if (cv.get_carta() instanceof AMonstruo) {
-                                    CartaVista posibleDestino = getHVMonstruoMismoTurno().getPrimerVacio();
-                                    if (posibleDestino != null) {
-                                        cv.cambiarCartaVista(posibleDestino, true);
-                                        Controlador.nuevoTurno();
-                                    } else {
-                                        Controlador.nuevoTurno();
-                                    }
-                                } else if (cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
-                                    CartaVista posibleDestino = getHVHechizoMismoTurno().getPrimerVacio();
-                                    if (posibleDestino != null) {
-                                        cv.cambiarCartaVista(posibleDestino, true);
-                                        Controlador.nuevoTurno();
-                                    } else {
-                                        Controlador.nuevoTurno();
-                                    }
-                                } else {
-                                    cv.seleccionarOQuitarSeleccionNoVacias();
-                                }
-                            } else {
-                                cv.seleccionarOQuitarSeleccionNoVacias();
-                            }
-                        } else if (cv.get_carta() instanceof AMonstruo) {
-                            if (Global.get_cartaVistaSeleccionada() == null) {
-                                if (getHVRival().get_cartasVista().get(0).igualImagenVacia()) {
-                                    // SI EL RIVAL NO TIENE MONSTRUO ATACA AL JUGADOR
-                                    cv.get_carta().RealizarAccion(null);
-                                    if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
-                                        Controlador.nuevoTurno();
-                                    }
-                                } else if (getHVRival().get_cartasVista().get(1).igualImagenVacia()) {
-                                    // SI EL RIVAL SOLO TIENE 1 MONSTRUO, LO ATACA SIN NECESIDAD DE SELECCIONARLO
-                                    cv.get_carta().RealizarAccion((AMonstruo) getHVRival().get_cartasVista().get(0).get_carta());
-                                    if (cv.get_carta().is_nuevoTurnoTrasRealizarAccion()) {
-                                        Controlador.nuevoTurno();
-                                    }
-                                } else {
-                                    cv.seleccionarOQuitarSeleccionNoVacias();
-                                }
-
-                            } else if (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo) {
-
-                                Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
-
-                                if (((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR) {
-                                    boolean nuevoTurno = Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion();
-                                    Global.get_cartaVistaSeleccionada().convertirseVacio(true);
-                                    if (nuevoTurno) {
-                                        Controlador.nuevoTurno();
-                                    } else {
-                                        VistaActivity.actualizar();
-                                    }
-                                } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
-                                    Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
-                                    if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
-                                        Controlador.nuevoTurno();
-                                    } else {
-                                        Global.set_cartaVistaSeleccionada(null);
-                                        VistaActivity.actualizar();
-                                    }
-                                }
-
-                            } else {
-                                cv.seleccionarOQuitarSeleccionNoVacias();
-                            }
-                        } else/* if(cv.get_carta() instanceof AHechizo)*/ {
-                            cv.seleccionarOQuitarSeleccionNoVacias();
-                        }
-                    }
-                });
-                if (!esMano() && esSuTurno() && cv.get_carta() instanceof AMonstruo) {
-                    AMonstruo cvMonstruo = (AMonstruo) cv.get_carta();
-                    cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            //cv.verInformacion();
-                            AlertMonstruoInfoCambiarModo(cv);
-                            return true;
-                        }
-                    });
-                } else if (esMano() && cv.get_carta() instanceof AHechizo && ((AHechizo) cv.get_carta()).get_accionHechizo() == EAccionHechizo.USAR) {
-                    cv.get_frameLayout().setOnLongClickListener(new View.OnLongClickListener() {
-                        @Override
-                        public boolean onLongClick(View v) {
-                            //cv.verInformacion();
-                            AlertHechizoInfoUsar(cv);
-                            return true;
-                        }
-                    });
-                }
-            } else {
-                cv.get_frameLayout().setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (Global.get_cartaVistaSeleccionada() != null && cv.get_carta() instanceof AMonstruo) {
-                            if (!Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() || (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano() && Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.USAR)) {
-                                Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
-                                if (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano()) {
-                                    Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
-                                }
-                                if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
-                                    Controlador.nuevoTurno();
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-        }
-        // NO ELIMINAR posPrimerVacio. PLANEO DESCOMENTARLO CUANDO SE PUEDA PERSONALIZAR EL MODO DESTINO AUTOMÁTICO A FALSE (EN TRUE POR DEFECTO ELIJE EL 1º VACIO AUTOMÁTICAMENTE SI EXISTE)
-
-        if (!Global.is_modoOptimoJugando() && posPrimerVacio != Global.POS_ERROR && posPrimerVacio < _cartasVista.size()) {
-            CartaVista primerVacio = _cartasVista.get(posPrimerVacio);
-            if (primerVacio != null) {
-                if (turno) {
-
-                    primerVacio.get_frameLayout().setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (Global.get_cartaVistaSeleccionada() != null &&((Global.get_cartaVistaSeleccionada().get_carta() instanceof AMonstruo && esMonstruo()) || (Global.get_cartaVistaSeleccionada().get_carta() instanceof AHechizo && ((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo() == EAccionHechizo.EQUIPAR && esHechizo()))) {
-                                Global.get_cartaVistaSeleccionada().cambiarCartaVista(primerVacio, true);
-                                Controlador.nuevoTurno();
                             }
                         }
                     });
@@ -651,7 +902,7 @@ public class HorizontalVista {
     public void AlertConfirmacionMoverCarta(CartaVista cv, CartaVista posibleDestino) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Global.get_activity());
         builder.setTitle("Confirmación");
-        builder.setMessage("¿Seguro que quieres mover la carta "+(cv.get_carta() instanceof AMonstruo?"monstruo ":"hechizo equipable ")+"llamado "+cv.get_carta().get_nombre()+"?");
+        builder.setMessage("¿Seguro que quieres mover la carta " + (cv.get_carta() instanceof AMonstruo ? "monstruo " : "hechizo equipable ") + "llamado " + cv.get_carta().get_nombre() + "?");
 
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
@@ -675,7 +926,7 @@ public class HorizontalVista {
     public void AlertConfirmacionMonstruoRealizarAccion(CartaVista cv, AMonstruo posibleObjetivo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Global.get_activity());
         builder.setTitle("Confirmación");
-        builder.setMessage("¿Seguro que quieres que "+cv.get_carta().get_nombre()+" realice su ataque a "+(posibleObjetivo==null?"tu rival":posibleObjetivo.get_nombre())+"?");
+        builder.setMessage("¿Seguro que quieres que " + cv.get_carta().get_nombre() + " realice su ataque a " + (posibleObjetivo == null ? "tu rival" : posibleObjetivo.get_nombre()) + "?");
 
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
@@ -701,7 +952,7 @@ public class HorizontalVista {
     public void AlertConfirmacionHechizoRealizarAccion(CartaVista cv) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Global.get_activity());
         builder.setTitle("Confirmación");
-        builder.setMessage("¿Seguro que quieres realizar la acción de la carta "+cv.get_carta().get_nombre()+" a "+(Global.get_cartaVistaSeleccionada().get_carta()==null?"ninguna carta en específico":Global.get_cartaVistaSeleccionada().get_carta().get_nombre())+"?");
+        builder.setMessage("¿Seguro que quieres realizar la acción de la carta " + cv.get_carta().get_nombre() + " a " + (Global.get_cartaVistaSeleccionada().get_carta() == null ? "ninguna carta en específico" : Global.get_cartaVistaSeleccionada().get_carta().get_nombre()) + "?");
 
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
@@ -742,18 +993,18 @@ public class HorizontalVista {
     public void AlertConfirmacionRealizarAccionAMonstruoRival(CartaVista cv) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Global.get_activity());
         builder.setTitle("Confirmación");
-        builder.setMessage("¿Seguro que quieres que "+Global.get_cartaVistaSeleccionada().get_carta().get_nombre()+" realice su acción a "+(cv.get_carta()==null?"ninguna carta en específico o jugador rival":cv.get_carta().get_nombre())+"?");
+        builder.setMessage("¿Seguro que quieres que " + Global.get_cartaVistaSeleccionada().get_carta().get_nombre() + " realice su acción a " + (cv.get_carta() == null ? "ninguna carta en específico o jugador rival" : cv.get_carta().get_nombre()) + "?");
 
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                    Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
-                    if (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano()) {
-                        Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
-                    }
-                    if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
-                        Controlador.nuevoTurno();
-                    }
+                Global.get_cartaVistaSeleccionada().get_carta().RealizarAccion((AMonstruo) cv.get_carta());
+                if (Global.get_cartaVistaSeleccionada().get_horizontalVista().esMano()) {
+                    Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
+                }
+                if (Global.get_cartaVistaSeleccionada().get_carta().is_nuevoTurnoTrasRealizarAccion()) {
+                    Controlador.nuevoTurno();
+                }
             }
         });
 

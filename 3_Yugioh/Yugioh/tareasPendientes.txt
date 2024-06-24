@@ -1,0 +1,68 @@
+----------------------------------------------
+TAREAS PENDIENTES:
+----------------------------------------------
+Prioridades posibles y algunos posibles indicadores:
+Baja (Pequeños detalles),
+Media (Mejorar/detalles ni pequeños ni grandes o nuevas funcionalidades útiles y notables pero no muy necesarias.),
+Alta (Nuevas funcionalidades necesarias o grandes detalles),
+Urgente (Cualquier cosa notable que arruine la aplicación/juego,
+como un bug que cierre el juego, impida jugar/ejecutar, probable que ocurra, etc).
+----------------------------------------------
+----------------------------------------------
+----------------------------------------------
+----------------------------------------------
+----------------------------------------------
+||||| ASIGNADOS A TODOS (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+Decidir en que tipo de archivo guardar los datos globales, de forma predeterminada.
+Y ver que tipos de archivos es viable permitirle elegir al usuario en un futuro en configurar.
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
+Buscar bugs/errores/posibles mejoras y si se encuentra decirlo a Antonio o crear una tarea pendiente
+Creador: Antonio. Prioridad: Media.
+----------------------------------------------
+----------------------------------------------
+||||| ASIGNADOS A ANTONIO (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+Al ver la info de una carta y girar la pantalla conseguir que se siga viendo la info de la carta.
+Probablemente creando un nuevo Activity o una variable global que indique la ubicación del usuario.
+(Probablemente tengamos el mismo problema con el menú principal, etc. La solución elegida aplicarla en esos sitios)
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
+Añadir idHorizontal como atributo de ACarta,
+considerando quitar datos redundantes como el horizontal en su CartaVista, etc.
+La idea es evitar guardar datos innecesarios en el fichero en un futuro (No guardar los TextView, etc),
+teniendo solo los datos guardables en ACarta.
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
+Convertir HorizontalVista en clase abstracta con nombre AHorizontalVista,
+, crear un java para cada uno (Mano Jugador 1, mano jugador 2, Monstruos jugador 1, etc)
+organizando mejor los HorizontalVista. ¡Primero una copia de seguridad por si acaso
+y al final probar que siga funcionando!
+Creador: Antonio. Prioridad: Baja.
+----------------------------------------------
+----------------------------------------------
+||||| ASIGNADOS A JOSE (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+Crear un menú principal que aparezca al ejecutar el juego, con 3 opciones: Jugar, configurar, cerrar juego.
+Y crear nuevas tareas pendientes relacionadas (Al hacer click en Jugar que haga tal cosa, etc).
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
+Crear e implementar un efecto sonoro de ataque, equiparse, hechizar, etc
+Creador: Jose. Prioridad: Media.
+----------------------------------------------
+----------------------------------------------
+||||| ASIGNADOS A NADIE POR AHORA (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+Buscar y descargar músicas/imágenes opcionales para que en el futuro el usuario pueda elegir el que quiera
+Creador: Antonio. Prioridad: Baja.
+----------------------------------------------
+Considerar/intentar crear un test que garantice que en la lista global que se guardan los HorizontalVista
+no se repitan los ids (EIdHorizontalVista) o evitar que se ingrese uno con el mismo id que uno añadido (sus ids son unicos)
+Creador: Antonio. Prioridad: Baja.
+----------------------------------------------
+

@@ -58,6 +58,7 @@ public class VistaActivity extends AppCompatActivity {
         }
     }
 
+    /*
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -75,8 +76,7 @@ public class VistaActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (Global.get_musicaFondo() == null) {
-            // ASIGNO ESE MP3 EN Global.restaurarValoresDefecto()
-            //Global.set_musicaFondo(MediaPlayer.create(this, R.raw.yugiho));
+            Global.set_musicaFondo(MediaPlayer.create(this, R.raw.yugiho));
             Global.get_musicaFondo().setLooping(true);
             Global.get_musicaFondo().start();
         } else if (!Global.get_musicaFondo().isPlaying()) {
@@ -90,7 +90,8 @@ public class VistaActivity extends AppCompatActivity {
         if (Global.get_musicaFondo() != null && Global.get_musicaFondo().isPlaying()) {
             Global.get_musicaFondo().pause();
         }
-    }
+    }*/
+
 
     /* COPIA SEGURIDAD
     @Override

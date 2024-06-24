@@ -21,7 +21,7 @@ public class Global {
     // ATRIBUTOS
     public final static int POS_ERROR=-1; // SI SE BUSCA RECIBIR UNA POSICIÓN DE UNA LISTA O ARREGLO Y NO SE ENCUENTRA O MANEJAR ALGÚN ERROR RELACIONADO
     private static Activity _activity; // RECIBE LA VistaActivity (ÚNICA ACTIVITY), PARA QUE SEA ACCESIBLE EN EL PROGRAMA, JUNTO AL CONTEXTO Y EL CONTENEDOR PRINCIPAL QUE ES UN LINEAR LAYOUT VERTICAL
-    private static boolean _primerOnCreate=true, _turnoJugador1, _modoOptimoJugando, _preguntarConfirmacionAccionesJugando;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR ESE 1º ESPACIO DISPONIBLE HACIENDO CLICK. ME HIZO ILUSIÓN PERMITIR LA INNECESARIA OPCIÓN false PARA EL FUTURO MENÚ PERSONALIZAR (SOY ANTONIO HRISTOV)
+    private static boolean _primerOnCreate=true, _turnoJugador1, _modoOptimoJugando, _preguntarConfirmacionAccionesJugando;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR MANUALMENTE LA CARTA VACÍA DESTINO.
     private static CartaVista _cartaVistaSeleccionada;// ES LA CARTA AL QUE EL JUGADOR HIZO CLICK Y TIENE EL BORDE EN ROJO
     // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
 
@@ -43,7 +43,6 @@ public class Global {
 
     // MÉTODOS
     public static void restaurarValoresDefecto(){
-        _turnoJugador1=(new Random().nextInt(2)==0)?true:false;
         _modoOptimoJugando=true;
         _preguntarConfirmacionAccionesJugando=true;
         _cartaVistaSeleccionada=null;
@@ -54,47 +53,9 @@ public class Global {
         _iniciandoPartidaCantidadManoHorizontalJ1=5;
         _iniciandoPartidaCantidadManoHorizontalJ2=5;
         _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll=5;
-
-        if (_musicaFondo == null) {
-            _musicaFondo = MediaPlayer.create(_activity.getApplicationContext(), R.raw.yugiho);
-            _musicaFondo.setLooping(true);
-            _musicaFondo.start();
-        } else if (!_musicaFondo.isPlaying()) {
-            _musicaFondo.start();
-        }
-
         _jugadores=new ArrayList<>();
         new Jugador("Vida Jugador 1: ","",8000);
         new Jugador("Vida Jugador 2: ","",8000);
-
-        _horizontalesVista=new ArrayList<>();
-        HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
-        hVManoJ2= new HorizontalVista(EIdHorizontalVista.J2_MANO);
-        for (int i = 0; i < _iniciandoPartidaCantidadManoHorizontalJ2-1; i++) {
-            new CartaVista(hVManoJ2, Controlador.getCartaJugableRandom());
-        }
-        hVHechizoJ2= new HorizontalVista(EIdHorizontalVista.J2_HECHIZO);
-        for (int i = 0; i < _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2; i++) {
-            new CartaVista(hVHechizoJ2,new CartaVacia());
-        }
-        hVMonstruoJ2= new HorizontalVista(EIdHorizontalVista.J2_MONSTRUO);
-        for (int i = 0; i < _iniciandoPartidaCantidadMonstruosHorizontalJ2; i++) {
-            new CartaVista(hVMonstruoJ2,new CartaVacia());
-        }
-        hVMonstruoJ1= new HorizontalVista(EIdHorizontalVista.J1_MONSTRUO);
-        for (int i = 0; i < _iniciandoPartidaCantidadMonstruosHorizontalJ1; i++) {
-            new CartaVista(hVMonstruoJ1,new CartaVacia());
-        }
-        hVHechizoJ1= new HorizontalVista(EIdHorizontalVista.J1_HECHIZO);
-        for (int i = 0; i < _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1; i++) {
-            new CartaVista(hVHechizoJ1,new CartaVacia());
-        }
-        hVManoJ1= new HorizontalVista(EIdHorizontalVista.J1_MANO);
-        for (int i = 0; i < _iniciandoPartidaCantidadManoHorizontalJ1-1; i++) {
-            new CartaVista(hVManoJ1,Controlador.getCartaJugableRandom());
-        }
-
-
     }
 
 
