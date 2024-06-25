@@ -87,6 +87,7 @@ Al hacer click en el botón "Atrás" iniciar la actividad MenuPrincipalActivity.
 Para hacer pruebas y ejecutar puedes cambiar temporalmente en java->Vista->MainActivity
 startActivity(new Intent(this, MenuPrincipalActivity.class)); -> startActivity(new Intent(this, JugarElegirDispositivo.class));
 Pero no olvides devolver el valor a MenuPrincipalActivity.class al terminar.
+Cualquier duda, sugerencia o cosa que no entiendas pregúntaselo a Antonio.
 Creador: Antonio. Prioridad: Alta.
 ----------------------------------------------
 ----------------------------------------------
