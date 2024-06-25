@@ -11,10 +11,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Yugioh"
-
         tools:targetApi="31">
         <activity
-            android:name=".Vista.VistaActivity"
+            android:name=".Vista.Configurar.MenuConfigurar"
+            android:exported="false" />
+        <activity
+            android:name=".Vista.Jugar.JugarElegirDispositivo"
+            android:exported="false" />
+        <activity
+            android:name=".Vista.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Vista.Jugar.JugandoInfoCartaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Vista.MenuPrincipalActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Vista.Jugar.JugandoActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -26,11 +26,6 @@ Creador: Antonio. Prioridad: Media.
 ||||| ASIGNADOS A ANTONIO (ABAJO) |||||
 ----------------------------------------------
 ----------------------------------------------
-Al ver la info de una carta y girar la pantalla conseguir que se siga viendo la info de la carta.
-Probablemente creando un nuevo Activity o una variable global que indique la ubicación del usuario.
-(Probablemente tengamos el mismo problema con el menú principal, etc. La solución elegida aplicarla en esos sitios)
-Creador: Antonio. Prioridad: Alta.
-----------------------------------------------
 Añadir idHorizontal como atributo de ACarta,
 considerando quitar datos redundantes como el horizontal en su CartaVista, etc.
 La idea es evitar guardar datos innecesarios en el fichero en un futuro (No guardar los TextView, etc),
@@ -47,12 +42,61 @@ Creador: Antonio. Prioridad: Baja.
 ||||| ASIGNADOS A JOSE (ABAJO) |||||
 ----------------------------------------------
 ----------------------------------------------
-Crear un menú principal que aparezca al ejecutar el juego, con 3 opciones: Jugar, configurar, cerrar juego.
-Y crear nuevas tareas pendientes relacionadas (Al hacer click en Jugar que haga tal cosa, etc).
-Creador: Antonio. Prioridad: Alta.
+Crear un menú principal que aparezca al ejecutar el juego, con 4 botones separados verticalmente (uno arriba del otro): "Jugar", "Tutorial", "Configurar", "Salir".
+Al hacer click en "Jugar" te lleva a la actividad JugarElegirDispositivo.class.
+Al hacer click en "Tutorial" te lleva una actividad que crees, explicando cosas básicas del juego pudiendo volver al menú principal si el jugador desea.
+Al hacer click en "Configurar" te lleva a la actividad MenuConfigurar.class.
+Al hacer click en "Salir", te lanza una ventana emergente de despedida y se cierra la aplicación.
+Creador: Antonio y Jose. Prioridad: Alta.
 ----------------------------------------------
 Crear e implementar un efecto sonoro de ataque, equiparse, hechizar, etc
 Creador: Jose. Prioridad: Media.
+----------------------------------------------
+----------------------------------------------
+||||| ASIGNADOS A PACO (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+En res->layout, tenemos activity_menu_configurar.xml. En Java, en los paquetes Vista->Configurar, tenemos MenuConfigurar.java.
+Quiero que el xml tenga arriba un título "MENÚ CONFIGURACIÓN" con tamaño grande (tal vez 50sp), en negrita.
+Debajo del título, un scrollview vertical que tenga dentro: 
+Un texto "Datos Configurables: "
+Debajo de "Datos Configurables: " muestras en varios TextView separados verticalmente
+los valores de los atributos que consideres configurables/personalizables guardados en la clase Global.java (java->Modelo->Global->Global.java)
+y para cada uno (al final de cada valor) un botón "Cambiar" que te lleva a una actividad que crees en donde puedas cambiar el valor o volver sin cambiar nada.
+Al final quiero 2 botones: "Restaurar valores predeterminados", "Atrás".
+Al hacer click en el botón "Restaurar valores predeterminados" mostrar un mensaje de confirmación y si acepta llamar a Global.restaurarValoresDefecto();
+Al hacer click en el botón "Atrás" iniciar la actividad MenuPrincipalActivity.class
+Para hacer pruebas y ejecutar puedes cambiar temporalmente en java->Vista->MainActivity
+startActivity(new Intent(this, MenuPrincipalActivity.class)); -> startActivity(new Intent(this, MenuConfigurar.class));
+Pero no olvides devolver el valor a MenuPrincipalActivity.class al terminar.
+Cualquier duda, sugerencia o cosa que no entiendas pregúntaselo a Antonio.
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
+----------------------------------------------
+||||| ASIGNADOS A KAMAL (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+En res->layout, tenemos activity_jugar_elegir_dispositivo.xml. En Java, en los paquetes Vista->Jugar, tenemos JugarElegirDispositivo.java.
+Quiero que el xml tenga arriba un título "ELIGE DISPOSITIVO PARA JUGAR" con tamaño grande (tal vez 50sp), en negrita.
+Debajo del título quiero 3 botones separados verticalmente (uno arriba del otro)
+De arriba a abajo los textos de los botones serían: "Este","Distintos","Atrás".
+Al hacer click en el botón "Este", (if !Global.is_empezarPartidaNueva()->Una ventana emergente preguntando si borrar datos de partida existente, si elige si: Global.set_empezarPartidaNueva(true);)
+Después de ese if (Independientemente de si entró o su respuesta), iniciar la actividad JugandoActivity.class 
+Al hacer click en el botón "Distintos" aparecerá una ventana emergente con el mensaje "No implementado por ahora"
+Al hacer click en el botón "Atrás" iniciar la actividad MenuPrincipalActivity.class
+Para hacer pruebas y ejecutar puedes cambiar temporalmente en java->Vista->MainActivity
+startActivity(new Intent(this, MenuPrincipalActivity.class)); -> startActivity(new Intent(this, JugarElegirDispositivo.class));
+Pero no olvides devolver el valor a MenuPrincipalActivity.class al terminar.
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
+----------------------------------------------
+||||| TERMINADOS (ABAJO) |||||
+----------------------------------------------
+----------------------------------------------
+Al ver la info de una carta y girar la pantalla conseguir que se siga viendo la info de la carta.
+Probablemente creando un nuevo Activity o una variable global que indique la ubicación del usuario.
+(Probablemente tengamos el mismo problema con el menú principal, etc. La solución elegida aplicarla en esos sitios)
+Creador: Antonio. Prioridad: Alta. Completado por: Antonio
 ----------------------------------------------
 ----------------------------------------------
 ||||| ASIGNADOS A NADIE POR AHORA (ABAJO) |||||

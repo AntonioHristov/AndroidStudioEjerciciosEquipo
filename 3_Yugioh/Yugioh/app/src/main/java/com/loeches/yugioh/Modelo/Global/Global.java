@@ -21,7 +21,7 @@ public class Global {
     // ATRIBUTOS
     public final static int POS_ERROR=-1; // SI SE BUSCA RECIBIR UNA POSICIÓN DE UNA LISTA O ARREGLO Y NO SE ENCUENTRA O MANEJAR ALGÚN ERROR RELACIONADO
     private static Activity _activity; // RECIBE LA VistaActivity (ÚNICA ACTIVITY), PARA QUE SEA ACCESIBLE EN EL PROGRAMA, JUNTO AL CONTEXTO Y EL CONTENEDOR PRINCIPAL QUE ES UN LINEAR LAYOUT VERTICAL
-    private static boolean _primerOnCreate=true, _turnoJugador1, _modoOptimoJugando, _preguntarConfirmacionAccionesJugando;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR MANUALMENTE LA CARTA VACÍA DESTINO.
+    private static boolean _turnoJugador1, _turnoAlAzar,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR MANUALMENTE LA CARTA VACÍA DESTINO.
     private static CartaVista _cartaVistaSeleccionada;// ES LA CARTA AL QUE EL JUGADOR HIZO CLICK Y TIENE EL BORDE EN ROJO
     // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
 
@@ -43,8 +43,11 @@ public class Global {
 
     // MÉTODOS
     public static void restaurarValoresDefecto(){
+        _turnoJugador1=true;
+        _turnoAlAzar=true;
         _modoOptimoJugando=true;
         _preguntarConfirmacionAccionesJugando=true;
+        _empezarPartidaNueva=true;
         _cartaVistaSeleccionada=null;
         _iniciandoPartidaCantidadMonstruosHorizontalJ1=5;
         _iniciandoPartidaCantidadMonstruosHorizontalJ2=5;
@@ -104,20 +107,20 @@ public class Global {
         _activity = activity;
     }
 
-    public static boolean is_primerOnCreate() {
-        return _primerOnCreate;
-    }
-
-    public static void set_primerOnCreate(boolean primerOnCreate) {
-        _primerOnCreate = primerOnCreate;
-    }
-
     public static boolean is_turnoJugador1() {
         return _turnoJugador1;
     }
 
     public static void set_turnoJugador1(boolean esTurnoJugador1) {
         _turnoJugador1 = esTurnoJugador1;
+    }
+
+    public static boolean is_turnoAlAzar() {
+        return _turnoAlAzar;
+    }
+
+    public static void set_turnoAlAzar(boolean turnoAlAzar) {
+        _turnoAlAzar = turnoAlAzar;
     }
 
     public static boolean is_modoOptimoJugando() {
@@ -134,6 +137,14 @@ public class Global {
 
     public static void set_preguntarConfirmacionAccionesJugando(boolean preguntarConfirmacionAccionesJugando) {
         _preguntarConfirmacionAccionesJugando = preguntarConfirmacionAccionesJugando;
+    }
+
+    public static boolean is_empezarPartidaNueva() {
+        return _empezarPartidaNueva;
+    }
+
+    public static void set_empezarPartidaNueva(boolean empezarPartidaNueva) {
+        _empezarPartidaNueva = empezarPartidaNueva;
     }
 
     public static CartaVista get_cartaVistaSeleccionada() {

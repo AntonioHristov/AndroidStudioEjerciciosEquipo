@@ -1,17 +1,15 @@
 package com.loeches.yugioh.Modelo.Vista;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -22,7 +20,8 @@ import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.R;
-import com.loeches.yugioh.Vista.VistaActivity;
+import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
+import com.loeches.yugioh.Vista.Jugar.JugandoInfoCartaActivity;
 
 public class CartaVista {
     private FrameLayout _frameLayout;
@@ -115,7 +114,14 @@ public class CartaVista {
     }
 
     public void verInformacion(){
-        VistaActivity.vaciar();
+        Intent intent=new Intent(Global.get_context(), JugandoInfoCartaActivity.class);
+        intent.putExtra("idHorizontal",_horizontalVista.get_id().toString());
+        intent.putExtra("pos",Global.getIndexHorizontalVista(this));
+        Global.get_activity().startActivity(intent);
+
+
+        /*
+        JugandoActivity.vaciar();
         Context context = Global.get_context();
         LinearLayout main = Global.get_linearMain();
         // Crear el ImageView
@@ -183,7 +189,7 @@ public class CartaVista {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VistaActivity.actualizar();
+                JugandoActivity.actualizar();
             }
         });
 
@@ -199,10 +205,11 @@ public class CartaVista {
         bt.setLayoutParams(params);
 
         main.addView(bt);
+        */
     }
 
     public void verInformacionCopia(){
-        VistaActivity.vaciar();
+        JugandoActivity.vaciar();
         Context context = Global.get_context();
         LinearLayout main = Global.get_linearMain();
         // Crear el ImageView
@@ -255,7 +262,7 @@ public class CartaVista {
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                VistaActivity.actualizar();
+                JugandoActivity.actualizarVista();
             }
         });
 

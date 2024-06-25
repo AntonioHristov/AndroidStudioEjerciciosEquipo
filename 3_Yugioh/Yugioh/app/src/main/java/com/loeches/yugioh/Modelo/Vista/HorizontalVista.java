@@ -15,7 +15,7 @@ import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.R;
-import com.loeches.yugioh.Vista.VistaActivity;
+import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -223,7 +223,7 @@ public class HorizontalVista {
                                             if (nuevoTurno) {
                                                 Controlador.nuevoTurno();
                                             } else {
-                                                VistaActivity.actualizar();
+                                                JugandoActivity.actualizarVista();
                                             }
                                         } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
                                             Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
@@ -231,7 +231,7 @@ public class HorizontalVista {
                                                 Controlador.nuevoTurno();
                                             } else {
                                                 Global.set_cartaVistaSeleccionada(null);
-                                                VistaActivity.actualizar();
+                                                JugandoActivity.actualizarVista();
                                             }
                                         }
                                     }
@@ -439,7 +439,7 @@ public class HorizontalVista {
                                             if (nuevoTurno) {
                                                 Controlador.nuevoTurno();
                                             } else {
-                                                VistaActivity.actualizar();
+                                                JugandoActivity.actualizarVista();
                                             }
                                         } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
                                             Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
@@ -447,7 +447,7 @@ public class HorizontalVista {
                                                 Controlador.nuevoTurno();
                                             } else {
                                                 Global.set_cartaVistaSeleccionada(null);
-                                                VistaActivity.actualizar();
+                                                JugandoActivity.actualizarVista();
                                             }
                                         }
                                     }
@@ -631,7 +631,7 @@ public class HorizontalVista {
                                         if (nuevoTurno) {
                                             Controlador.nuevoTurno();
                                         } else {
-                                            VistaActivity.actualizar();
+                                            JugandoActivity.actualizarVista();
                                         }
                                     } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
                                         Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
@@ -639,7 +639,7 @@ public class HorizontalVista {
                                             Controlador.nuevoTurno();
                                         } else {
                                             Global.set_cartaVistaSeleccionada(null);
-                                            VistaActivity.actualizar();
+                                            JugandoActivity.actualizarVista();
                                         }
                                     }
                                 }
@@ -965,7 +965,7 @@ public class HorizontalVista {
                     if (nuevoTurno) {
                         Controlador.nuevoTurno();
                     } else {
-                        VistaActivity.actualizar();
+                        JugandoActivity.actualizarVista();
                     }
                 } else {//if(((AHechizo) Global.get_cartaVistaSeleccionada().get_carta()).get_accionHechizo()==EAccionHechizo.USAR)
                     Global.get_cartaVistaSeleccionada().get_horizontalVista()._cartasVista.remove(Global.get_cartaVistaSeleccionada());
@@ -973,7 +973,7 @@ public class HorizontalVista {
                         Controlador.nuevoTurno();
                     } else {
                         Global.set_cartaVistaSeleccionada(null);
-                        VistaActivity.actualizar();
+                        JugandoActivity.actualizarVista();
                     }
                 }
             }

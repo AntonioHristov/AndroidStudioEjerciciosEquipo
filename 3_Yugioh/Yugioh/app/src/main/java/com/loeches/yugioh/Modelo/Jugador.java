@@ -22,44 +22,14 @@ public class Jugador {
     public Jugador(String textoPrefijoMostrarVida,String textoSufijoMostrarVida,int vida) {
         _textoPrefijoMostrarVida =textoPrefijoMostrarVida;
         _textoSufijoMostrarVida=textoSufijoMostrarVida;
-        set_tvVista();
         _vida = vida;
         Global.get_jugadores().add(this);
     }
-    public Jugador(String textoPrefijoMostrarVida,String textoSufijoMostrarVida) {
-        _textoPrefijoMostrarVida =textoPrefijoMostrarVida;
-        _textoSufijoMostrarVida=textoSufijoMostrarVida;
-        set_tvVista();
-        set_vida(8000);
-        Global.get_jugadores().add(this);
-    }
-
-    public Jugador(String textoPrefijoMostrarVida) {
-        _textoPrefijoMostrarVida =textoPrefijoMostrarVida;
-        _textoSufijoMostrarVida="";
-        set_tvVista();
-        set_vida(8000);
-        Global.get_jugadores().add(this);
-    }
-
-    public Jugador() {
-        _textoPrefijoMostrarVida ="";
-        _textoSufijoMostrarVida ="";
-        set_tvVista();
-        set_vida(8000);
-        Global.get_jugadores().add(this);
-    }
-
 
     public void EscribirCodigoXML(ViewGroup contenedor){
         set_tvVista();
         contenedor.addView(_tvVista);
     }
-
-
-
-
-
 
     public TextView get_tvVista() {
         return _tvVista;

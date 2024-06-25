@@ -34,16 +34,12 @@ import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
-import com.loeches.yugioh.Vista.VistaActivity;
+import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Controlador{
-
-    public static void mostrarMenuPrincipal(){
-
-    }
 
     public static void NuevaPartida(){
         if (Global.get_musicaFondo()==null) {
@@ -54,7 +50,9 @@ public class Controlador{
             Global.get_musicaFondo().start();
         }
 
-        Global.set_turnoJugador1((new Random().nextInt(2)==0)?true:false);
+        if(Global.is_turnoAlAzar()){
+            Global.set_turnoJugador1((new Random().nextInt(2)==0)?true:false);
+        }
 
         Global.set_horizontalesVista(new ArrayList<>());
         HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
@@ -83,16 +81,12 @@ public class Controlador{
             new CartaVista(hVManoJ1,Controlador.getCartaJugableRandom());
         }
 
-        nuevoTurno();
-    }
 
-    public static void restaurarValoresNuevaPartida(){
-        Global.restaurarValoresDefecto();
     }
 
     public static void nuevoTurno(){
         if(partidaTerminada()){
-            VistaActivity.mostrarGanador();
+            JugandoActivity.mostrarGanador();
         }else{
             Global.set_cartaVistaSeleccionada(null);
             Global.set_turnoJugador1(!Global.is_turnoJugador1());
@@ -109,7 +103,7 @@ public class Controlador{
                     }
                 }
             }
-            VistaActivity.actualizar();
+            JugandoActivity.actualizarVista();
         }
     }
 

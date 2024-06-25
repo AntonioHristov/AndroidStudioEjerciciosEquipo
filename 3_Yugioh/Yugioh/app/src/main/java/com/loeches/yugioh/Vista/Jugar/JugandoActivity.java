@@ -1,9 +1,7 @@
-package com.loeches.yugioh.Vista;
+package com.loeches.yugioh.Vista.Jugar;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -23,11 +21,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Vista.CartaVista;
-import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
 
-public class VistaActivity extends AppCompatActivity {
+public class JugandoActivity extends AppCompatActivity {
 /*
     private MediaPlayer backgroundPlayer;
     public MediaPlayer attackPlayer;*/
@@ -36,7 +32,7 @@ public class VistaActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_vista);
+        setContentView(R.layout.activity_jugando);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -45,17 +41,19 @@ public class VistaActivity extends AppCompatActivity {
 
         Global.set_activity(this);
 
-        if(Global.is_primerOnCreate()){
-            Global.set_primerOnCreate(false);
-            Global.restaurarValoresDefecto();
+        if (Global.is_empezarPartidaNueva()) {
+            Global.set_empezarPartidaNueva(false);
             Controlador.NuevaPartida();
-        }else{
-            if(Controlador.partidaTerminada()){
-                mostrarGanador();
-            }else{
-                actualizar();
-            }
+            Controlador.nuevoTurno();
+            return;
         }
+
+        if (Controlador.partidaTerminada()) {
+            mostrarGanador();
+            return;
+        }
+
+        actualizarVista();
     }
 
     /*
@@ -127,7 +125,7 @@ public class VistaActivity extends AppCompatActivity {
         }
     }*/
 
-    public static void vaciar(){
+    public static void vaciar() {
         Global.get_linearMain().removeAllViews();
         /*
         for (HorizontalVista hv: Global.get_horizontalesVista()) {
@@ -135,19 +133,19 @@ public class VistaActivity extends AppCompatActivity {
         }*/
     }
 
-    public static void actualizar(){
+    public static void actualizarVista() {
         vaciar();
-        if(Global.is_turnoJugador1()){
+        if (Global.is_turnoJugador1()) {
             // 1 PORQUE NO MOSTRAMOS LAS CARTAS DE LA MANO DEL RIVAL
             for (int i = 1; i < Global.get_horizontalesVista().size(); i++) {
-                if(i==3){
+                if (i == 3) {
                     mostrarDatosJugadoresCentro();
                 }
                 Global.get_horizontalesVista().get(i).EscribirCodigoXML(!Global.get_horizontalesVista().get(i).esSuTurno());
             }
-        }else{
-            for (int i = Global.get_horizontalesVista().size()-2; i > -1; i--) {
-                if(i==2){
+        } else {
+            for (int i = Global.get_horizontalesVista().size() - 2; i > -1; i--) {
+                if (i == 2) {
                     mostrarDatosJugadoresCentro();
                 }
                 Global.get_horizontalesVista().get(i).EscribirCodigoXML(!Global.get_horizontalesVista().get(i).esSuTurno());
@@ -155,19 +153,19 @@ public class VistaActivity extends AppCompatActivity {
         }
     }
 
-    public static void mostrarGanador(){
-        VistaActivity.vaciar();
+    public static void mostrarGanador() {
+        JugandoActivity.vaciar();
         Context context = Global.get_context();
         LinearLayout main = Global.get_linearMain();
 
         TextView textView = new TextView(context);
-        if(Global.get_jugadores().get(0).get_vida()==0 && Global.get_jugadores().get(1).get_vida()==0){
+        if (Global.get_jugadores().get(0).get_vida() == 0 && Global.get_jugadores().get(1).get_vida() == 0) {
             textView.setText("EMPATE, NADIE GANÓ");
-        }else if(Global.get_jugadores().get(1).get_vida()==0){
+        } else if (Global.get_jugadores().get(1).get_vida() == 0) {
             textView.setText("GANÓ EL JUGADOR 1");
-        }else if(Global.get_jugadores().get(0).get_vida()==0){
+        } else if (Global.get_jugadores().get(0).get_vida() == 0) {
             textView.setText("GANÓ EL JUGADOR 2");
-        }else{
+        } else {
             textView.setText("NADIE PERDIÓ, WTF ESTO NO DEBERÍA OCURRIR...");
         }
         //textView.setTextSize(50); // Tamaño del texto en "sp" (Scale-independent Pixels)
@@ -180,7 +178,7 @@ public class VistaActivity extends AppCompatActivity {
         ));*/
         textView.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                0,1
+                0, 1
         ));
 
         main.addView(textView);
@@ -199,7 +197,7 @@ public class VistaActivity extends AppCompatActivity {
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
-                0,1
+                0, 1
         );
         params.gravity = Gravity.CENTER_HORIZONTAL;
 
@@ -210,7 +208,7 @@ public class VistaActivity extends AppCompatActivity {
         main.addView(bt);
     }
 
-    public static LinearLayout crearLinearVerticalJugadoresCentroVista(){
+    public static LinearLayout crearLinearVerticalJugadoresCentroVista() {
         LinearLayout llHorizontal = new LinearLayout(Global.get_context());
         LinearLayout.LayoutParams llHParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -222,8 +220,8 @@ public class VistaActivity extends AppCompatActivity {
         return llHorizontal;
     }
 
-    public static void escribirXmlDivider(ViewGroup contenedor){
-        Context context=Global.get_context();
+    public static void escribirXmlDivider(ViewGroup contenedor) {
+        Context context = Global.get_context();
         View dividerView = new View(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -237,14 +235,14 @@ public class VistaActivity extends AppCompatActivity {
         contenedor.addView(dividerView);
     }
 
-    public static void mostrarDatosJugadoresCentro(){
+    public static void mostrarDatosJugadoresCentro() {
         LinearLayout llHorizontal = crearLinearVerticalJugadoresCentroVista();
         Global.get_linearMain().addView(llHorizontal);
-        if(Global.is_turnoJugador1()){
+        if (Global.is_turnoJugador1()) {
             Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
             escribirXmlDivider(llHorizontal);
             Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
-        }else{
+        } else {
             Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
             escribirXmlDivider(llHorizontal);
             Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
