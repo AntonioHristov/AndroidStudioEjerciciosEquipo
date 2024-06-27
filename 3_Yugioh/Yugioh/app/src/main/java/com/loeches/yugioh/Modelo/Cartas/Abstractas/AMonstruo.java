@@ -1,5 +1,7 @@
 package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
+import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
+
 public abstract class AMonstruo extends ACarta{
     private int _ataqueBase, _defensaBase, _ataque,_defensa, _turnosAumentoAtaque, _turnosAumentoDefensa;
     private boolean _modoDefensa;

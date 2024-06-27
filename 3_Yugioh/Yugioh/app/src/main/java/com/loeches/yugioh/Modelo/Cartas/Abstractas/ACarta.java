@@ -1,28 +1,42 @@
 package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
+import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
+import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
 
+import java.util.List;
 import java.util.Objects;
 
 public abstract class ACarta {
     private String _nombre, _descripcion;
     private int _imagen;
+    private EIdHorizontalVista _idHorizontalVista;
     private boolean _nuevoTurnoTrasRealizarAccion;
-    private CartaVista _cartaVista;
+    //private CartaVista _cartaVista;
 
     public ACarta(String nombre, String descripcion, int imagen) {
         _nombre = nombre;
         _descripcion = descripcion;
         _imagen = imagen;
         _nuevoTurnoTrasRealizarAccion=true;
-        _cartaVista=null;
+        //_cartaVista=null;
+    }
+
+    public ACarta(String nombre, String descripcion, int imagen, EIdHorizontalVista idHorizontalVista, boolean nuevoTurnoTrasRealizarAccion) {
+        _nombre = nombre;
+        _descripcion = descripcion;
+        _imagen = imagen;
+        _idHorizontalVista=idHorizontalVista;
+        _nuevoTurnoTrasRealizarAccion=nuevoTurnoTrasRealizarAccion;
+        //_cartaVista=null;
     }
 
     public ACarta(ACarta copia){
         _nombre=copia._nombre;
         _descripcion=copia._descripcion;
         _imagen=copia._imagen;
-        _nuevoTurnoTrasRealizarAccion=true;
+        _nuevoTurnoTrasRealizarAccion=copia._nuevoTurnoTrasRealizarAccion;
+        _idHorizontalVista = copia._idHorizontalVista;
     }
 
     public abstract void RealizarAccion(AMonstruo posibleObjetivo);
@@ -47,13 +61,33 @@ public abstract class ACarta {
         this._nuevoTurnoTrasRealizarAccion = _nuevoTurnoTrasRealizarAccion;
     }
 
+    public EIdHorizontalVista get_idHorizontalVista() {
+        return _idHorizontalVista;
+    }
+
+    public void set_idHorizontalVista(EIdHorizontalVista idHorizontalVista) {
+        _idHorizontalVista = idHorizontalVista;
+    }
+
+
+    public CartaVista get_cartaVista() {
+        for (CartaVista cv:Global.getBy(_idHorizontalVista).get_cartasVista()) {
+            if(cv.get_carta()==this){
+                return cv;
+            }
+        }
+        return null;
+    }
+
+
+    /*
     public CartaVista get_cartaVista() {
         return _cartaVista;
     }
 
     public void set_cartaVista(CartaVista cartaVista) {
         _cartaVista = cartaVista;
-    }
+    }*/
 
     @Override
     public boolean equals(Object o) {
@@ -66,6 +100,8 @@ public abstract class ACarta {
     @Override
     public String toString() {
         return "Nombre: " + _nombre + " | " +
-                "Descripción: " + _descripcion + " | ";
+                "Descripción: " + _descripcion + " | "+
+                "Id Horizontal: " + _idHorizontalVista.toString() + " | "+
+                "Nuevo turno tras accion: " + _nuevoTurnoTrasRealizarAccion + " | ";
     }
 }

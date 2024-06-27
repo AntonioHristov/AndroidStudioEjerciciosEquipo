@@ -37,6 +37,7 @@ public class Global {
     private static MediaPlayer _musicaFondo;
     public static MediaPlayer _sonidoAtaqueMonstruo;
 
+
     private static List<HorizontalVista> _horizontalesVista = new ArrayList<>();// Los linear layout horizontales que contienen las cartas y sus datos
     private static List<Jugador> _jugadores =new ArrayList<>();// pos 0=Jugador 1, pos 1=Jugador 2
 // FIN ATRIBUTOS

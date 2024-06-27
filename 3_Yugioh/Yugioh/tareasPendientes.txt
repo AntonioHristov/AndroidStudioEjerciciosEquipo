@@ -26,11 +26,10 @@ Creador: Antonio. Prioridad: Media.
 ||||| ASIGNADOS A ANTONIO (ABAJO) |||||
 ----------------------------------------------
 ----------------------------------------------
-Añadir idHorizontal como atributo de ACarta,
-considerando quitar datos redundantes como el horizontal en su CartaVista, etc.
-La idea es evitar guardar datos innecesarios en el fichero en un futuro (No guardar los TextView, etc),
-teniendo solo los datos guardables en ACarta.
-Creador: Antonio. Prioridad: Alta.
+Crear un Enum de los tipos de archivos en donde se guardarán los datos (En principio 2 opciones "Ninguno", "JSON", en un futuro tal vez añadamos más).
+En Global una variable estática del tipo de ese Enum y dependiendo de su valor hacerlo funcional (Guardar/cargar datos del Global o del JSON)
+La idea es guardar/cargar Los datos de ACarta y algunas variables de la partida como el turno del jugador, etc.
+Creador: Antonio. Prioridad: Alta
 ----------------------------------------------
 Convertir HorizontalVista en clase abstracta con nombre AHorizontalVista,
 , crear un java para cada uno (Mano Jugador 1, mano jugador 2, Monstruos jugador 1, etc)
@@ -99,15 +98,29 @@ Probablemente creando un nuevo Activity o una variable global que indique la ubi
 (Probablemente tengamos el mismo problema con el menú principal, etc. La solución elegida aplicarla en esos sitios)
 Creador: Antonio. Prioridad: Alta. Completado por: Antonio
 ----------------------------------------------
+Añadir idHorizontal como atributo de ACarta,
+considerando quitar datos redundantes como el horizontal en su CartaVista, etc.
+La idea es evitar guardar datos innecesarios en el fichero en un futuro (No guardar los TextView, etc),
+teniendo solo los datos guardables en ACarta.
+Creador: Antonio. Prioridad: Alta. Completado por: Antonio
+----------------------------------------------
 ----------------------------------------------
 ||||| ASIGNADOS A NADIE POR AHORA (ABAJO) |||||
 ----------------------------------------------
+----------------------------------------------
+Tenemos un hechizo de uso inmediato llamado Ojo de la verdad (java->Modelo->Cartas->Ejemplares->Hechizos->Inmediatas->HuOjoDeLaVerdad.java).
+Quiero que al acabarse los turnos del aumento, en vez de volver al ataque base se le quite al monstruo el ataque aumentado.
+Probablemente haya que guardar el ataque aumentado y al acabar los turnos quitarle ese ataque aumentado al ataque que tenga.
+Creador: Antonio. Prioridad: Media
 ----------------------------------------------
 Buscar y descargar músicas/imágenes opcionales para que en el futuro el usuario pueda elegir el que quiera
 Creador: Antonio. Prioridad: Baja.
 ----------------------------------------------
 Considerar/intentar crear un test que garantice que en la lista global que se guardan los HorizontalVista
 no se repitan los ids (EIdHorizontalVista) o evitar que se ingrese uno con el mismo id que uno añadido (sus ids son unicos)
+Creador: Antonio. Prioridad: Baja.
+----------------------------------------------
+Cambiar los ScrollViews por RecyclerViews, la idea es ahorrar memoria.
 Creador: Antonio. Prioridad: Baja.
 ----------------------------------------------
 

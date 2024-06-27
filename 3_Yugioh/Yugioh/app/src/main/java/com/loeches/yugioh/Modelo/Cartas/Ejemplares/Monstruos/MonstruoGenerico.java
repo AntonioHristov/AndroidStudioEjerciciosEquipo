@@ -34,6 +34,7 @@ public class MonstruoGenerico extends AMonstruo {
                 }else{
                     posibleObjetivo.set_defensa(posibleObjetivo.get_defensa() - this.get_ataque());
                     if (posibleObjetivo.get_defensa() <= 0) {
+                        System.out.println(posibleObjetivo.get_idHorizontalVista().toString());
                         posibleObjetivo.get_cartaVista().convertirseVacio(true);
                     }
                 }

@@ -21,6 +21,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Global.Global;
+import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 public class JugandoActivity extends AppCompatActivity {
@@ -127,10 +128,10 @@ public class JugandoActivity extends AppCompatActivity {
 
     public static void vaciar() {
         Global.get_linearMain().removeAllViews();
-        /*
+
         for (HorizontalVista hv: Global.get_horizontalesVista()) {
             hv.get_llHorizontal().removeAllViews();
-        }*/
+        }
     }
 
     public static void actualizarVista() {

@@ -18,49 +18,49 @@ import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
+import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
 import com.loeches.yugioh.Vista.Jugar.JugandoInfoCartaActivity;
 
+import java.util.List;
+
 public class CartaVista {
     private FrameLayout _frameLayout;
     private ImageView _imageView;
     private ACarta _carta;
-    private HorizontalVista _horizontalVista;
 
     public CartaVista(HorizontalVista horizontalVista, ACarta carta) {
+        _carta=carta;
         set_horizontalVista(horizontalVista);
-        set_carta(carta);// EN set_carta SE HACE set_imageView()
-        set_frameLayout();
     }
 
     public CartaVista(CartaVista copia) {
         _frameLayout=copia._frameLayout;
         _imageView=copia._imageView;
         _carta=copia._carta;
-        _horizontalVista=copia._horizontalVista;
     }
 
     public void EscribirCodigoXML() {
         set_frameLayoutAndImageView();
         _frameLayout.addView(_imageView);
-        _horizontalVista.get_llHorizontal().addView(_frameLayout);
+        get_horizontalVista().get_llHorizontal().addView(_frameLayout);
     }
 
     public void cambiarCartaVista(CartaVista destino, boolean eliminarEsta){
         int posHvThis = Global.getIndexHorizontalVista(this), posHvDestino= Global.getIndexHorizontalVista(destino);
-        HorizontalVista hvThis=this._horizontalVista,hvDestino=destino._horizontalVista;
+        HorizontalVista hvThis=this.get_horizontalVista(),hvDestino=destino.get_horizontalVista();
 
-        this._horizontalVista.get_cartasVista().set(posHvThis,destino);
-        destino._horizontalVista.get_cartasVista().set(posHvDestino,this);
+        this.get_horizontalVista().get_cartasVista().set(posHvThis,destino);
+        destino.get_horizontalVista().get_cartasVista().set(posHvDestino,this);
 
-        this._horizontalVista= Global.getBy(hvDestino.get_id());
-        destino._horizontalVista= Global.getBy(hvThis.get_id());
+        this.get_carta().set_idHorizontalVista(destino.get_horizontalVista().get_id());
+        destino.get_carta().set_idHorizontalVista(this.get_horizontalVista().get_id());
 
         if(eliminarEsta){
             // PORQUE "Esta" SE CAMBIÓ POR EL DESTINO
-            destino._horizontalVista.get_cartasVista().remove(destino);
+            destino.get_horizontalVista().get_cartasVista().remove(destino);
         }
     }
 
@@ -73,13 +73,13 @@ public class CartaVista {
                     this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_selected);
                     this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5), Utilidades.dpToPx(context, 5));
                     Global.set_cartaVistaSeleccionada(this);
-                    _horizontalVista.crearListenerCartaVistas();
+                    get_horizontalVista().crearListenerCartaVistas();
                 } else {
                     // Los drawables son diferentes
                     this.get_frameLayout().setBackgroundResource(R.drawable.imageview_border_default);
                     this.get_frameLayout().setPadding(Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1), Utilidades.dpToPx(context, 1));
                     Global.set_cartaVistaSeleccionada(null);
-                    _horizontalVista.crearListenerCartaVistas();
+                    get_horizontalVista().crearListenerCartaVistas();
                 }
             }
         }
@@ -104,7 +104,8 @@ public class CartaVista {
             if(Global.get_cartaVistaSeleccionada()==this){
                 Global.set_cartaVistaSeleccionada(null);
             }
-        set_carta(new CartaVacia());
+        set_carta(new CartaVacia(),get_horizontalVista());
+
         this.get_frameLayout().setOnClickListener(null);
         this.get_frameLayout().setOnLongClickListener(null);
         this.get_frameLayout().setOnDragListener(null);
@@ -115,176 +116,10 @@ public class CartaVista {
 
     public void verInformacion(){
         Intent intent=new Intent(Global.get_context(), JugandoInfoCartaActivity.class);
-        intent.putExtra("idHorizontal",_horizontalVista.get_id().toString());
+        intent.putExtra("idHorizontal",get_horizontalVista().get_id().toString());
         intent.putExtra("pos",Global.getIndexHorizontalVista(this));
         Global.get_activity().startActivity(intent);
-
-
-        /*
-        JugandoActivity.vaciar();
-        Context context = Global.get_context();
-        LinearLayout main = Global.get_linearMain();
-        // Crear el ImageView
-        ImageView imageView = new ImageView(context);
-        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                2
-        );
-        imageViewParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
-        imageView.setLayoutParams(imageViewParams);
-        imageView.setRotation(0);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        if(get_carta()==null){
-            imageView.setImageResource(R.color.black);
-        }else{
-            imageView.setImageResource(get_carta().get_imagen());
-            if(get_carta() instanceof AMonstruo){
-                AMonstruo cvMonstruo = (AMonstruo) get_carta();
-            }
-        }
-        main.addView(imageView);
-
-
-        ScrollView scrollView = new ScrollView(Global.get_context());
-        scrollView.setLayoutParams(new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                3
-        ));
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) scrollView.getLayoutParams();
-        layoutParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
-        scrollView.setLayoutParams(layoutParams);
-        main.addView(scrollView);
-
-
-        TextView tv = new TextView(context);
-        //tv.setText("HOOLA");
-        tv.setText(_carta.toString());
-
-        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
-        //tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-        tv.setGravity(Gravity.CENTER);
-        //tv.setBackgroundColor(Color.RED);
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 50);
-        //tv.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        ScrollView.LayoutParams tvParams = new ScrollView.LayoutParams(
-                ScrollView.LayoutParams.MATCH_PARENT,
-                ScrollView.LayoutParams.WRAP_CONTENT
-        );
-
-        tv.setLayoutParams(tvParams);
-
-        scrollView.addView(tv);
-
-
-
-
-        //main.addView(tv);
-
-        Button bt = new Button(context);
-        bt.setText("Seguir Jugando");
-        //bt.setTextSize(30);
-        bt.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JugandoActivity.actualizar();
-            }
-        });
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                1
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-
-        params.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
-
-        bt.setLayoutParams(params);
-
-        main.addView(bt);
-        */
     }
-
-    public void verInformacionCopia(){
-        JugandoActivity.vaciar();
-        Context context = Global.get_context();
-        LinearLayout main = Global.get_linearMain();
-        // Crear el ImageView
-        ImageView imageView = new ImageView(context);
-        LinearLayout.LayoutParams imageViewParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                2
-        );
-        imageViewParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
-        imageView.setLayoutParams(imageViewParams);
-        imageView.setRotation(0);
-        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        if(get_carta()==null){
-            imageView.setImageResource(R.color.black);
-        }else{
-            imageView.setImageResource(get_carta().get_imagen());
-            if(get_carta() instanceof AMonstruo){
-                AMonstruo cvMonstruo = (AMonstruo) get_carta();
-            }
-        }
-        main.addView(imageView);
-
-        TextView tv = new TextView(context);
-        //tv.setText("HOOLA");
-        tv.setText(_carta.toString());
-
-        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
-        //tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-        tv.setGravity(Gravity.CENTER);
-        //tv.setBackgroundColor(Color.RED);
-        tv.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                //LinearLayout.LayoutParams.MATCH_PARENT
-                0,
-                3
-        );
-        tvParams.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
-        tv.setLayoutParams(tvParams);
-
-
-
-        main.addView(tv);
-
-        Button bt = new Button(context);
-        bt.setText("Seguir Jugando");
-        //bt.setTextSize(30);
-        bt.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        bt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                JugandoActivity.actualizarVista();
-            }
-        });
-
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                0,
-                1
-        );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
-
-        params.setMargins(Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10), Utilidades.dpToPx(10));
-
-        bt.setLayoutParams(params);
-
-        main.addView(bt);
-    }
-
-
-
-
-
-
 
     public FrameLayout get_frameLayout() {
         return _frameLayout;
@@ -359,26 +194,23 @@ public class CartaVista {
         return _carta;
     }
 
-    public void set_carta(ACarta carta) {
+    public void set_carta(ACarta carta, HorizontalVista horizontalVista) {
         _carta = carta;
-        if(_imageView==null){
-            set_imageView();
-        }
-        _imageView.setImageResource(carta.get_imagen());
-        carta.set_cartaVista(this);
+        carta.set_idHorizontalVista(horizontalVista.get_id());
     }
 
     public HorizontalVista get_horizontalVista() {
-        return _horizontalVista;
+        return Global.getBy(_carta.get_idHorizontalVista());
     }
 
+
     public void set_horizontalVista(HorizontalVista horizontalVista) {
-        if(_horizontalVista!=null){
-            _horizontalVista.get_cartasVista().remove(this);
+        if(get_horizontalVista()!=null){
+            get_horizontalVista().get_cartasVista().remove(this);
         }
         if(horizontalVista!=null){
             horizontalVista.get_cartasVista().add(this);
         }
-        _horizontalVista = horizontalVista;
+        _carta.set_idHorizontalVista(horizontalVista.get_id());
     }
 }
