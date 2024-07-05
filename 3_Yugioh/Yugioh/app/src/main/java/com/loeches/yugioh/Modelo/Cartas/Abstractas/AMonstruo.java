@@ -7,6 +7,9 @@ public abstract class AMonstruo extends ACarta{
     private boolean _modoDefensa;
     private boolean _llevaEspejoDragon;
 
+    public AMonstruo() {
+        super();
+    }
 
     public AMonstruo(String nombre, String descripcion, int imagen, int ataque, int defensa) {
         super(nombre, descripcion, imagen);

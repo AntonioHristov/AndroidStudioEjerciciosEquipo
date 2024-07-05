@@ -1,7 +1,5 @@
 package com.loeches.yugioh.Controlador;
 
-import android.media.MediaPlayer;
-
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
@@ -40,60 +38,110 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Controlador{
-
+// INFORMACIÓN SOBRE GUARDAR Y CARGAR DATOS DE JSON, EN LA CLASE CONTROLADOR AL FINAL DEL MÉTODO nuevoTurno()
     public static void NuevaPartida(){
-        if (Global.get_musicaFondo()==null) {
-            Global.set_musicaFondo(MediaPlayer.create(Global.get_context(), R.raw.yugiho));
-            Global.get_musicaFondo().setLooping(true);
-            Global.get_musicaFondo().start();
-        } else if (!Global.get_musicaFondo().isPlaying()) {
-            Global.get_musicaFondo().start();
-        }
+        Global.set_jugadores(new ArrayList<>());
+        new Jugador(Global.get_iniciandoJugador1Prefijo(),Global.get_iniciandoJugador1Sufijo(),Global.get_iniciandoJugador1Vida());
+        new Jugador(Global.get_iniciandoJugador2Prefijo(),Global.get_iniciandoJugador2Sufijo(),Global.get_iniciandoJugador2Vida());
 
         if(Global.is_turnoAlAzar()){
             Global.set_turnoJugador1((new Random().nextInt(2)==0)?true:false);
+        }else{
+            Global.set_turnoJugador1(!Global.is_turnoJugador1());
         }
+
 
         Global.set_horizontalesVista(new ArrayList<>());
         HorizontalVista hVManoJ2,hVHechizoJ2,hVMonstruoJ2,hVMonstruoJ1, hVHechizoJ1,hVManoJ1;
         hVManoJ2= new HorizontalVista(EIdHorizontalVista.J2_MANO);
         for (int i = 0; i < Global.get_iniciandoPartidaCantidadManoHorizontalJ2()-1; i++) {
-            new CartaVista(hVManoJ2, Controlador.getCartaJugableRandom());
+            ACarta nuevaCarta=Controlador.getCartaJugableRandom();
+            nuevaCarta.set_idHorizontalVista(hVManoJ2.get_id());
+            new CartaVista(hVManoJ2, nuevaCarta);
         }
         hVHechizoJ2= new HorizontalVista(EIdHorizontalVista.J2_HECHIZO);
         for (int i = 0; i < Global.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2(); i++) {
-            new CartaVista(hVHechizoJ2,new CartaVacia());
+            ACarta nuevaCarta=new CartaVacia(hVHechizoJ2.get_id());
+            new CartaVista(hVHechizoJ2, nuevaCarta);
         }
         hVMonstruoJ2= new HorizontalVista(EIdHorizontalVista.J2_MONSTRUO);
         for (int i = 0; i < Global.get_iniciandoPartidaCantidadMonstruosHorizontalJ2(); i++) {
-            new CartaVista(hVMonstruoJ2,new CartaVacia());
+            ACarta nuevaCarta=new CartaVacia(hVMonstruoJ2.get_id());
+            new CartaVista(hVMonstruoJ2, nuevaCarta);
         }
         hVMonstruoJ1= new HorizontalVista(EIdHorizontalVista.J1_MONSTRUO);
         for (int i = 0; i < Global.get_iniciandoPartidaCantidadMonstruosHorizontalJ1(); i++) {
-            new CartaVista(hVMonstruoJ1,new CartaVacia());
+            ACarta nuevaCarta=new CartaVacia(hVMonstruoJ1.get_id());
+            new CartaVista(hVMonstruoJ1, nuevaCarta);
         }
         hVHechizoJ1= new HorizontalVista(EIdHorizontalVista.J1_HECHIZO);
         for (int i = 0; i < Global.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1(); i++) {
-            new CartaVista(hVHechizoJ1,new CartaVacia());
+            ACarta nuevaCarta=new CartaVacia(hVHechizoJ1.get_id());
+            new CartaVista(hVHechizoJ1, nuevaCarta);
         }
         hVManoJ1= new HorizontalVista(EIdHorizontalVista.J1_MANO);
         for (int i = 0; i < Global.get_iniciandoPartidaCantidadManoHorizontalJ1()-1; i++) {
-            new CartaVista(hVManoJ1,Controlador.getCartaJugableRandom());
+            ACarta nuevaCarta=Controlador.getCartaJugableRandom();
+            nuevaCarta.set_idHorizontalVista(hVManoJ1.get_id());
+            new CartaVista(hVManoJ1, nuevaCarta);
         }
 
 
     }
 
+
+    public static void crearHorizontalesSiNoExisten(){
+        if(Global.get_horizontalesVista()==null||Global.get_horizontalesVista().isEmpty()){
+            Global.set_horizontalesVista(new ArrayList<>());
+
+            new HorizontalVista(EIdHorizontalVista.J2_MANO);
+            new HorizontalVista(EIdHorizontalVista.J2_HECHIZO);
+            new HorizontalVista(EIdHorizontalVista.J2_MONSTRUO);
+            new HorizontalVista(EIdHorizontalVista.J1_MONSTRUO);
+            new HorizontalVista(EIdHorizontalVista.J1_HECHIZO);
+            new HorizontalVista(EIdHorizontalVista.J1_MANO);
+        }
+    }
+
+    public static void actualizarHorizontalesConCartas(){
+        crearHorizontalesSiNoExisten();
+        for (HorizontalVista hv:Global.get_horizontalesVista()) {
+            hv.set_cartasVista(new ArrayList<>());
+        }
+        for (ACarta carta:Global.get_datosGuardablesJSON().get_cartas()) {
+            new CartaVista(carta.get_idHorizontalVista(),carta);
+        }
+    }
+
+
+
+    public static void actualizarCartasConHorizontales(){
+
+        Global.get_datosGuardablesJSON().get_cartas().clear();
+        for (HorizontalVista hv:Global.get_horizontalesVista()) {
+            for(CartaVista cv:hv.get_cartasVista()){
+                Global.get_datosGuardablesJSON().get_cartas().add(cv.get_carta());
+            }
+        }
+    }
+
+
     public static void nuevoTurno(){
         if(partidaTerminada()){
             JugandoActivity.mostrarGanador();
         }else{
+
             Global.set_cartaVistaSeleccionada(null);
             Global.set_turnoJugador1(!Global.is_turnoJugador1());
             if(Global.is_turnoJugador1()){
-                new CartaVista(Global.getBy(EIdHorizontalVista.J1_MANO),getCartaJugableRandom());
+
+                ACarta nuevaCarta=getCartaJugableRandom();
+                nuevaCarta.set_idHorizontalVista(EIdHorizontalVista.J1_MANO);
+                new CartaVista(EIdHorizontalVista.J1_MANO, nuevaCarta);
             }else{
-                new CartaVista(Global.getBy(EIdHorizontalVista.J2_MANO),getCartaJugableRandom());
+                ACarta nuevaCarta=getCartaJugableRandom();
+                nuevaCarta.set_idHorizontalVista(EIdHorizontalVista.J2_MANO);
+                new CartaVista(EIdHorizontalVista.J2_MANO, nuevaCarta);
             }
             for (HorizontalVista hv: Global.get_horizontalesVista()) {
                 for (CartaVista cv:hv.get_cartasVista()) {
@@ -103,6 +151,11 @@ public class Controlador{
                     }
                 }
             }
+            // CUANDO SE PUEDA CONFIGURAR EN EL MENU SI GUARDAR EN JSON O NO, DESCOMENTAR Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
+            // Y QUITAR Global.get_datosGuardablesJSON().guardar(); (ESTÁ POR COMODIDAD POR AHORA)
+            // ANTES DE LO ANTERIOR, SI NO QUIERES CARGAR LOS DATOS DEL FICHERO, VE A MainActivity.java Y COMENTA LA LINEA: Global.get_datosGuardablesJSON().cargar();
+            //Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
+            Global.get_datosGuardablesJSON().guardar();
             JugandoActivity.actualizarVista();
         }
     }
@@ -259,4 +312,7 @@ public class Controlador{
         return null;
         //return getCartaJugable(new Random().nextInt(3));// TESTEAR
     }
+
+
+
 }

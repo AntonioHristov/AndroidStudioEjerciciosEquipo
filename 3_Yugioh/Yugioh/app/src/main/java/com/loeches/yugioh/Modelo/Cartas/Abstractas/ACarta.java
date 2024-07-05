@@ -4,15 +4,23 @@ import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
 
-import java.util.List;
+import java.io.Serializable;
 import java.util.Objects;
 
-public abstract class ACarta {
+// SERIALIZABLE PARA GUARDAR Y CARGAR JSON
+public abstract class ACarta implements Serializable {
     private String _nombre, _descripcion;
     private int _imagen;
-    private EIdHorizontalVista _idHorizontalVista;
     private boolean _nuevoTurnoTrasRealizarAccion;
+    private EIdHorizontalVista _idHorizontalVista; // Enum Type
     //private CartaVista _cartaVista;
+
+
+
+    //PARA GUARDAR EN JSON
+    public ACarta() {
+
+    }
 
     public ACarta(String nombre, String descripcion, int imagen) {
         _nombre = nombre;
@@ -22,11 +30,22 @@ public abstract class ACarta {
         //_cartaVista=null;
     }
 
+    public ACarta(String nombre, String descripcion, int imagen, EIdHorizontalVista idHorizontalVista) {
+        _nombre = nombre;
+        _descripcion = descripcion;
+        _imagen = imagen;
+        _idHorizontalVista=idHorizontalVista;
+        //Global.get_datosGuardablesJSON().get_cartas().add(this);
+        _nuevoTurnoTrasRealizarAccion=true;
+        //_cartaVista=null;
+    }
+
     public ACarta(String nombre, String descripcion, int imagen, EIdHorizontalVista idHorizontalVista, boolean nuevoTurnoTrasRealizarAccion) {
         _nombre = nombre;
         _descripcion = descripcion;
         _imagen = imagen;
         _idHorizontalVista=idHorizontalVista;
+        //Global.get_datosGuardablesJSON().get_cartas().add(this);
         _nuevoTurnoTrasRealizarAccion=nuevoTurnoTrasRealizarAccion;
         //_cartaVista=null;
     }
@@ -67,6 +86,21 @@ public abstract class ACarta {
 
     public void set_idHorizontalVista(EIdHorizontalVista idHorizontalVista) {
         _idHorizontalVista = idHorizontalVista;
+
+        /*
+        boolean encontrado=false;
+        for (ACarta carta:Global.get_datosGuardablesJSON().get_cartas()) {
+            if (carta==this)
+            {
+                encontrado=true;
+                break;
+                //return;
+            }
+        }
+        if(!encontrado){
+            Global.get_datosGuardablesJSON().get_cartas().add(this);
+        }*/
+
     }
 
 

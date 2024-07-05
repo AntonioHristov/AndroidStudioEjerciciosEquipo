@@ -6,6 +6,10 @@ import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 public abstract class AHechizo extends ACarta{
     private EAccionHechizo _accionHechizo;
 
+    public AHechizo() {
+        super();
+    }
+
     public AHechizo(String nombre, String descripcion, int imagen, EAccionHechizo accionHechizo) {
         super(nombre, descripcion, imagen);
         _accionHechizo = accionHechizo;

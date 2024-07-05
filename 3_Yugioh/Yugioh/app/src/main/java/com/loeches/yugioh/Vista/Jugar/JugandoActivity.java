@@ -2,6 +2,7 @@ package com.loeches.yugioh.Vista.Jugar;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -20,17 +21,20 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
+import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Global.Global;
+import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 public class JugandoActivity extends AppCompatActivity {
-/*
+
     private MediaPlayer backgroundPlayer;
-    public MediaPlayer attackPlayer;*/
+    public MediaPlayer attackPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // INFORMACIÓN SOBRE GUARDAR Y CARGAR DATOS DE JSON, EN LA CLASE CONTROLADOR AL FINAL DEL MÉTODO nuevoTurno()
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_jugando);
@@ -42,6 +46,23 @@ public class JugandoActivity extends AppCompatActivity {
 
         Global.set_activity(this);
 
+
+        for (ACarta carta:Global.get_datosGuardablesJSON().get_cartas()) {
+            System.out.println(carta.get_idHorizontalVista().toString());
+            System.out.println(carta.get_nombre());
+        }
+
+try{
+    if(Global.get_datosGuardablesJSON().hayDatos()){
+        Controlador.actualizarHorizontalesConCartas();
+    }
+}catch (Exception e){
+    System.out.println(e.getMessage().toString());
+}
+
+
+
+        //System.out.println(Global.get_datosGuardables());
         if (Global.is_empezarPartidaNueva()) {
             Global.set_empezarPartidaNueva(false);
             Controlador.NuevaPartida();
@@ -55,41 +76,43 @@ public class JugandoActivity extends AppCompatActivity {
         }
 
         actualizarVista();
+
+
     }
 
-    /*
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (Global.get_musicaFondo() != null) {
-            Global.get_musicaFondo().release();
-            Global.set_musicaFondo(null);
+        if (backgroundPlayer != null) {
+            backgroundPlayer.release();
+            backgroundPlayer = null;
         }
-        if (Global.get_sonidoAtaqueMonstruo() != null) {
-            Global.get_sonidoAtaqueMonstruo().release();
-            Global.set_sonidoAtaqueMonstruo(null);
+        if (attackPlayer != null) {
+            attackPlayer.release();
+            attackPlayer = null;
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (Global.get_musicaFondo() == null) {
-            Global.set_musicaFondo(MediaPlayer.create(this, R.raw.yugiho));
-            Global.get_musicaFondo().setLooping(true);
-            Global.get_musicaFondo().start();
-        } else if (!Global.get_musicaFondo().isPlaying()) {
-            Global.get_musicaFondo().start();
+        if (backgroundPlayer == null) {
+            backgroundPlayer = MediaPlayer.create(this, Global.get_musicaFondoJugando());
+            backgroundPlayer.setLooping(true);
+            backgroundPlayer.start();
+        } else if (!backgroundPlayer.isPlaying()) {
+            backgroundPlayer.start();
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (Global.get_musicaFondo() != null && Global.get_musicaFondo().isPlaying()) {
-            Global.get_musicaFondo().pause();
+        if (backgroundPlayer != null && backgroundPlayer.isPlaying()) {
+            backgroundPlayer.pause();
         }
-    }*/
+    }
 
 
     /* COPIA SEGURIDAD
@@ -193,6 +216,7 @@ public class JugandoActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Controlador.NuevaPartida();
+                Controlador.nuevoTurno();
             }
         });
 
@@ -240,14 +264,34 @@ public class JugandoActivity extends AppCompatActivity {
         LinearLayout llHorizontal = crearLinearVerticalJugadoresCentroVista();
         Global.get_linearMain().addView(llHorizontal);
         if (Global.is_turnoJugador1()) {
-            Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(1),llHorizontal);
+            //Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
             escribirXmlDivider(llHorizontal);
-            Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(0),llHorizontal);
+            //Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
         } else {
-            Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(0),llHorizontal);
+            //Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
             escribirXmlDivider(llHorizontal);
-            Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(1),llHorizontal);
+            //Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
         }
+    }
+
+    public static void escribirTextViewJugador(Jugador jugador, ViewGroup contenedor){
+        TextView tv = new TextView(Global.get_context());
+        tv.setText(jugador.get_textoPrefijoMostrarVida()+jugador.get_vida()+jugador.get_textoSufijoMostrarVida());
+        //tv.setText("hola");
+        tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
+        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+        tv.setForegroundGravity(Gravity.CENTER_HORIZONTAL);
+
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        tv.setLayoutParams(tvParams);
+        contenedor.addView(tv);
     }
 
 

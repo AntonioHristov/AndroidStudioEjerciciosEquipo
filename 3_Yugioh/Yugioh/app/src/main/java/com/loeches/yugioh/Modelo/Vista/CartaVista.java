@@ -24,6 +24,7 @@ import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
 import com.loeches.yugioh.Vista.Jugar.JugandoInfoCartaActivity;
 
+import java.util.Collections;
 import java.util.List;
 
 public class CartaVista {
@@ -34,6 +35,11 @@ public class CartaVista {
     public CartaVista(HorizontalVista horizontalVista, ACarta carta) {
         _carta=carta;
         set_horizontalVista(horizontalVista);
+    }
+
+    public CartaVista(EIdHorizontalVista idHorizontalVista, ACarta carta) {
+        _carta=carta;
+        set_horizontalVista(Global.getBy(idHorizontalVista));
     }
 
     public CartaVista(CartaVista copia) {
@@ -50,6 +56,22 @@ public class CartaVista {
 
     public void cambiarCartaVista(CartaVista destino, boolean eliminarEsta){
         int posHvThis = Global.getIndexHorizontalVista(this), posHvDestino= Global.getIndexHorizontalVista(destino);
+        final HorizontalVista hvThis=this.get_horizontalVista();
+
+        this.get_horizontalVista().get_cartasVista().set(posHvThis,destino);
+        destino.get_horizontalVista().get_cartasVista().set(posHvDestino,this);
+
+        this.get_carta().set_idHorizontalVista(destino.get_horizontalVista().get_id());
+        destino.get_carta().set_idHorizontalVista(this.get_horizontalVista().get_id());
+
+        if(eliminarEsta){
+            // PORQUE "Esta" SE CAMBIÓ POR EL DESTINO
+            hvThis.get_cartasVista().remove(destino);
+        }
+    }
+
+    public void cambiarCartaVistaCopia(CartaVista destino, boolean eliminarEsta){
+        int posHvThis = Global.getIndexHorizontalVista(this), posHvDestino= Global.getIndexHorizontalVista(destino);
         HorizontalVista hvThis=this.get_horizontalVista(),hvDestino=destino.get_horizontalVista();
 
         this.get_horizontalVista().get_cartasVista().set(posHvThis,destino);
@@ -57,6 +79,8 @@ public class CartaVista {
 
         this.get_carta().set_idHorizontalVista(destino.get_horizontalVista().get_id());
         destino.get_carta().set_idHorizontalVista(this.get_horizontalVista().get_id());
+
+
 
         if(eliminarEsta){
             // PORQUE "Esta" SE CAMBIÓ POR EL DESTINO

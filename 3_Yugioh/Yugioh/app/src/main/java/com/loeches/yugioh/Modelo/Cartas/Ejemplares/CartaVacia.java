@@ -7,7 +7,11 @@ import com.loeches.yugioh.R;
 
 public class CartaVacia extends ACarta {
     public CartaVacia() {
-        super("", "", R.drawable.carta_vacia);
+        super("aaa", "aaa", R.drawable.carta_vacia);
+    }
+
+    public CartaVacia(EIdHorizontalVista idHorizontalVista){
+        super("aaa", "aaa", R.drawable.carta_vacia,idHorizontalVista);
     }
 
     @Override

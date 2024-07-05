@@ -12,20 +12,24 @@ import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Vista.CartaVista;
 
 public class Jugador {
-    private TextView _tvVista;
+    //private TextView _tvVista;// NO SE PUEDE GUARDAR EN JSON, E INNECESARIO AUNQUE SE PUDIESE
     private String _textoPrefijoMostrarVida;
     private String _textoSufijoMostrarVida;
     private int _vida;
     private EUbicacionJugador _ubicacion;
 
+// PARA GUARDARLO EN JSON
+    public Jugador() {
+    }
 
-    public Jugador(String textoPrefijoMostrarVida,String textoSufijoMostrarVida,int vida) {
+    public Jugador(String textoPrefijoMostrarVida, String textoSufijoMostrarVida, int vida) {
         _textoPrefijoMostrarVida =textoPrefijoMostrarVida;
         _textoSufijoMostrarVida=textoSufijoMostrarVida;
         _vida = vida;
         Global.get_jugadores().add(this);
     }
 
+    /*
     public void EscribirCodigoXML(ViewGroup contenedor){
         set_tvVista();
         contenedor.addView(_tvVista);
@@ -49,7 +53,7 @@ public class Jugador {
         );
         tv.setLayoutParams(tvParams);
         _tvVista=tv;
-    }
+    }*/
 
     public String get_textoPrefijoMostrarVida() {
         return _textoPrefijoMostrarVida;
@@ -73,7 +77,7 @@ public class Jugador {
 
     public void set_vida(int vida) {
         _vida = vida;
-        _tvVista.setText(_textoPrefijoMostrarVida+_vida+_textoSufijoMostrarVida);
+        //_tvVista.setText(_textoPrefijoMostrarVida+_vida+_textoSufijoMostrarVida);
     }
 
     public EUbicacionJugador get_ubicacion() {
