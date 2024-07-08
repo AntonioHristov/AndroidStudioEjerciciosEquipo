@@ -5,11 +5,10 @@ import android.content.Context;
 import android.widget.LinearLayout;
 
 import com.loeches.yugioh.DAO.Implementaciones.DatosGuardablesJSON;
-import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
-import com.loeches.yugioh.Modelo.Vista.CartaVista;
+import com.loeches.yugioh.Modelo.InterfazVista.CartaVista;
 import com.loeches.yugioh.Modelo.Jugador;
-import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
+import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 import java.util.ArrayList;
@@ -22,25 +21,7 @@ public class Global {
     private static Activity _activity; // RECIBE LA VistaActivity (ÚNICA ACTIVITY), PARA QUE SEA ACCESIBLE EN EL PROGRAMA, JUNTO AL CONTEXTO Y EL CONTENEDOR PRINCIPAL QUE ES UN LINEAR LAYOUT VERTICAL
     //private static boolean _turnoJugador1, _turnoAlAzar,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva, _guardarDatosEnArchivo;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR MANUALMENTE LA CARTA VACÍA DESTINO.
     private static CartaVista _cartaVistaSeleccionada;// ES LA CARTA AL QUE EL JUGADOR HIZO CLICK Y TIENE EL BORDE EN ROJO
-    /*
-    // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
-
-    // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO EN _cantidadCartaVistasPorHorizontalSinScroll
-    private static int _iniciandoPartidaCantidadMonstruosHorizontalJ1,
-            _iniciandoPartidaCantidadMonstruosHorizontalJ2,
-            _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1,
-            _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2,
-            _iniciandoPartidaCantidadManoHorizontalJ1,
-            _iniciandoPartidaCantidadManoHorizontalJ2,
-            _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll,
-            _iniciandoJugador1Vida,
-            _iniciandoJugador2Vida,
-            _musicaFondoJugando,
-            _sonidoAtaqueMonstruo;
-    private static String _iniciandoJugador1Prefijo, _iniciandoJugador1Sufijo, _iniciandoJugador2Prefijo, _iniciandoJugador2Sufijo;
-*/
     private static List<HorizontalVista> _horizontalesVista;// Los linear layout horizontales que contienen las cartas y sus datos
-    private static List<Jugador> _jugadores;// pos 0=Jugador 1, pos 1=Jugador 2
     private static DatosGuardablesJSON _datosGuardablesJSON;
 
 // FIN ATRIBUTOS
@@ -73,7 +54,6 @@ public class Global {
         _iniciandoJugador2Prefijo="Vida Jugador 2: ";
         _iniciandoJugador2Sufijo="";*/
         _horizontalesVista=new ArrayList<>();
-        _jugadores=new ArrayList<>();
         _datosGuardablesJSON =new DatosGuardablesJSON();
 
     }
@@ -143,16 +123,6 @@ public class Global {
     public static void set_turnoJugador1(boolean esTurnoJugador1) {
         //_turnoJugador1 = esTurnoJugador1;
         _datosGuardablesJSON.set_turnoJugador1(esTurnoJugador1);
-    }
-
-    public static boolean is_turnoAlAzar() {
-        //return _turnoAlAzar;
-        return _datosGuardablesJSON.is_turnoAlAzar();
-    }
-
-    public static void set_turnoAlAzar(boolean turnoAlAzar) {
-        //_turnoAlAzar = turnoAlAzar;
-        _datosGuardablesJSON.set_turnoAlAzar(turnoAlAzar);
     }
 
     public static boolean is_modoOptimoJugando() {

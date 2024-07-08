@@ -8,11 +8,10 @@ import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.DAO.Implementaciones.Adaptador.CartaTypeAdapter;
 import com.loeches.yugioh.DAO.Interfaces.IDatosGuardablesDAO;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.Modelo.Global.Enums.ETurnosPosiblesEmpezarPartida;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.R;
-import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
-import com.loeches.yugioh.Vista.MainActivity;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatosGuardablesJSON implements IDatosGuardablesDAO {
-    private boolean _turnoJugador1, _turnoAlAzar,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva;
+    private boolean _turnoJugador1,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva;
     // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
 
     // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO EN _cantidadCartaVistasPorHorizontalSinScroll
@@ -37,9 +36,16 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
             _musicaFondoJugando,
             _sonidoAtaqueMonstruo;
 
+    // FIXME: NO OLVIDAR ELIMINAR _turnoAlAzar
+    private ETurnosPosiblesEmpezarPartida _iniciandoTurnoJugador;
     private String _iniciandoJugador1Prefijo, _iniciandoJugador1Sufijo, _iniciandoJugador2Prefijo, _iniciandoJugador2Sufijo;
+    /*
+        LOS VALORES ACTUALIZADOS DE LAS CARTAS POR DEFECTO LO TIENEN LOS HORIZONTALES DE LA CLASE Global
+        SI QUIERES TENER LOS VALORES ACTUALIZADOS DE LOS HORIZONTALES EN ESTA LISTA _cartas,
+        PRIMERO LLAMA A Controlador.actualizarCartasConHorizontales();
+     */
     private List<ACarta> _cartas;
-    private List<Jugador> _jugadores;
+    private List<Jugador> _jugadores;// pos 0=Jugador 1, pos 1=Jugador 2
 
     public DatosGuardablesJSON() {
         restaurarValoresDefecto();
@@ -48,7 +54,6 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
     @Override
     public void restaurarValoresDefecto() {
         _turnoJugador1=true;
-        _turnoAlAzar=false;
         _modoOptimoJugando=true;
         _preguntarConfirmacionAccionesJugando=true;
         _empezarPartidaNueva=true;
@@ -63,6 +68,7 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
         _iniciandoJugador2Vida=500;
         _musicaFondoJugando = R.raw.yugiho;
         _sonidoAtaqueMonstruo= R.raw.yugiho;
+        _iniciandoTurnoJugador =ETurnosPosiblesEmpezarPartida.AL_AZAR;
         _iniciandoJugador1Prefijo="Vida Jugador 1: ";
         _iniciandoJugador1Sufijo="";
         _iniciandoJugador2Prefijo="Vida Jugador 2: ";
@@ -146,14 +152,6 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
 
     public void set_turnoJugador1(boolean _turnoJugador1) {
         this._turnoJugador1 = _turnoJugador1;
-    }
-
-    public boolean is_turnoAlAzar() {
-        return _turnoAlAzar;
-    }
-
-    public void set_turnoAlAzar(boolean _turnoAlAzar) {
-        this._turnoAlAzar = _turnoAlAzar;
     }
 
     public boolean is_modoOptimoJugando() {
@@ -268,6 +266,14 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
         _sonidoAtaqueMonstruo = sonidoAtaqueMonstruo;
     }
 
+    public ETurnosPosiblesEmpezarPartida get_iniciandoTurnoJugador() {
+        return _iniciandoTurnoJugador;
+    }
+
+    public void set_iniciandoTurnoJugador(ETurnosPosiblesEmpezarPartida turnoIniciarPartida) {
+        _iniciandoTurnoJugador = turnoIniciarPartida;
+    }
+
     public String get_iniciandoJugador1Prefijo() {
         return _iniciandoJugador1Prefijo;
     }
@@ -319,9 +325,8 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
 
     @Override
     public String toString() {
-        return "DatosGuardables{" +
+        return "DatosGuardablesJSON{" +
                 "_turnoJugador1=" + _turnoJugador1 +
-                ", _turnoAlAzar=" + _turnoAlAzar +
                 ", _modoOptimoJugando=" + _modoOptimoJugando +
                 ", _preguntarConfirmacionAccionesJugando=" + _preguntarConfirmacionAccionesJugando +
                 ", _empezarPartidaNueva=" + _empezarPartidaNueva +
@@ -336,6 +341,7 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
                 ", _iniciandoJugador2Vida=" + _iniciandoJugador2Vida +
                 ", _musicaFondoJugando=" + _musicaFondoJugando +
                 ", _sonidoAtaqueMonstruo=" + _sonidoAtaqueMonstruo +
+                ", _iniciandoTurnoJugador=" + _iniciandoTurnoJugador +
                 ", _iniciandoJugador1Prefijo='" + _iniciandoJugador1Prefijo + '\'' +
                 ", _iniciandoJugador1Sufijo='" + _iniciandoJugador1Sufijo + '\'' +
                 ", _iniciandoJugador2Prefijo='" + _iniciandoJugador2Prefijo + '\'' +

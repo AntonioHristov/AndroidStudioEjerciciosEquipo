@@ -15,21 +15,12 @@ como un bug que cierre el juego, impida jugar/ejecutar, probable que ocurra, etc
 ||||| ASIGNADOS A TODOS (ABAJO) |||||
 ----------------------------------------------
 ----------------------------------------------
-Decidir en que tipo de archivo guardar los datos globales, de forma predeterminada.
-Y ver que tipos de archivos es viable permitirle elegir al usuario en un futuro en configurar.
-Creador: Antonio. Prioridad: Alta.
-----------------------------------------------
 Buscar bugs/errores/posibles mejoras y si se encuentra decirlo a Antonio o crear una tarea pendiente
 Creador: Antonio. Prioridad: Media.
 ----------------------------------------------
 ----------------------------------------------
 ||||| ASIGNADOS A ANTONIO (ABAJO) |||||
 ----------------------------------------------
-----------------------------------------------
-Crear un Enum de los tipos de archivos en donde se guardarán los datos (En principio 2 opciones "Ninguno", "JSON", en un futuro tal vez añadamos más).
-En Global una variable estática del tipo de ese Enum y dependiendo de su valor hacerlo funcional (Guardar/cargar datos del Global o del JSON)
-La idea es guardar/cargar Los datos de ACarta y algunas variables de la partida como el turno del jugador, etc.
-Creador: Antonio. Prioridad: Alta
 ----------------------------------------------
 Convertir HorizontalVista en clase abstracta con nombre AHorizontalVista,
 , crear un java para cada uno (Mano Jugador 1, mano jugador 2, Monstruos jugador 1, etc)
@@ -60,7 +51,9 @@ Quiero que el xml tenga arriba un título "MENÚ CONFIGURACIÓN" con tamaño gra
 Debajo del título, un scrollview vertical que tenga dentro: 
 Un texto "Datos Configurables: "
 Debajo de "Datos Configurables: " muestras en varios TextView separados verticalmente
-los valores de los atributos que consideres configurables/personalizables guardados en la clase Global.java (java->Modelo->Global->Global.java)
+los valores de los atributos que consideres configurables/personalizables (por ejemplo: _turnoJugador1, _modoOptimoJugando, etc) guardados en Global.get_datosGuardablesJSON();
+La clase Global.java se ubica en (java->Modelo->Global->Global.java) es estática.
+La clase DatosGuardablesJSON.java se ubica en (java->DAO->Implementaciones->DatosGuardablesJSON.java)
 y para cada uno (al final de cada valor) un botón "Cambiar" que te lleva a una actividad que crees en donde puedas cambiar el valor o volver sin cambiar nada.
 Al final quiero 2 botones: "Restaurar valores predeterminados", "Atrás".
 Al hacer click en el botón "Restaurar valores predeterminados" mostrar un mensaje de confirmación y si acepta llamar a Global.restaurarValoresDefecto();
@@ -104,6 +97,20 @@ La idea es evitar guardar datos innecesarios en el fichero en un futuro (No guar
 teniendo solo los datos guardables en ACarta.
 Creador: Antonio. Prioridad: Alta. Completado por: Antonio
 ----------------------------------------------
+Decidir en que tipo de archivo guardar los datos globales, de forma predeterminada.
+Y ver que tipos de archivos es viable permitirle elegir al usuario en un futuro en configurar.
+
+Conclusión: Las opciones de guardado serán 2, Guardar en memoria (En ningún archivo) o guardar en archivo JSON 
+(Porque aunque quede mejor tener más opciones de guardado, no es necesario y no vamos sobrados de tiempo para que valga la pena, prioridades...)
+Creador: Antonio. Prioridad: Alta. Completado por: Antonio
+----------------------------------------------
+Crear un Enum de los tipos de archivos en donde se guardarán los datos (En principio 2 opciones "Ninguno", "JSON", en un futuro tal vez añadamos más).
+En Global una variable estática del tipo de ese Enum y dependiendo de su valor hacerlo funcional (Guardar/cargar datos del Global o del JSON)
+La idea es guardar/cargar Los datos de ACarta y algunas variables de la partida como el turno del jugador, etc.
+
+Conclusión: La idea del Enum era para varias opciones de guardado, pero como solo serán las 2 opciones lo veo sustituible por comprobar si existe el archivo json o no.
+Creador: Antonio. Prioridad: Alta. Completado por: Antonio
+----------------------------------------------
 ----------------------------------------------
 ||||| ASIGNADOS A NADIE POR AHORA (ABAJO) |||||
 ----------------------------------------------
@@ -118,9 +125,13 @@ Creador: Antonio. Prioridad: Baja.
 ----------------------------------------------
 Considerar/intentar crear un test que garantice que en la lista global que se guardan los HorizontalVista
 no se repitan los ids (EIdHorizontalVista) o evitar que se ingrese uno con el mismo id que uno añadido (sus ids son unicos)
+En caso de que esté hecho pensar si hay una mejor forma.
 Creador: Antonio. Prioridad: Baja.
 ----------------------------------------------
 Cambiar los ScrollViews por RecyclerViews, la idea es ahorrar memoria.
+Creador: Antonio. Prioridad: Baja.
+----------------------------------------------
+Cambiar los tipos de dato primitivos por otros que ocupen menos espacio (por ejemplo: cambiar int por short, byte, etc), la idea es ahorrar memoria.
 Creador: Antonio. Prioridad: Baja.
 ----------------------------------------------
 

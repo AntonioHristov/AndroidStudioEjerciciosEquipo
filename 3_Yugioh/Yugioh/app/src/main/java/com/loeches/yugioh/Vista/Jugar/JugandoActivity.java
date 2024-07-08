@@ -24,7 +24,7 @@ import com.loeches.yugioh.Controlador.Utilidades;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Jugador;
-import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
+import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 public class JugandoActivity extends AppCompatActivity {
@@ -46,11 +46,11 @@ public class JugandoActivity extends AppCompatActivity {
 
         Global.set_activity(this);
 
-
+/*
         for (ACarta carta:Global.get_datosGuardablesJSON().get_cartas()) {
             System.out.println(carta.get_idHorizontalVista().toString());
             System.out.println(carta.get_nombre());
-        }
+        }*/
 
 try{
     if(Global.get_datosGuardablesJSON().hayDatos()){
@@ -178,6 +178,7 @@ try{
     }
 
     public static void mostrarGanador() {
+        Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
         JugandoActivity.vaciar();
         Context context = Global.get_context();
         LinearLayout main = Global.get_linearMain();

@@ -1,4 +1,4 @@
-package com.loeches.yugioh.Modelo.Vista;
+package com.loeches.yugioh.Modelo.InterfazVista;
 
 import android.app.AlertDialog;
 import android.content.ClipData;

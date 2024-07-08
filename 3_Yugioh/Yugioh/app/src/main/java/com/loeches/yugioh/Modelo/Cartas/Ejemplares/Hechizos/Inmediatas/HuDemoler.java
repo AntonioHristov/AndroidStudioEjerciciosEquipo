@@ -5,8 +5,8 @@ import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
 import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Vista.CartaVista;
-import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
+import com.loeches.yugioh.Modelo.InterfazVista.CartaVista;
+import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
 
 public class HuDemoler  extends AHechizo {

@@ -26,11 +26,12 @@ import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas.HuTrueno;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Hechizos.Inmediatas.HuVirus;
 import com.loeches.yugioh.Modelo.Cartas.Ejemplares.Monstruos.MonstruoGenerico;
 import com.loeches.yugioh.Modelo.Global.Enums.EAccionHechizo;
+import com.loeches.yugioh.Modelo.Global.Enums.ETurnosPosiblesEmpezarPartida;
 import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Vista.CartaVista;
+import com.loeches.yugioh.Modelo.InterfazVista.CartaVista;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Jugador;
-import com.loeches.yugioh.Modelo.Vista.HorizontalVista;
+import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
 
@@ -44,10 +45,10 @@ public class Controlador{
         new Jugador(Global.get_iniciandoJugador1Prefijo(),Global.get_iniciandoJugador1Sufijo(),Global.get_iniciandoJugador1Vida());
         new Jugador(Global.get_iniciandoJugador2Prefijo(),Global.get_iniciandoJugador2Sufijo(),Global.get_iniciandoJugador2Vida());
 
-        if(Global.is_turnoAlAzar()){
+        if(Global.get_datosGuardablesJSON().get_iniciandoTurnoJugador()== ETurnosPosiblesEmpezarPartida.AL_AZAR){
             Global.set_turnoJugador1((new Random().nextInt(2)==0)?true:false);
         }else{
-            Global.set_turnoJugador1(!Global.is_turnoJugador1());
+            Global.set_turnoJugador1(Global.get_datosGuardablesJSON().get_iniciandoTurnoJugador()!= ETurnosPosiblesEmpezarPartida.JUGADOR_1);
         }
 
 

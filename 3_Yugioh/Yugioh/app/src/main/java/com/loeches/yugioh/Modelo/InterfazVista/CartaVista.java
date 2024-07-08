@@ -1,16 +1,10 @@
-package com.loeches.yugioh.Modelo.Vista;
+package com.loeches.yugioh.Modelo.InterfazVista;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 
@@ -21,11 +15,7 @@ import com.loeches.yugioh.Modelo.Cartas.Ejemplares.CartaVacia;
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.R;
-import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
 import com.loeches.yugioh.Vista.Jugar.JugandoInfoCartaActivity;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CartaVista {
     private FrameLayout _frameLayout;

@@ -1,22 +1,12 @@
 package com.loeches.yugioh.Modelo;
 
-import android.graphics.Typeface;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import com.loeches.yugioh.Modelo.Global.Enums.EUbicacionJugador;
 import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Vista.CartaVista;
 
 public class Jugador {
     //private TextView _tvVista;// NO SE PUEDE GUARDAR EN JSON, E INNECESARIO AUNQUE SE PUDIESE
     private String _textoPrefijoMostrarVida;
     private String _textoSufijoMostrarVida;
     private int _vida;
-    private EUbicacionJugador _ubicacion;
 
 // PARA GUARDARLO EN JSON
     public Jugador() {
@@ -78,13 +68,5 @@ public class Jugador {
     public void set_vida(int vida) {
         _vida = vida;
         //_tvVista.setText(_textoPrefijoMostrarVida+_vida+_textoSufijoMostrarVida);
-    }
-
-    public EUbicacionJugador get_ubicacion() {
-        return _ubicacion;
-    }
-
-    public void set_ubicacion(EUbicacionJugador _ubicacion) {
-        this._ubicacion = _ubicacion;
     }
 }

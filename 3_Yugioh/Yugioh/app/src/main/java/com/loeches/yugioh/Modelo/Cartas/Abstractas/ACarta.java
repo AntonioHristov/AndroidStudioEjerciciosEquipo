@@ -2,7 +2,7 @@ package com.loeches.yugioh.Modelo.Cartas.Abstractas;
 
 import com.loeches.yugioh.Modelo.Global.Enums.EIdHorizontalVista;
 import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Vista.CartaVista;
+import com.loeches.yugioh.Modelo.InterfazVista.CartaVista;
 
 import java.io.Serializable;
 import java.util.Objects;
