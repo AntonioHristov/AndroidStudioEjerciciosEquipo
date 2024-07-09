@@ -7,13 +7,11 @@ import com.loeches.yugioh.Modelo.InterfazVista.CartaVista;
 import java.io.Serializable;
 import java.util.Objects;
 
-// SERIALIZABLE PARA GUARDAR Y CARGAR JSON
-public abstract class ACarta implements Serializable {
+public abstract class ACarta {
     private String _nombre, _descripcion;
     private int _imagen;
     private boolean _nuevoTurnoTrasRealizarAccion;
-    private EIdHorizontalVista _idHorizontalVista; // Enum Type
-    //private CartaVista _cartaVista;
+    private EIdHorizontalVista _idHorizontalVista; // Tipo Enum
 
 
 
@@ -27,7 +25,6 @@ public abstract class ACarta implements Serializable {
         _descripcion = descripcion;
         _imagen = imagen;
         _nuevoTurnoTrasRealizarAccion=true;
-        //_cartaVista=null;
     }
 
     public ACarta(String nombre, String descripcion, int imagen, EIdHorizontalVista idHorizontalVista) {
@@ -35,9 +32,7 @@ public abstract class ACarta implements Serializable {
         _descripcion = descripcion;
         _imagen = imagen;
         _idHorizontalVista=idHorizontalVista;
-        //Global.get_datosGuardablesJSON().get_cartas().add(this);
         _nuevoTurnoTrasRealizarAccion=true;
-        //_cartaVista=null;
     }
 
     public ACarta(String nombre, String descripcion, int imagen, EIdHorizontalVista idHorizontalVista, boolean nuevoTurnoTrasRealizarAccion) {
@@ -45,9 +40,7 @@ public abstract class ACarta implements Serializable {
         _descripcion = descripcion;
         _imagen = imagen;
         _idHorizontalVista=idHorizontalVista;
-        //Global.get_datosGuardablesJSON().get_cartas().add(this);
         _nuevoTurnoTrasRealizarAccion=nuevoTurnoTrasRealizarAccion;
-        //_cartaVista=null;
     }
 
     public ACarta(ACarta copia){
@@ -86,21 +79,6 @@ public abstract class ACarta implements Serializable {
 
     public void set_idHorizontalVista(EIdHorizontalVista idHorizontalVista) {
         _idHorizontalVista = idHorizontalVista;
-
-        /*
-        boolean encontrado=false;
-        for (ACarta carta:Global.get_datosGuardablesJSON().get_cartas()) {
-            if (carta==this)
-            {
-                encontrado=true;
-                break;
-                //return;
-            }
-        }
-        if(!encontrado){
-            Global.get_datosGuardablesJSON().get_cartas().add(this);
-        }*/
-
     }
 
 
@@ -113,15 +91,6 @@ public abstract class ACarta implements Serializable {
         return null;
     }
 
-
-    /*
-    public CartaVista get_cartaVista() {
-        return _cartaVista;
-    }
-
-    public void set_cartaVista(CartaVista cartaVista) {
-        _cartaVista = cartaVista;
-    }*/
 
     @Override
     public boolean equals(Object o) {

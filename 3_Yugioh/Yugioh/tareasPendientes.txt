@@ -22,6 +22,13 @@ Creador: Antonio. Prioridad: Media.
 ||||| ASIGNADOS A ANTONIO (ABAJO) |||||
 ----------------------------------------------
 ----------------------------------------------
+En la vista Jugando, crear una forma intuitiva de volver al menú principal.
+Podría ser creando un botón "Volver al menú" donde se muestran los datos de los jugadores en el centro.
+En caso de que sea a un lado (izquierda o derecha) considerar crear en el otro lado otro botón para guardado rápido en caso de no haya guardado automático
+y si al iniciar el juego detecta el guardado rápido lo carga y lo borra, debería ser en un fichero JSON con otro nombre al del guardado automático
+o crear un booleano que diferencia si el guardado es automático o rápido. 
+Creador: Antonio. Prioridad: Alta.
+----------------------------------------------
 Convertir HorizontalVista en clase abstracta con nombre AHorizontalVista,
 , crear un java para cada uno (Mano Jugador 1, mano jugador 2, Monstruos jugador 1, etc)
 organizando mejor los HorizontalVista. ¡Primero una copia de seguridad por si acaso

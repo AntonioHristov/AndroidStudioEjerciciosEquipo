@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatosGuardablesJSON implements IDatosGuardablesDAO {
+    private ETurnosPosiblesEmpezarPartida _iniciandoTurnoJugador;
     private boolean _turnoJugador1,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva;
     // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
 
@@ -35,9 +36,6 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
             _iniciandoJugador2Vida,
             _musicaFondoJugando,
             _sonidoAtaqueMonstruo;
-
-    // FIXME: NO OLVIDAR ELIMINAR _turnoAlAzar
-    private ETurnosPosiblesEmpezarPartida _iniciandoTurnoJugador;
     private String _iniciandoJugador1Prefijo, _iniciandoJugador1Sufijo, _iniciandoJugador2Prefijo, _iniciandoJugador2Sufijo;
     /*
         LOS VALORES ACTUALIZADOS DE LAS CARTAS POR DEFECTO LO TIENEN LOS HORIZONTALES DE LA CLASE Global
@@ -53,7 +51,8 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
 
     @Override
     public void restaurarValoresDefecto() {
-        _turnoJugador1=true;
+        _iniciandoTurnoJugador =ETurnosPosiblesEmpezarPartida.AL_AZAR;
+        //_turnoJugador1=true;
         _modoOptimoJugando=true;
         _preguntarConfirmacionAccionesJugando=true;
         _empezarPartidaNueva=true;
@@ -68,7 +67,6 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
         _iniciandoJugador2Vida=500;
         _musicaFondoJugando = R.raw.yugiho;
         _sonidoAtaqueMonstruo= R.raw.yugiho;
-        _iniciandoTurnoJugador =ETurnosPosiblesEmpezarPartida.AL_AZAR;
         _iniciandoJugador1Prefijo="Vida Jugador 1: ";
         _iniciandoJugador1Sufijo="";
         _iniciandoJugador2Prefijo="Vida Jugador 2: ";
