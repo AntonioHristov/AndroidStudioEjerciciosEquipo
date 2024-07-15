@@ -1,6 +1,7 @@
 package com.loeches.yugioh.Vista.Jugar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
+import com.loeches.yugioh.Vista.MenuPrincipalActivity;
 
 public class JugandoActivity extends AppCompatActivity {
 
@@ -52,13 +54,8 @@ public class JugandoActivity extends AppCompatActivity {
             System.out.println(carta.get_nombre());
         }*/
 
-try{
-    if(Global.get_datosGuardablesJSON().hayDatos()){
-        Controlador.actualizarHorizontalesConCartas();
-    }
-}catch (Exception e){
-    System.out.println(e.getMessage().toString());
-}
+
+
 
 
 
@@ -73,6 +70,14 @@ try{
         if (Controlador.partidaTerminada()) {
             mostrarGanador();
             return;
+        }
+
+        try{
+            if(Global.get_datosGuardablesJSON().hayDatos()){
+                Controlador.actualizarHorizontalesConCartas();
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage().toString());
         }
 
         actualizarVista();
@@ -178,7 +183,7 @@ try{
     }
 
     public static void mostrarGanador() {
-        Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
+        //Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
         JugandoActivity.vaciar();
         Context context = Global.get_context();
         LinearLayout main = Global.get_linearMain();
@@ -209,11 +214,11 @@ try{
         main.addView(textView);
 
 
-        Button bt = new Button(context);
-        bt.setText("Nueva partida");
-        //bt.setTextSize(30);
-        bt.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
-        bt.setOnClickListener(new View.OnClickListener() {
+        Button bNuevaPartida = new Button(context);
+        bNuevaPartida.setText("Nueva partida");
+        //bNuevaPartida.setTextSize(30);
+        bNuevaPartida.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        bNuevaPartida.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Controlador.NuevaPartida();
@@ -221,17 +226,40 @@ try{
             }
         });
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams paramsBNuevaPartida = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 0, 1
         );
-        params.gravity = Gravity.CENTER_HORIZONTAL;
+        paramsBNuevaPartida.gravity = Gravity.CENTER_HORIZONTAL;
 
-        params.setMargins(0, Utilidades.dpToPx(10), 0, Utilidades.dpToPx(10));
+        paramsBNuevaPartida.setMargins(0, Utilidades.dpToPx(10), 0, Utilidades.dpToPx(10));
 
-        bt.setLayoutParams(params);
+        bNuevaPartida.setLayoutParams(paramsBNuevaPartida);
 
-        main.addView(bt);
+        Button bVolverMenuPrincipal = new Button(context);
+        bVolverMenuPrincipal.setText("Menú Principal");
+        //bNuevaPartida.setTextSize(30);
+        bVolverMenuPrincipal.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+        bVolverMenuPrincipal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Global.get_activity().startActivity(new Intent(Global.get_context(), MenuPrincipalActivity.class));
+            }
+        });
+
+        LinearLayout.LayoutParams paramsBMenuPrincipal = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                0, 1
+        );
+        paramsBMenuPrincipal.gravity = Gravity.CENTER_HORIZONTAL;
+
+        paramsBMenuPrincipal.setMargins(0, Utilidades.dpToPx(10), 0, Utilidades.dpToPx(10));
+
+        bVolverMenuPrincipal.setLayoutParams(paramsBMenuPrincipal);
+
+
+        main.addView(bNuevaPartida);
+        main.addView(bVolverMenuPrincipal);
     }
 
     public static LinearLayout crearLinearVerticalJugadoresCentroVista() {
@@ -266,16 +294,12 @@ try{
         Global.get_linearMain().addView(llHorizontal);
         if (Global.is_turnoJugador1()) {
             escribirTextViewJugador(Global.get_jugadores().get(1),llHorizontal);
-            //Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
             escribirXmlDivider(llHorizontal);
             escribirTextViewJugador(Global.get_jugadores().get(0),llHorizontal);
-            //Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
         } else {
             escribirTextViewJugador(Global.get_jugadores().get(0),llHorizontal);
-            //Global.get_jugadores().get(0).EscribirCodigoXML(llHorizontal);
             escribirXmlDivider(llHorizontal);
             escribirTextViewJugador(Global.get_jugadores().get(1),llHorizontal);
-            //Global.get_jugadores().get(1).EscribirCodigoXML(llHorizontal);
         }
     }
 

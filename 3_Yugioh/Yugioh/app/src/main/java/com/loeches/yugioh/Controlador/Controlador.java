@@ -129,6 +129,7 @@ public class Controlador{
 
     public static void nuevoTurno(){
         if(partidaTerminada()){
+            Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
             JugandoActivity.mostrarGanador();
         }else{
 

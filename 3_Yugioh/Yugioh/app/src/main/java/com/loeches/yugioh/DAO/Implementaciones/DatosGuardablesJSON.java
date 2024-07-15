@@ -34,6 +34,7 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
             _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll,
             _iniciandoJugador1Vida,
             _iniciandoJugador2Vida,
+            // MÚSICAS
             _musicaFondoJugando,
             _sonidoAtaqueMonstruo;
     private String _iniciandoJugador1Prefijo, _iniciandoJugador1Sufijo, _iniciandoJugador2Prefijo, _iniciandoJugador2Sufijo;
@@ -41,6 +42,8 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
         LOS VALORES ACTUALIZADOS DE LAS CARTAS POR DEFECTO LO TIENEN LOS HORIZONTALES DE LA CLASE Global
         SI QUIERES TENER LOS VALORES ACTUALIZADOS DE LOS HORIZONTALES EN ESTA LISTA _cartas,
         PRIMERO LLAMA A Controlador.actualizarCartasConHorizontales();
+        SI QUIERES ACTUALIZAR LOS HORIZONTALES CON LOS VALORES DE LAS CARTAS
+        LLAMA A Controlador.actualizarHorizontalesConCartas();
      */
     private List<ACarta> _cartas;
     private List<Jugador> _jugadores;// pos 0=Jugador 1, pos 1=Jugador 2
@@ -64,7 +67,7 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO {
         _iniciandoPartidaCantidadManoHorizontalJ2=5;
         _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll=5;
         _iniciandoJugador1Vida=8000;
-        _iniciandoJugador2Vida=500;
+        _iniciandoJugador2Vida=100;
         _musicaFondoJugando = R.raw.yugiho;
         _sonidoAtaqueMonstruo= R.raw.yugiho;
         _iniciandoJugador1Prefijo="Vida Jugador 1: ";
