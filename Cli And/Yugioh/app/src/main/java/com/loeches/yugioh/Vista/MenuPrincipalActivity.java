@@ -76,11 +76,11 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         Button SALIR = findViewById(R.id.SALIR);
 
 
-        if(Global.get_datosGuardablesJSON().get_apodo()!=null){
-            tvApodo.setText(Global.get_datosGuardablesJSON().get_apodo());
-            if(!Controlador.existeApodoEnServidor(Global.get_datosGuardablesJSON().get_apodo())){
-                Global.get_datosGuardablesJSON().set_apodo(null);
-                Global.get_datosGuardablesJSON().guardar();
+        if(Global.get_datosGuardablesJSON1Dispositivo().get_apodoEnRed()!=null){
+            tvApodo.setText(Global.get_datosGuardablesJSON1Dispositivo().get_apodoEnRed());
+            if(!Controlador.existeApodoEnServidor(Global.get_datosGuardablesJSON1Dispositivo().get_apodoEnRed())){
+                Global.get_datosGuardablesJSON1Dispositivo().set_apodoEnRed(null);
+                Global.get_datosGuardablesJSON1Dispositivo().guardar();
                 startActivity(new Intent(getApplicationContext(), RegistroActivity.class));
             }
         }
@@ -139,8 +139,9 @@ public class MenuPrincipalActivity extends AppCompatActivity {
         findViewById(R.id.bLogout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Global.get_datosGuardablesJSON().set_apodo(null);
-                Global.get_datosGuardablesJSON().guardar();
+                Controlador.logoutEnServidor(Global.get_datosGuardablesJSON1Dispositivo().get_apodoEnRed());
+                Global.get_datosGuardablesJSON1Dispositivo().set_apodoEnRed(null);
+                Global.get_datosGuardablesJSON1Dispositivo().guardar();
                 startActivity(new Intent(getApplicationContext(), RegistroActivity.class));
             }
         });

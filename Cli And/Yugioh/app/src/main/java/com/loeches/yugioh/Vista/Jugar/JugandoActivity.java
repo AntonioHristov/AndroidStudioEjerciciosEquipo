@@ -22,17 +22,29 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.loeches.yugioh.Controlador.Controlador;
 import com.loeches.yugioh.Controlador.Utilidades;
-import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
+import com.loeches.yugioh.Modelo.Global.Enums.ECodigosTCP;
 import com.loeches.yugioh.Modelo.Global.Global;
 import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.MenuPrincipalActivity;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class JugandoActivity extends AppCompatActivity {
 
     private MediaPlayer backgroundPlayer;
     public MediaPlayer attackPlayer;
+
+    private Socket socket;
+    public static ObjectOutputStream enviar;
+    public static ObjectInputStream recibir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +67,6 @@ public class JugandoActivity extends AppCompatActivity {
         }*/
 
 
-
-
-
-
         //System.out.println(Global.get_datosGuardables());
         if (Global.is_empezarPartidaNueva()) {
             Global.set_empezarPartidaNueva(false);
@@ -72,17 +80,18 @@ public class JugandoActivity extends AppCompatActivity {
             return;
         }
 
-        try{
-            if(Global.get_datosGuardablesJSON().hayDatos()){
+        try {
+            if (Global.get_datosGuardablesJSON1Dispositivo().hayDatos()) {
                 Controlador.actualizarHorizontalesConCartas();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getMessage().toString());
         }
 
         actualizarVista();
 
 
+        IniciarJuego();
     }
 
 
@@ -157,7 +166,7 @@ public class JugandoActivity extends AppCompatActivity {
     public static void vaciar() {
         Global.get_linearMain().removeAllViews();
 
-        for (HorizontalVista hv: Global.get_horizontalesVista()) {
+        for (HorizontalVista hv : Global.get_horizontalesVista()) {
             hv.get_llHorizontal().removeAllViews();
         }
     }
@@ -293,21 +302,21 @@ public class JugandoActivity extends AppCompatActivity {
         LinearLayout llHorizontal = crearLinearVerticalJugadoresCentroVista();
         Global.get_linearMain().addView(llHorizontal);
         if (Global.is_turnoJugador1()) {
-            escribirTextViewJugador(Global.get_jugadores().get(1),llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(1), llHorizontal);
             escribirXmlDivider(llHorizontal);
-            escribirTextViewJugador(Global.get_jugadores().get(0),llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(0), llHorizontal);
             escribirBotonVolverMenu(llHorizontal);
         } else {
-            escribirTextViewJugador(Global.get_jugadores().get(0),llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(0), llHorizontal);
             escribirXmlDivider(llHorizontal);
-            escribirTextViewJugador(Global.get_jugadores().get(1),llHorizontal);
+            escribirTextViewJugador(Global.get_jugadores().get(1), llHorizontal);
             escribirBotonVolverMenu(llHorizontal);
         }
     }
 
-    public static void escribirTextViewJugador(Jugador jugador, ViewGroup contenedor){
+    public static void escribirTextViewJugador(Jugador jugador, ViewGroup contenedor) {
         TextView tv = new TextView(Global.get_context());
-        tv.setText(jugador.get_textoPrefijoMostrarVida()+jugador.get_vida()+jugador.get_textoSufijoMostrarVida());
+        tv.setText("VIDA " + jugador.get_apodo() + ": " + jugador.get_vida());
         //tv.setText("hola");
         tv.setTypeface(tv.getTypeface(), Typeface.BOLD);
         tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
@@ -321,7 +330,7 @@ public class JugandoActivity extends AppCompatActivity {
         contenedor.addView(tv);
     }
 
-    public static Button escribirBotonVolverMenu(ViewGroup contenedor){
+    public static Button escribirBotonVolverMenu(ViewGroup contenedor) {
         Button boton = new Button(Global.get_context());
         boton.setText("Volver al menú");
         boton.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
@@ -339,14 +348,40 @@ public class JugandoActivity extends AppCompatActivity {
         contenedor.addView(boton);
 
         boton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Global.get_activity().startActivity(new Intent(Global.get_context(), MenuPrincipalActivity.class));
-                    }
-                });
+            @Override
+            public void onClick(View v) {
+                Global.get_activity().startActivity(new Intent(Global.get_context(), MenuPrincipalActivity.class));
+            }
+        });
 
         return boton;
     }
 
+
+    public void IniciarJuego() {
+        try {
+            socket = new Socket("10.0.2.2", 83);
+
+
+            PrintWriter enviar = new PrintWriter(
+                    new OutputStreamWriter(socket.getOutputStream()), true);
+            BufferedReader recibir = new BufferedReader(
+                    new InputStreamReader(socket.getInputStream()));
+
+            enviar.println(ECodigosTCP.INICIAR_PARTIDA);
+            enviar.println(Global.get_datosGuardablesJSON1Dispositivo().get_apodoEnRed());
+            enviar.println(Global.jugador2);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            enviar = new ObjectOutputStream(socket.getOutputStream());
+            recibir = new ObjectInputStream(socket.getInputStream());
+        } catch (Exception e) {
+
+        }
+    }
 
 }

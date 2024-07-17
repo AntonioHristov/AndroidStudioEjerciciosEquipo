@@ -6,7 +6,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.loeches.yugioh.Controlador.Controlador;
-import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Global.Global;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,9 +17,9 @@ public class MainActivity extends AppCompatActivity {
         Global.set_activity(this);
 
         Global.restaurarValoresDefecto();
-        Global.get_datosGuardablesJSON().cargar();
+        Global.get_datosGuardablesJSON1Dispositivo().cargar();
 
-        if(Controlador.existeApodoEnServidor()){
+        if(Controlador.logearApodoEnServidor()){
             startActivity(new Intent(this, MenuPrincipalActivity.class));
         }else{
             startActivity(new Intent(this, RegistroActivity.class));

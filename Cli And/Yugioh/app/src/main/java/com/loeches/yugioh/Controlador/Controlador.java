@@ -1,8 +1,5 @@
 package com.loeches.yugioh.Controlador;
 
-import android.content.Intent;
-import android.widget.Toast;
-
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AHechizo;
 import com.loeches.yugioh.Modelo.Cartas.Abstractas.AMonstruo;
@@ -38,8 +35,6 @@ import com.loeches.yugioh.Modelo.Jugador;
 import com.loeches.yugioh.Modelo.InterfazVista.HorizontalVista;
 import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
-import com.loeches.yugioh.Vista.MenuPrincipalActivity;
-import com.loeches.yugioh.Vista.RegistroActivity;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -57,13 +52,13 @@ public class Controlador{
 // INFORMACIÓN SOBRE GUARDAR Y CARGAR DATOS DE JSON, EN LA CLASE CONTROLADOR AL FINAL DEL MÉTODO nuevoTurno()
     public static void NuevaPartida(){
         Global.set_jugadores(new ArrayList<>());
-        new Jugador(Global.get_iniciandoJugador1Prefijo(),Global.get_iniciandoJugador1Sufijo(),Global.get_iniciandoJugador1Vida());
-        new Jugador(Global.get_iniciandoJugador2Prefijo(),Global.get_iniciandoJugador2Sufijo(),Global.get_iniciandoJugador2Vida());
+        new Jugador(Global.get_datosGuardablesJSON1Dispositivo().get_iniciandoJugador1Apodo(),Global.get_iniciandoJugador1Vida());
+        new Jugador(Global.get_datosGuardablesJSON1Dispositivo().get_iniciandoJugador2Apodo(),Global.get_iniciandoJugador2Vida());
 
-        if(Global.get_datosGuardablesJSON().get_iniciandoTurnoJugador()== ETurnosPosiblesEmpezarPartida.AL_AZAR){
+        if(Global.get_datosGuardablesJSON1Dispositivo().get_iniciandoTurnoJugador()== ETurnosPosiblesEmpezarPartida.AL_AZAR){
             Global.set_turnoJugador1((new Random().nextInt(2)==0)?true:false);
         }else{
-            Global.set_turnoJugador1(Global.get_datosGuardablesJSON().get_iniciandoTurnoJugador()!= ETurnosPosiblesEmpezarPartida.JUGADOR_1);
+            Global.set_turnoJugador1(Global.get_datosGuardablesJSON1Dispositivo().get_iniciandoTurnoJugador()!= ETurnosPosiblesEmpezarPartida.JUGADOR_1);
         }
 
 
@@ -124,7 +119,7 @@ public class Controlador{
         for (HorizontalVista hv:Global.get_horizontalesVista()) {
             hv.set_cartasVista(new ArrayList<>());
         }
-        for (ACarta carta:Global.get_datosGuardablesJSON().get_cartas()) {
+        for (ACarta carta:Global.get_datosGuardablesJSON1Dispositivo().get_cartas()) {
             new CartaVista(carta.get_idHorizontalVista(),carta);
         }
     }
@@ -133,10 +128,10 @@ public class Controlador{
 
     public static void actualizarCartasConHorizontales(){
 
-        Global.get_datosGuardablesJSON().get_cartas().clear();
+        Global.get_datosGuardablesJSON1Dispositivo().get_cartas().clear();
         for (HorizontalVista hv:Global.get_horizontalesVista()) {
             for(CartaVista cv:hv.get_cartasVista()){
-                Global.get_datosGuardablesJSON().get_cartas().add(cv.get_carta());
+                Global.get_datosGuardablesJSON1Dispositivo().get_cartas().add(cv.get_carta());
             }
         }
     }
@@ -144,7 +139,7 @@ public class Controlador{
 
     public static void nuevoTurno(){
         if(partidaTerminada()){
-            Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
+            Global.get_datosGuardablesJSON1Dispositivo().guardarSiHayDatosGuardados();
             JugandoActivity.mostrarGanador();
         }else{
 
@@ -172,7 +167,17 @@ public class Controlador{
             // Y QUITAR Global.get_datosGuardablesJSON().guardar(); (ESTÁ POR COMODIDAD POR AHORA)
             // ANTES DE LO ANTERIOR, SI NO QUIERES CARGAR LOS DATOS DEL FICHERO, VE A MainActivity.java Y COMENTA LA LINEA: Global.get_datosGuardablesJSON().cargar();
             //Global.get_datosGuardablesJSON().guardarSiHayDatosGuardados();
-            Global.get_datosGuardablesJSON().guardar();
+            Global.get_datosGuardablesJSON1Dispositivo().guardar();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if(Global.get_datosGuardablesJSON1Dispositivo().is_turnoJugador1()){
+                        Global.get_datosGuardablesJSON1Dispositivo().enviarDatos();
+                    }else{
+                        Global.get_datosGuardablesJSON1Dispositivo().recibirDatos();
+                    }
+                }
+            }).start();
             JugandoActivity.actualizarVista();
         }
     }
@@ -336,7 +341,7 @@ public class Controlador{
             @Override
             public Boolean call() {
                 try {
-                    Socket socket = new Socket(Global.get_datosGuardablesJSON().get_ipServidor(), Global.get_datosGuardablesJSON().get_puerto());
+                    Socket socket = new Socket(Global.get_datosGuardablesJSON1Dispositivo().get_ipServidor(), Global.get_datosGuardablesJSON1Dispositivo().get_puerto());
                     PrintWriter enviar = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
                     BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     enviar.close();
@@ -369,7 +374,7 @@ public class Controlador{
             @Override
             public Boolean call() {
                 try {
-                    Socket socket = new Socket(Global.get_datosGuardablesJSON().get_ipServidor(), Global.get_datosGuardablesJSON().get_puerto());
+                    Socket socket = new Socket(Global.get_datosGuardablesJSON1Dispositivo().get_ipServidor(), Global.get_datosGuardablesJSON1Dispositivo().get_puerto());
                     PrintWriter enviar = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
                     BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
@@ -399,13 +404,61 @@ public class Controlador{
         return resultado;
     }
 
-    public static boolean existeApodoEnServidor(String apodo) {
+    public static boolean logearApodoEnServidor(String apodo) {
+        if(apodo==null||apodo.trim().isEmpty()){
+return false;
+        }
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<Boolean> task = new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 try {
-                    Socket socket = new Socket(Global.get_datosGuardablesJSON().get_ipServidor(), Global.get_datosGuardablesJSON().get_puerto());
+                    Socket socket = new Socket(Global.get_datosGuardablesJSON1Dispositivo().get_ipServidor(), Global.get_datosGuardablesJSON1Dispositivo().get_puerto());
+                    PrintWriter enviar = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+                    BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    enviar.println(ECodigosTCP.LOGEARSE.name());
+                    enviar.println(apodo);
+                    boolean resultado = Boolean.parseBoolean(recibir.readLine());
+                    enviar.close();
+                    recibir.close();
+                    socket.close();
+                    return resultado;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Conexion no exitosa en teoria");
+                    return false;
+                }
+            }
+        };
+
+        Future<Boolean> future = executor.submit(task);
+        boolean resultado = false;
+        try {
+            resultado = future.get();  // Espera a que la tarea termine y obtiene el resultado
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        executor.shutdown();
+        return resultado;
+    }
+
+    public static boolean logearApodoEnServidor() {
+        return logearApodoEnServidor(Global.get_datosGuardablesJSON1Dispositivo().get_apodoEnRed());
+    }
+
+    public static boolean existeApodoEnServidor(String apodo) {
+        if(apodo==null||apodo.trim().isEmpty()){
+            return false;
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Boolean> task = new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    Socket socket = new Socket(Global.get_datosGuardablesJSON1Dispositivo().get_ipServidor(), Global.get_datosGuardablesJSON1Dispositivo().get_puerto());
                     PrintWriter enviar = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
                     BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                     enviar.println(ECodigosTCP.EXISTE_APODO.name());
@@ -435,8 +488,44 @@ public class Controlador{
         return resultado;
     }
 
-    public static boolean existeApodoEnServidor() {
-        return existeApodoEnServidor(Global.get_datosGuardablesJSON().get_apodo());
+    public static boolean logoutEnServidor(String apodo) {
+        if(apodo==null||apodo.trim().isEmpty()){
+            return false;
+        }
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Boolean> task = new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                try {
+                    Socket socket = new Socket(Global.get_datosGuardablesJSON1Dispositivo().get_ipServidor(), Global.get_datosGuardablesJSON1Dispositivo().get_puerto());
+                    PrintWriter enviar = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+                    BufferedReader recibir = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                    enviar.println(ECodigosTCP.LOGOUT.name());
+                    enviar.println(apodo);
+                    boolean resultado = Boolean.parseBoolean(recibir.readLine());
+                    enviar.close();
+                    recibir.close();
+                    socket.close();
+                    return resultado;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("Conexion no exitosa en teoria");
+                    return false;
+                }
+            }
+        };
+
+        Future<Boolean> future = executor.submit(task);
+        boolean resultado = false;
+        try {
+            resultado = future.get();  // Espera a que la tarea termine y obtiene el resultado
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        executor.shutdown();
+        return resultado;
     }
 
 

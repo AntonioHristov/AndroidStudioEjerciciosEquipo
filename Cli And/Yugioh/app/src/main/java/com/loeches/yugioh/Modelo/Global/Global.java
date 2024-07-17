@@ -16,69 +16,50 @@ import java.util.List;
 
 public class Global {
     // ATRIBUTOS
-    public final static int POS_ERROR=-1; // SI SE BUSCA RECIBIR UNA POSICIÓN DE UNA LISTA O ARREGLO Y NO SE ENCUENTRA O MANEJAR ALGÚN ERROR RELACIONADO
-    public final static String NOMBRE_ARCHIVO_GUARDAR_DATOS="datosGuardados";
+    public final static int POS_ERROR = -1; // SI SE BUSCA RECIBIR UNA POSICIÓN DE UNA LISTA O ARREGLO Y NO SE ENCUENTRA O MANEJAR ALGÚN ERROR RELACIONADO
+    public final static String NOMBRE_ARCHIVO_GUARDAR_DATOS_1DISPOSITIVO = "datosGuardados", NOMBRE_ARCHIVO_GUARDAR_DATOS_RED = "datosGuardadosRed";
     private static Activity _activity; // RECIBE LA VistaActivity (ÚNICA ACTIVITY), PARA QUE SEA ACCESIBLE EN EL PROGRAMA, JUNTO AL CONTEXTO Y EL CONTENEDOR PRINCIPAL QUE ES UN LINEAR LAYOUT VERTICAL
     //private static boolean _turnoJugador1, _turnoAlAzar,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva, _guardarDatosEnArchivo;// SI _modoOptimoJugando ES TRUE LLEVA AUTOMÁTICAMENTE UN MONSTRUO/HECHIZO EQUIPABLE AL 1º ESPACIO DISPONIBLE, SI _modoOptimoJugando VALE FALSE TENDRÍAS QUE ELEGIR MANUALMENTE LA CARTA VACÍA DESTINO.
     private static CartaVista _cartaVistaSeleccionada;// ES LA CARTA AL QUE EL JUGADOR HIZO CLICK Y TIENE EL BORDE EN ROJO
     private static List<HorizontalVista> _horizontalesVista;// Los linear layout horizontales que contienen las cartas y sus datos
-    private static DatosGuardablesJSON _datosGuardablesJSON;
+    public static DatosGuardablesJSON _datosGuardablesJSON1Dispositivo, _datosGuardablesJSONRed;
+
+    public static String jugador2;
 
 // FIN ATRIBUTOS
 
     // MÉTODOS
 
-    public static void restaurarValoresDefecto(){
-        _cartaVistaSeleccionada=null;
-        /*
-        _turnoJugador1=true;
-        _turnoAlAzar=true;
-        _modoOptimoJugando=true;
-        _preguntarConfirmacionAccionesJugando=true;
-        _empezarPartidaNueva=true;
-        _guardarDatosEnArchivo=true;
-        _cartaVistaSeleccionada=null;
-        _iniciandoPartidaCantidadMonstruosHorizontalJ1=5;
-        _iniciandoPartidaCantidadMonstruosHorizontalJ2=5;
-        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1=5;
-        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2=5;
-        _iniciandoPartidaCantidadManoHorizontalJ1=5;
-        _iniciandoPartidaCantidadManoHorizontalJ2=5;
-        _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll=5;
-        _iniciandoJugador1Vida=8000;
-        _iniciandoJugador2Vida=100;
-        _musicaFondoJugando = R.raw.yugiho;
-        _sonidoAtaqueMonstruo= R.raw.yugiho;
-        _iniciandoJugador1Prefijo="Vida Jugador 1: ";
-        _iniciandoJugador1Sufijo="";
-        _iniciandoJugador2Prefijo="Vida Jugador 2: ";
-        _iniciandoJugador2Sufijo="";*/
-        _horizontalesVista=new ArrayList<>();
-        _datosGuardablesJSON =new DatosGuardablesJSON();
-
+    public static void restaurarValoresDefecto() {
+        _cartaVistaSeleccionada = null;
+        _horizontalesVista = new ArrayList<>();
+        _datosGuardablesJSON1Dispositivo = new DatosGuardablesJSON(NOMBRE_ARCHIVO_GUARDAR_DATOS_1DISPOSITIVO);
+        _datosGuardablesJSONRed = new DatosGuardablesJSON(NOMBRE_ARCHIVO_GUARDAR_DATOS_RED);
+        _datosGuardablesJSONRed.restaurarApodosPorDefectoRed();
     }
 
 
-    public static LinearLayout get_linearMain(){
+    public static LinearLayout get_linearMain() {
         return _activity.findViewById(R.id.main);
     }
+
     public static Context get_context() {
         return _activity.getApplicationContext();
     }
 
-    public static HorizontalVista getBy(EIdHorizontalVista id){
-        for (HorizontalVista hv:_horizontalesVista) {
-            if(hv.get_id()==id){
+    public static HorizontalVista getBy(EIdHorizontalVista id) {
+        for (HorizontalVista hv : _horizontalesVista) {
+            if (hv.get_id() == id) {
                 return hv;
             }
         }
         return null;
     }
 
-    public static int getIndexHorizontalVista(CartaVista cv){
-        List<CartaVista> cvs= cv.get_horizontalVista().get_cartasVista();
+    public static int getIndexHorizontalVista(CartaVista cv) {
+        List<CartaVista> cvs = cv.get_horizontalVista().get_cartasVista();
         for (int i = 0; i < cvs.size(); i++) {
-            if(cv.equals(cvs.get(i))){
+            if (cv.equals(cvs.get(i))) {
                 return i;
             }
         }
@@ -102,9 +83,6 @@ public class Global {
 // FIN MÉTODOS
 
 
-
-
-
 // GETTERS Y SETTERS
 
     public static Activity get_activity() {
@@ -117,42 +95,42 @@ public class Global {
 
     public static boolean is_turnoJugador1() {
         //return _turnoJugador1;
-        return _datosGuardablesJSON.is_turnoJugador1();
+        return _datosGuardablesJSON1Dispositivo.is_turnoJugador1();
     }
 
     public static void set_turnoJugador1(boolean esTurnoJugador1) {
         //_turnoJugador1 = esTurnoJugador1;
-        _datosGuardablesJSON.set_turnoJugador1(esTurnoJugador1);
+        _datosGuardablesJSON1Dispositivo.set_turnoJugador1(esTurnoJugador1);
     }
 
     public static boolean is_modoOptimoJugando() {
         //return _modoOptimoJugando;
-        return _datosGuardablesJSON.is_modoOptimoJugando();
+        return _datosGuardablesJSON1Dispositivo.is_modoOptimoJugando();
     }
 
     public static void set_modoOptimoJugando(boolean modoOptimoJugando) {
         //_modoOptimoJugando = modoOptimoJugando;
-        _datosGuardablesJSON.set_modoOptimoJugando(modoOptimoJugando);
+        _datosGuardablesJSON1Dispositivo.set_modoOptimoJugando(modoOptimoJugando);
     }
 
     public static boolean is_preguntarConfirmacionAccionesJugando() {
         //return _preguntarConfirmacionAccionesJugando;
-        return _datosGuardablesJSON.is_preguntarConfirmacionAccionesJugando();
+        return _datosGuardablesJSON1Dispositivo.is_preguntarConfirmacionAccionesJugando();
     }
 
     public static void set_preguntarConfirmacionAccionesJugando(boolean preguntarConfirmacionAccionesJugando) {
         //_preguntarConfirmacionAccionesJugando = preguntarConfirmacionAccionesJugando;
-        _datosGuardablesJSON.set_preguntarConfirmacionAccionesJugando(preguntarConfirmacionAccionesJugando);
+        _datosGuardablesJSON1Dispositivo.set_preguntarConfirmacionAccionesJugando(preguntarConfirmacionAccionesJugando);
     }
 
     public static boolean is_empezarPartidaNueva() {
         //return _empezarPartidaNueva;
-        return _datosGuardablesJSON.is_empezarPartidaNueva();
+        return _datosGuardablesJSON1Dispositivo.is_empezarPartidaNueva();
     }
 
     public static void set_empezarPartidaNueva(boolean empezarPartidaNueva) {
         //_empezarPartidaNueva = empezarPartidaNueva;
-        _datosGuardablesJSON.set_empezarPartidaNueva(empezarPartidaNueva);
+        _datosGuardablesJSON1Dispositivo.set_empezarPartidaNueva(empezarPartidaNueva);
     }
 
     /*
@@ -174,152 +152,112 @@ public class Global {
 
     public static int get_iniciandoPartidaCantidadMonstruosHorizontalJ1() {
         //return _iniciandoPartidaCantidadMonstruosHorizontalJ1;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadMonstruosHorizontalJ1();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadMonstruosHorizontalJ1();
     }
 
     public static void set_iniciandoPartidaCantidadMonstruosHorizontalJ1(int iniciandoPartidaCantidadMonstruosHorizontalJ1) {
         //_iniciandoPartidaCantidadMonstruosHorizontalJ1 = iniciandoPartidaCantidadMonstruosHorizontalJ1;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadMonstruosHorizontalJ1(iniciandoPartidaCantidadMonstruosHorizontalJ1);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadMonstruosHorizontalJ1(iniciandoPartidaCantidadMonstruosHorizontalJ1);
     }
 
     public static int get_iniciandoPartidaCantidadMonstruosHorizontalJ2() {
         //return _iniciandoPartidaCantidadMonstruosHorizontalJ2;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadMonstruosHorizontalJ2();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadMonstruosHorizontalJ2();
     }
 
     public static void set_iniciandoPartidaCantidadMonstruosHorizontalJ2(int iniciandoPartidaCantidadMonstruosHorizontalJ2) {
         //_iniciandoPartidaCantidadMonstruosHorizontalJ2 = iniciandoPartidaCantidadMonstruosHorizontalJ2;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadMonstruosHorizontalJ2(iniciandoPartidaCantidadMonstruosHorizontalJ2);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadMonstruosHorizontalJ2(iniciandoPartidaCantidadMonstruosHorizontalJ2);
     }
 
     public static int get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1() {
         //return _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1();
     }
 
     public static void set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1(int iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1) {
         //_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1 = iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1(iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1(iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1);
     }
 
     public static int get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2() {
         //return _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2();
     }
 
     public static void set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2(int iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2) {
         //_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2 = iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2(iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2(iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2);
     }
 
     public static int get_iniciandoPartidaCantidadManoHorizontalJ1() {
         //return _iniciandoPartidaCantidadManoHorizontalJ1;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadManoHorizontalJ1();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadManoHorizontalJ1();
     }
 
     public static void set_iniciandoPartidaCantidadManoHorizontalJ1(int iniciandoPartidaCantidadManoHorizontalJ1) {
         //_iniciandoPartidaCantidadManoHorizontalJ1 = iniciandoPartidaCantidadManoHorizontalJ1;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadManoHorizontalJ1(iniciandoPartidaCantidadManoHorizontalJ1);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadManoHorizontalJ1(iniciandoPartidaCantidadManoHorizontalJ1);
     }
 
     public static int get_iniciandoPartidaCantidadManoHorizontalJ2() {
         //return _iniciandoPartidaCantidadManoHorizontalJ2;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadManoHorizontalJ2();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadManoHorizontalJ2();
     }
 
     public static void set_iniciandoPartidaCantidadManoHorizontalJ2(int iniciandoPartidaCantidadManoHorizontalJ2) {
         //_iniciandoPartidaCantidadManoHorizontalJ2 = iniciandoPartidaCantidadManoHorizontalJ2;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadManoHorizontalJ2(iniciandoPartidaCantidadManoHorizontalJ2);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadManoHorizontalJ2(iniciandoPartidaCantidadManoHorizontalJ2);
     }
 
     public static int get_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll() {
         //return _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll;
-        return _datosGuardablesJSON.get_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll();
     }
 
     public static void set_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll(int iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll) {
         //_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll = iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll;
-        _datosGuardablesJSON.set_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll(iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll(iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll);
     }
 
     public static int get_iniciandoJugador1Vida() {
         //return _iniciandoJugador1Vida;
-        return _datosGuardablesJSON.get_iniciandoJugador1Vida();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoJugador1Vida();
     }
 
     public static void set_iniciandoJugador1Vida(int iniciandoJugador1Vida) {
         //_iniciandoJugador1Vida = iniciandoJugador1Vida;
-        _datosGuardablesJSON.set_iniciandoJugador1Vida(iniciandoJugador1Vida);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoJugador1Vida(iniciandoJugador1Vida);
     }
 
     public static int get_iniciandoJugador2Vida() {
         //return _iniciandoJugador2Vida;
-        return _datosGuardablesJSON.get_iniciandoJugador2Vida();
+        return _datosGuardablesJSON1Dispositivo.get_iniciandoJugador2Vida();
     }
 
     public static void set_iniciandoJugador2Vida(int iniciandoJugador2Vida) {
         //_iniciandoJugador2Vida = iniciandoJugador2Vida;
-        _datosGuardablesJSON.set_iniciandoJugador2Vida(iniciandoJugador2Vida);
+        _datosGuardablesJSON1Dispositivo.set_iniciandoJugador2Vida(iniciandoJugador2Vida);
     }
 
     public static int get_musicaFondoJugando() {
         //return _musicaFondoJugando;
-        return _datosGuardablesJSON.get_musicaFondoJugando();
+        return _datosGuardablesJSON1Dispositivo.get_musicaFondoJugando();
     }
 
     public static void set_musicaFondoJugando(int musicaFondo) {
         //_musicaFondoJugando = musicaFondo;
-        _datosGuardablesJSON.set_musicaFondoJugando(musicaFondo);
+        _datosGuardablesJSON1Dispositivo.set_musicaFondoJugando(musicaFondo);
     }
 
     public static int get_sonidoAtaqueMonstruo() {
         //return _sonidoAtaqueMonstruo;
-        return _datosGuardablesJSON.get_sonidoAtaqueMonstruo();
+        return _datosGuardablesJSON1Dispositivo.get_sonidoAtaqueMonstruo();
     }
 
     public static void set_sonidoAtaqueMonstruo(int sonidoAtaqueMonstruo) {
         //_sonidoAtaqueMonstruo = sonidoAtaqueMonstruo;
-        _datosGuardablesJSON.set_sonidoAtaqueMonstruo(sonidoAtaqueMonstruo);
-    }
-
-    public static String get_iniciandoJugador1Prefijo() {
-        //return _iniciandoJugador1Prefijo;
-        return _datosGuardablesJSON.get_iniciandoJugador1Prefijo();
-    }
-
-    public static void set_iniciandoJugador1Prefijo(String iniciandoJugador1Prefijo) {
-        //_iniciandoJugador1Prefijo = iniciandoJugador1Prefijo;
-        _datosGuardablesJSON.set_iniciandoJugador1Prefijo(iniciandoJugador1Prefijo);
-    }
-
-    public static String get_iniciandoJugador1Sufijo() {
-        //return _iniciandoJugador1Sufijo;
-        return _datosGuardablesJSON.get_iniciandoJugador1Sufijo();
-    }
-
-    public static void set_iniciandoJugador1Sufijo(String iniciandoJugador1Sufijo) {
-        //_iniciandoJugador1Sufijo = iniciandoJugador1Sufijo;
-        _datosGuardablesJSON.set_iniciandoJugador1Sufijo(iniciandoJugador1Sufijo);
-    }
-
-    public static String get_iniciandoJugador2Prefijo() {
-        //return _iniciandoJugador2Prefijo;
-        return _datosGuardablesJSON.get_iniciandoJugador2Prefijo();
-    }
-
-    public static void set_iniciandoJugador2Prefijo(String iniciandoJugador2Prefijo) {
-        //_iniciandoJugador2Prefijo = iniciandoJugador2Prefijo;
-        _datosGuardablesJSON.set_iniciandoJugador2Prefijo(iniciandoJugador2Prefijo);
-    }
-
-    public static String get_iniciandoJugador2Sufijo() {
-        //return _iniciandoJugador2Sufijo;
-        return _datosGuardablesJSON.get_iniciandoJugador2Sufijo();
-    }
-
-    public static void set_iniciandoJugador2Sufijo(String iniciandoJugador2Sufijo) {
-        //_iniciandoJugador2Sufijo = iniciandoJugador2Sufijo;
-        _datosGuardablesJSON.set_iniciandoJugador2Sufijo(iniciandoJugador2Sufijo);
+        _datosGuardablesJSON1Dispositivo.set_sonidoAtaqueMonstruo(sonidoAtaqueMonstruo);
     }
 
     public static List<HorizontalVista> get_horizontalesVista() {
@@ -332,23 +270,29 @@ public class Global {
 
     public static List<Jugador> get_jugadores() {
         //return _jugadores;
-        return _datosGuardablesJSON.get_jugadores();
+        return _datosGuardablesJSON1Dispositivo.get_jugadores();
     }
 
     public static void set_jugadores(List<Jugador> jugadores) {
         //_jugadores = jugadores;
-        _datosGuardablesJSON.set_jugadores(jugadores);
+        _datosGuardablesJSON1Dispositivo.set_jugadores(jugadores);
     }
 
-    public static DatosGuardablesJSON get_datosGuardablesJSON() {
-        return _datosGuardablesJSON;
+    public static DatosGuardablesJSON get_datosGuardablesJSON1Dispositivo() {
+        return _datosGuardablesJSON1Dispositivo;
     }
 
-    public static void set_datosGuardablesJSON(DatosGuardablesJSON datosGuardables) {
-        _datosGuardablesJSON = datosGuardables;
+    public static void set_datosGuardablesJSON1Dispositivo(DatosGuardablesJSON datosGuardables) {
+        _datosGuardablesJSON1Dispositivo = datosGuardables;
     }
 
+    public static DatosGuardablesJSON get_datosGuardablesJSONRed() {
+        return _datosGuardablesJSONRed;
+    }
 
+    public static void set_datosGuardablesJSONRed(DatosGuardablesJSON _datosGuardablesJSONRed) {
+        Global._datosGuardablesJSONRed = _datosGuardablesJSONRed;
+    }
 
     // FIN GETTERS Y SETTERS
 }

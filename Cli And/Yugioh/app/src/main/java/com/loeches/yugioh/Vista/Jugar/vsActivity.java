@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.loeches.yugioh.R;
 import com.loeches.yugioh.Vista.MenuPrincipalActivity;
+import com.loeches.yugioh.Vista.SalaEspera;
 
 public class vsActivity extends AppCompatActivity {
 
@@ -70,7 +71,7 @@ public class vsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //clickSound.start();
-                Intent intent = new Intent(vsActivity.this, JugandoActivity.class);
+                Intent intent = new Intent(vsActivity.this, SalaEspera.class);
                 startActivity(intent);
 
             }

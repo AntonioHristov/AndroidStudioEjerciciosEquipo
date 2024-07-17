@@ -1,31 +1,24 @@
-package com.loeches.yugioh.DAO.Implementaciones;
+package DAO.Implementaciones;
 
-import android.widget.Toast;
 
+import DAO.Interfaces.IDatosGuardablesDAO;
+import Enumerados.ETurnosPosiblesEmpezarPartida;
+import Modelos.Jugador;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.loeches.yugioh.Controlador.Controlador;
-import com.loeches.yugioh.DAO.Implementaciones.Adaptador.CartaTypeAdapter;
-import com.loeches.yugioh.DAO.Interfaces.IDatosGuardablesDAO;
-import com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta;
-import com.loeches.yugioh.Modelo.Global.Enums.ETurnosPosiblesEmpezarPartida;
-import com.loeches.yugioh.Modelo.Global.Global;
-import com.loeches.yugioh.Modelo.Jugador;
-import com.loeches.yugioh.R;
-import com.loeches.yugioh.Vista.Jugar.JugandoActivity;
+
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
-    private static final long serialVersionUID = 123L;
+
+
+public class DatosGuardablesJSON {//implements IDatosGuardablesDAO {
     private ETurnosPosiblesEmpezarPartida _iniciandoTurnoJugador;
-    private boolean _turnoJugador1, _modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva;
+    private boolean _turnoJugador1,_modoOptimoJugando, _preguntarConfirmacionAccionesJugando, _empezarPartidaNueva;
     // LOS _iniciandoPartida ¡¡¡ SON SOLAMENTE AL INICIO DE CADA PARTIDA, AHÍ NO SE GUARDAN LOS VALORES SI CAMBIAN A LO LARGO DE LA PARTIDA !!! LA IDEA ES QUE EL JUGADOR LO PUEDA CAMBIAR EN EL MENU PERSONALIZAR
 
     // EL ANCHO DE CADA CARTAVISTA SERÁ EL ANCHO DEL TELÉFONO DIVIDO ENTRE EL VALOR ALMACENADO EN _cantidadCartaVistasPorHorizontalSinScroll
@@ -39,8 +32,8 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
             _iniciandoJugador1Vida,
             _iniciandoJugador2Vida,
             _puerto,
-    // MÚSICAS
-    _musicaFondoJugando,
+            // MÚSICAS
+            _musicaFondoJugando,
             _sonidoAtaqueMonstruo;
     private String _nombreArchivoGuardarDatos, _iniciandoJugador1Apodo, _iniciandoJugador2Apodo, _apodoEnRed, _ipServidor;
     /*
@@ -50,7 +43,7 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
         SI QUIERES ACTUALIZAR LOS HORIZONTALES CON LOS VALORES DE LAS CARTAS
         LLAMA A Controlador.actualizarHorizontalesConCartas();
      */
-    private List<ACarta> _cartas;
+    private List<com.loeches.yugioh.Modelo.Cartas.Abstractas.ACarta> _cartas;
     private List<Jugador> _jugadores;// pos 0=Jugador 1, pos 1=Jugador 2
 
     public DatosGuardablesJSON() {
@@ -62,44 +55,44 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
         restaurarValoresDefecto();
     }
 
-    @Override
+    //@Override
     public void restaurarValoresDefecto() {
-        _iniciandoTurnoJugador = ETurnosPosiblesEmpezarPartida.AL_AZAR;
+        _iniciandoTurnoJugador =ETurnosPosiblesEmpezarPartida.AL_AZAR;
         //_turnoJugador1=true;
-        _modoOptimoJugando = true;
-        _preguntarConfirmacionAccionesJugando = true;
-        _empezarPartidaNueva = true;
-        _iniciandoPartidaCantidadMonstruosHorizontalJ1 = 5;
-        _iniciandoPartidaCantidadMonstruosHorizontalJ2 = 5;
-        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1 = 5;
-        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2 = 5;
-        _iniciandoPartidaCantidadManoHorizontalJ1 = 5;
-        _iniciandoPartidaCantidadManoHorizontalJ2 = 5;
-        _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll = 5;
-        _iniciandoJugador1Vida = 8000;
-        _iniciandoJugador2Vida = 100;
-        _puerto = 83;
+        _modoOptimoJugando=true;
+        _preguntarConfirmacionAccionesJugando=true;
+        _empezarPartidaNueva=true;
+        _iniciandoPartidaCantidadMonstruosHorizontalJ1=5;
+        _iniciandoPartidaCantidadMonstruosHorizontalJ2=5;
+        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ1=5;
+        _iniciandoPartidaCantidadHechizosEquipablesHorizontalJ2=5;
+        _iniciandoPartidaCantidadManoHorizontalJ1=5;
+        _iniciandoPartidaCantidadManoHorizontalJ2=5;
+        _iniciandoPartidaCantidadCartaVistasPorHorizontalSinScroll=5;
+        _iniciandoJugador1Vida=8000;
+        _iniciandoJugador2Vida=100;
+        _puerto=83;
+        /*
         _musicaFondoJugando = R.raw.yugiho;
-        _sonidoAtaqueMonstruo = R.raw.yugiho;
-        _iniciandoJugador1Apodo = "Jugador 1";
-        _iniciandoJugador2Apodo = "Jugador 2";
-        _ipServidor = "10.0.2.2";
-        _cartas = new ArrayList<>();
-        _jugadores = new ArrayList<>();
+        _sonidoAtaqueMonstruo= R.raw.yugiho;*/
+        _iniciandoJugador1Apodo ="Jugador 1";
+        _iniciandoJugador2Apodo ="Jugador 2";
+        _ipServidor="10.0.2.2";
+        _cartas=new ArrayList<>();
+        _jugadores=new ArrayList<>();
     }
 
-    public void restaurarApodosPorDefectoRed() {
-        _iniciandoJugador1Apodo = "";
-        _iniciandoJugador2Apodo = "";
+    public void restaurarApodosPorDefectoRed(){
+        _iniciandoJugador1Apodo ="";
+        _iniciandoJugador2Apodo ="";
     }
-
+/*
     @Override
     public boolean hayDatos() {
-        String uri = Global.get_context().getExternalFilesDir(null).getAbsolutePath();
-        File file = new File(uri, _nombreArchivoGuardarDatos + ".json");
+        String uri=Global.get_context().getExternalFilesDir(null).getAbsolutePath();
+        File file=new File(uri,_nombreArchivoGuardarDatos+".json");
         return file.exists();
     }
-
     @Override
     public boolean cargar() {
         try {
@@ -107,12 +100,12 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(ACarta.class, new CartaTypeAdapter())
                     .create();
-            String uri = Global.get_context().getExternalFilesDir(null).getAbsolutePath();
-            File file = new File(uri, _nombreArchivoGuardarDatos + ".json");
-            if (!file.exists()) {
+            String uri=Global.get_context().getExternalFilesDir(null).getAbsolutePath();
+            File file=new File(uri,_nombreArchivoGuardarDatos+".json");
+            if(!file.exists()){
                 return false;
             }
-            String contenido = new String(Files.readAllBytes(file.toPath()));
+            String contenido=new String(Files.readAllBytes(file.toPath()));
             Global.set_datosGuardablesJSON1Dispositivo(gson.fromJson(contenido, DatosGuardablesJSON.class));
 
             Toast.makeText(Global.get_context(), "JSON CARGADO", Toast.LENGTH_LONG).show();
@@ -126,7 +119,7 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
 
     @Override
     public void guardarSiHayDatosGuardados() {
-        if (hayDatos()) {
+        if(hayDatos()){
             guardar();
         }
     }
@@ -134,50 +127,27 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
     @Override
     public void guardar() {
         Controlador.actualizarCartasConHorizontales();
-        try {
+        try{
             //Gson gson=new Gson();
             Gson gson = new GsonBuilder()
                     .registerTypeAdapter(ACarta.class, new CartaTypeAdapter())
                     .create();
-            String uri = Global.get_context().getExternalFilesDir(null).getAbsolutePath();
-            File file = new File(uri, _nombreArchivoGuardarDatos + ".json");
-            FileWriter fw = new FileWriter(file);
-            gson.toJson(this, fw);
+            String uri= Global.get_context().getExternalFilesDir(null).getAbsolutePath();
+            File file=new File(uri,_nombreArchivoGuardarDatos+".json");
+            FileWriter fw=new FileWriter(file);
+            gson.toJson(this,fw);
             fw.close();
             Toast.makeText(Global.get_context(), "ARCHIVO JSON GUARDADO", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
+        }catch(Exception e){
             e.printStackTrace();
             Toast.makeText(Global.get_context(), "ERROR AL GUARDAR JSON", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void enviarDatos() {
-        try {
-            JugandoActivity.enviar.writeUTF("jugada");
-            JugandoActivity.enviar.flush();
-            JugandoActivity.enviar.writeObject(this);
-            JugandoActivity.enviar.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void recibirDatos() {
-        try {
-            String comando = JugandoActivity.recibir.readUTF();
-            if (comando.equals("jugada")) {
-                DatosGuardablesJSON datos = (DatosGuardablesJSON) JugandoActivity.recibir.readObject();
-                Global.set_datosGuardablesJSON1Dispositivo(datos);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public void borrar() {
-        String uri = Global.get_context().getExternalFilesDir(null).getAbsolutePath();
-        File file = new File(uri, _nombreArchivoGuardarDatos + ".json");
+        String uri=Global.get_context().getExternalFilesDir(null).getAbsolutePath();
+        File file=new File(uri,_nombreArchivoGuardarDatos+".json");
         if (file.exists()) {
             file.delete();
             Toast.makeText(Global.get_context(), "ARCHIVO JSON BORRADO", Toast.LENGTH_LONG).show();
@@ -402,5 +372,6 @@ public class DatosGuardablesJSON implements IDatosGuardablesDAO, Serializable {
                 ", _cartas=" + _cartas +
                 ", _jugadores=" + _jugadores +
                 '}';
-    }
+    }*/
+
 }

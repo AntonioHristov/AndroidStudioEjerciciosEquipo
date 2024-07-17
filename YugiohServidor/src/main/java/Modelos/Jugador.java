@@ -1,6 +1,4 @@
-package com.loeches.yugioh.Modelo;
-
-import com.loeches.yugioh.Modelo.Global.Global;
+package Modelos;
 
 public class Jugador {
     //private TextView _tvVista;// NO SE PUEDE GUARDAR EN JSON, E INNECESARIO AUNQUE SE PUDIESE
